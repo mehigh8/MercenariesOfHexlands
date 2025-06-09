@@ -1,30 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using FishNet.Connection;
 using FishNet.Object;
+using UnityEngine.AI;
+using Unity.VisualScripting;
 
 //This is made by Bobsi Unity - Youtube
 public class PlayerController : NetworkBehaviour
 {
-    [Header("Base setup")]
-    public float walkingSpeed = 7.5f;
-    public float runningSpeed = 11.5f;
-    public float jumpSpeed = 8.0f;
-    public float gravity = 20.0f;
-    public float lookSpeed = 2.0f;
-    public float lookXLimit = 45.0f;
+    [Header("Camera Settings")]
+    [SerializeField] private float cameraSpeed;
 
-    CharacterController characterController;
-    Vector3 moveDirection = Vector3.zero;
-    float rotationX = 0;
-
-    [HideInInspector]
-    public bool canMove = true;
+    [Header("Navigation Settings")]
+    [SerializeField] private LayerMask mask;
 
     [SerializeField]
-    private float cameraYOffset = 0.4f;
+    private Vector3 cameraOffset = new Vector3(0, 9, -5);
     private Camera playerCamera;
+    private NavMeshAgent navAgent;
 
 
     public override void OnStartClient()
@@ -33,64 +24,60 @@ public class PlayerController : NetworkBehaviour
         if (base.IsOwner)
         {
             playerCamera = Camera.main;
-            playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y + cameraYOffset, transform.position.z);
-            playerCamera.transform.SetParent(transform);
-        }
-        else
-        {
-            gameObject.GetComponent<PlayerController>().enabled = false;
+            playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z) + cameraOffset;
         }
     }
 
-    void Start()
+    private void Start()
     {
-        characterController = GetComponent<CharacterController>();
-
-        // Lock cursor
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        navAgent = GetComponent<NavMeshAgent>();
     }
 
-    void Update()
+    private void CameraMovement()
     {
-        bool isRunning = false;
+        if (!playerCamera)
+            return;
+        if (Input.GetKeyDown(KeyCode.Space))
+                playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z) + cameraOffset;
 
-        // Press Left Shift to run
-        isRunning = Input.GetKey(KeyCode.LeftShift);
+        Vector3 toMove = Vector3.zero;
 
-        // We are grounded, so recalculate move direction based on axis
-        Vector3 forward = transform.TransformDirection(Vector3.forward);
-        Vector3 right = transform.TransformDirection(Vector3.right);
+        if (Input.GetKey(KeyCode.D))
+            toMove += Vector3.right;
+        if (Input.GetKey(KeyCode.A))
+            toMove -= Vector3.right;
+        if (Input.GetKey(KeyCode.W))
+            toMove += Vector3.forward;
+        if (Input.GetKey(KeyCode.S))
+            toMove -= Vector3.forward;
 
-        float curSpeedX = canMove ? (isRunning ? runningSpeed : walkingSpeed) * Input.GetAxis("Vertical") : 0;
-        float curSpeedY = canMove ? (isRunning ? runningSpeed : walkingSpeed) * Input.GetAxis("Horizontal") : 0;
-        float movementDirectionY = moveDirection.y;
-        moveDirection = (forward * curSpeedX) + (right * curSpeedY);
+        playerCamera.transform.position += toMove.normalized * cameraSpeed;
+    }
 
-        if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
+    private void PlayerMovement()
+    {
+        if (!base.IsOwner)
+            return;
+        if (Input.GetKeyDown(KeyCode.Mouse1))
         {
-            moveDirection.y = jumpSpeed;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, mask)) {
+                if (hit.collider != null)
+                {
+                    Debug.Log(hit.point);
+                    navAgent.SetDestination(hit.point);
+                }
+                else
+                {
+                    Debug.Log("no collision");
+                }
+            }       
         }
-        else
-        {
-            moveDirection.y = movementDirectionY;
-        }
+    }
 
-        if (!characterController.isGrounded)
-        {
-            moveDirection.y -= gravity * Time.deltaTime;
-        }
-
-        // Move the controller
-        characterController.Move(moveDirection * Time.deltaTime);
-
-        // Player and Camera rotation
-        if (canMove && playerCamera != null)
-        {
-            rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
-            rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
-            playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
-            transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
-        }
+    private void Update()
+    {
+        CameraMovement();
+        PlayerMovement();
     }
 }
