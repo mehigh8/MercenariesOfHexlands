@@ -65,7 +65,9 @@ public class PlayerController : NetworkBehaviour
                 if (hit.collider != null)
                 {
                     Debug.Log(hit.point);
-                    navAgent.SetDestination(hit.point);
+                    Debug.Log(hit.collider.transform.position);
+                    Debug.Log(hit.collider.gameObject.name);
+                    navAgent.SetDestination(hit.collider.transform.position);
                 }
                 else
                 {
