@@ -1,7 +1,11 @@
+using FishNet.CodeGenerating;
+using FishNet.Component.Transforming;
 using FishNet.Object;
+using FishNet.Object.Synchronizing;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
@@ -35,9 +39,17 @@ public class HexRenderer : NetworkBehaviour
     public float outerSize;
     public float height;
     public bool isFlatTopped;
+    [AllowMutableSyncType] public SyncVar<GameObject> occupying = new SyncVar<GameObject>();
+
+    private void OnOccupyingChange(GameObject oldVal, GameObject newVal, bool asServer)
+    {
+        if (!asServer)
+            occupying.Value = newVal;
+    }
 
     private void Awake()
     {
+        occupying.OnChange += OnOccupyingChange;
         meshFilter = GetComponent<MeshFilter>();
         meshRenderer = GetComponent<MeshRenderer>();
         meshCollider = GetComponent<MeshCollider>();
@@ -113,9 +125,9 @@ public class HexRenderer : NetworkBehaviour
         return new Vector3((size * Mathf.Cos(angle_rad)), height, size * Mathf.Sin(angle_rad));
     }
 
-    public void SetMaterial(Material material)
+    public void SetMaterial(Material material, UnityEngine.Color color)
     {
         meshRenderer.material = material;
-        meshRenderer.material.color = Random.ColorHSV();
+        meshRenderer.material.color = color;
     }
 }

@@ -16,6 +16,7 @@ public class PlayerController : NetworkBehaviour
     private Vector3 cameraOffset = new Vector3(0, 9, -5);
     private Camera playerCamera;
     private NavMeshAgent navAgent;
+    private HexRenderer currentlyOn;
 
 
     public override void OnStartClient()
@@ -25,6 +26,8 @@ public class PlayerController : NetworkBehaviour
         {
             playerCamera = Camera.main;
             playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z) + cameraOffset;
+            currentlyOn = HexGridLayout.instance.GetClosestHex(transform.position);
+            currentlyOn.occupying.Value = gameObject;
         }
     }
 
@@ -61,19 +64,23 @@ public class PlayerController : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit, mask)) {
+            if (Physics.Raycast(ray, out RaycastHit hit, mask))
+            {
                 if (hit.collider != null)
                 {
-                    Debug.Log(hit.point);
-                    Debug.Log(hit.collider.transform.position);
-                    Debug.Log(hit.collider.gameObject.name);
-                    navAgent.SetDestination(hit.collider.transform.position);
+                    if (hit.collider.TryGetComponent<HexRenderer>(out HexRenderer hex) && hex.occupying.Value == null)
+                    {
+                        currentlyOn.occupying.Value = null;
+                        currentlyOn = hex;
+                        currentlyOn.occupying.Value = gameObject;
+                        navAgent.SetDestination(hit.collider.transform.position);
+                    }
                 }
                 else
                 {
                     Debug.Log("no collision");
                 }
-            }       
+            }
         }
     }
 
