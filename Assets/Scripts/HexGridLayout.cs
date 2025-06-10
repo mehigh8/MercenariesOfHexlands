@@ -71,6 +71,7 @@ public class HexGridLayout : NetworkBehaviour
     public Material material;
     public int gridLayer;
     [AllowMutableSyncType] public SyncVar<int> seed;
+    public List<HexNode> hexNodes = new List<HexNode>();
 
     [Header("References")]
     [SerializeField] private PlayerSpawner pSpawner;
@@ -138,7 +139,6 @@ public class HexGridLayout : NetworkBehaviour
         }
         pSpawner.Spawns = transformList.OrderBy(x => Random.value).ToArray();
         // pSpawner.Spawns = transformList.ToArray();
-        spawner.Spawns = hexes.ToArray();
     }
 
     [ServerRpc]

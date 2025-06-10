@@ -22,15 +22,15 @@ public class GameManager : NetworkBehaviour
             Despawn(gameObject);
     }
 
-    public override void OnStartServer()
-    {
-        base.OnStartServer();
-        if (terrainIsCreated.Value == false)
-        {
-            Debug.Log("Changing syncvar");
-            terrainIsCreated.Value = true;
-            Debug.Log(terrainIsCreated.Value);
-            hexGrid.LayoutGrid(spawner);
-        }
-    }
+    //public override void OnStartServer()
+    //{
+    //    base.OnStartServer();
+    //    if (terrainIsCreated.Value == false)
+    //    {
+    //        Debug.Log("Changing syncvar");
+    //        terrainIsCreated.Value = true;
+    //        Debug.Log(terrainIsCreated.Value);
+    //        hexGrid.LayoutGrid(spawner);
+    //    }
+    //}
 }
