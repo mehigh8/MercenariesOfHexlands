@@ -903,9 +903,9 @@ MonoBehaviour:
   _ipv4BindAddress: 
   _enableIpv6: 1
   _ipv6BindAddress: 
-  _port: 59945
+  _port: 30492
   _maximumClients: 4095
-  _clientAddress: localhost
+  _clientAddress: a31da2c80e48.pr.edgegap.net
 --- !u!114 &1464462468 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7443408887813606060, guid: 0b650fca685f2eb41a86538aa883e4c1,

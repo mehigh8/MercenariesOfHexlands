@@ -90,12 +90,8 @@ public class PlayerController : NetworkBehaviour
                         currentlyOn.ChangeOccupying(null);
                         currentlyOn = hex;
                         currentlyOn.ChangeOccupying(gameObject);
-                        navAgent.SetDestination(hit.collider.transform.position);
+                        path = pathfinder.FindPath(currentPosition, HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hit.collider.gameObject));
                     }
-                    Debug.Log(hit.point);
-                    Debug.Log(hit.collider.transform.position);
-                    Debug.Log(hit.collider.gameObject.name);
-                    path = pathfinder.FindPath(currentPosition, HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hit.collider.gameObject));
                 }
                 else
                 {
