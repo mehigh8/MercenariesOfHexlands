@@ -30,16 +30,21 @@ public class PlayerController : NetworkBehaviour
         {
             playerCamera = Camera.main;
             playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z) + cameraOffset;
-            currentlyOn = HexGridLayout.instance.GetClosestHex(transform.position);
-            currentlyOn.occupying.Value = gameObject;
         }
+    }
+
+    private void OnDestroy()
+    {
+        currentlyOn.ChangeOccupying(null);
     }
 
     private void Start()
     {
+        currentlyOn = HexGridLayout.instance.GetClosestHex(transform.position);
+        currentlyOn.ChangeOccupying(gameObject);
         navAgent = GetComponent<NavMeshAgent>();
         float minDist = float.MaxValue;
-        foreach (HexGridLayout.HexNode node in pathfinder.hexGrid.hexNodes)
+        foreach (HexGridLayout.HexNode node in HexGridLayout.instance.hexNodes)
             if (Vector3.Distance(node.hexObj.transform.position, transform.position) < minDist)
             {
                 minDist = Vector3.Distance(node.hexObj.transform.position, transform.position);
@@ -82,15 +87,15 @@ public class PlayerController : NetworkBehaviour
                 {
                     if (hit.collider.TryGetComponent<HexRenderer>(out HexRenderer hex) && hex.occupying.Value == null)
                     {
-                        currentlyOn.occupying.Value = null;
+                        currentlyOn.ChangeOccupying(null);
                         currentlyOn = hex;
-                        currentlyOn.occupying.Value = gameObject;
+                        currentlyOn.ChangeOccupying(gameObject);
                         navAgent.SetDestination(hit.collider.transform.position);
                     }
                     Debug.Log(hit.point);
                     Debug.Log(hit.collider.transform.position);
                     Debug.Log(hit.collider.gameObject.name);
-                    path = pathfinder.FindPath(currentPosition, pathfinder.hexGrid.hexNodes.Find(h => h.hexObj == hit.collider.gameObject));
+                    path = pathfinder.FindPath(currentPosition, HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hit.collider.gameObject));
                 }
                 else
                 {

@@ -1,17 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using FishNet.CodeGenerating;
 using FishNet.Component.Spawning;
-using FishNet.Managing;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
-using GameKit.Dependencies.Utilities;
+using FishNet.Observing;
 using UnityEngine;
-using FishNet.Object;
-using FishNet.Connection;
-using FishNet.Component.Spawning;
-using System.Linq;
 
 public class HexGridLayout : NetworkBehaviour
 {
@@ -119,6 +113,7 @@ public class HexGridLayout : NetworkBehaviour
                 tile.transform.position = GetPositionForHexFromCoordinate(new Vector2Int((int)transform.position.x + x, (int)transform.position.y + y));
                 transformList.Add(tile.transform);
                 hexes.Add(tile.transform);
+
 
                 HexRenderer hexRenderer = tile.GetComponent<HexRenderer>();
                 hexRenderer.isFlatTopped = isFlatTopped;

@@ -48,7 +48,7 @@ public class Pathfinder : MonoBehaviour
                 return path;
             }
 
-            List<HexGridLayout.HexNode> neighbours = current.GetNeighbours(hexGrid.hexNodes).Where(h => !processed.Contains(h)).ToList();
+            List<HexGridLayout.HexNode> neighbours = current.GetNeighbours(HexGridLayout.instance.hexNodes).Where(h => !processed.Contains(h)).ToList();
             foreach (HexGridLayout.HexNode neighbour in neighbours)
             {
                 bool inSearch = toSearch.Contains(neighbour);

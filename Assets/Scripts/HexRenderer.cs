@@ -11,6 +11,7 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(MeshCollider))]
+// [RequireComponent(typeof(NetworkObject))]
 public class HexRenderer : NetworkBehaviour
 {
     public struct Face
@@ -43,13 +44,25 @@ public class HexRenderer : NetworkBehaviour
 
     private void OnOccupyingChange(GameObject oldVal, GameObject newVal, bool asServer)
     {
-        if (!asServer)
-            occupying.Value = newVal;
+        Debug.Log($"{gameObject.name} changed from {oldVal} to {newVal}");
+    }
+
+
+    public override void OnStartNetwork()
+    {
+        base.OnStartNetwork();
+
+        occupying.OnChange += OnOccupyingChange;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ChangeOccupying(GameObject occupier)
+    {
+        occupying.Value = occupier;
     }
 
     private void Awake()
     {
-        occupying.OnChange += OnOccupyingChange;
         meshFilter = GetComponent<MeshFilter>();
         meshRenderer = GetComponent<MeshRenderer>();
         meshCollider = GetComponent<MeshCollider>();

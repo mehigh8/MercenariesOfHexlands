@@ -903,7 +903,7 @@ MonoBehaviour:
   _ipv4BindAddress: 
   _enableIpv6: 1
   _ipv6BindAddress: 
-  _port: 60795
+  _port: 59945
   _maximumClients: 4095
   _clientAddress: localhost
 --- !u!114 &1464462468 stripped
