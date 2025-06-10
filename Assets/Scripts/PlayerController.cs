@@ -2,6 +2,7 @@ using UnityEngine;
 using FishNet.Object;
 using UnityEngine.AI;
 using Unity.VisualScripting;
+using System.Collections.Generic;
 
 //This is made by Bobsi Unity - Youtube
 public class PlayerController : NetworkBehaviour
@@ -11,6 +12,7 @@ public class PlayerController : NetworkBehaviour
 
     [Header("Navigation Settings")]
     [SerializeField] private LayerMask mask;
+    [SerializeField] private Pathfinder pathfinder;
 
     [SerializeField]
     private Vector3 cameraOffset = new Vector3(0, 9, -5);
@@ -18,6 +20,8 @@ public class PlayerController : NetworkBehaviour
     private NavMeshAgent navAgent;
     private HexRenderer currentlyOn;
 
+    private List<HexGridLayout.HexNode> path = null;
+    private HexGridLayout.HexNode currentPosition = null;
 
     public override void OnStartClient()
     {
@@ -34,6 +38,14 @@ public class PlayerController : NetworkBehaviour
     private void Start()
     {
         navAgent = GetComponent<NavMeshAgent>();
+        float minDist = float.MaxValue;
+        foreach (HexGridLayout.HexNode node in pathfinder.hexGrid.hexNodes)
+            if (Vector3.Distance(node.hexObj.transform.position, transform.position) < minDist)
+            {
+                minDist = Vector3.Distance(node.hexObj.transform.position, transform.position);
+                currentPosition = node;
+            }
+        Debug.Log("My current hex is " + currentPosition.hexObj.name);
     }
 
     private void CameraMovement()
@@ -75,11 +87,27 @@ public class PlayerController : NetworkBehaviour
                         currentlyOn.occupying.Value = gameObject;
                         navAgent.SetDestination(hit.collider.transform.position);
                     }
+                    Debug.Log(hit.point);
+                    Debug.Log(hit.collider.transform.position);
+                    Debug.Log(hit.collider.gameObject.name);
+                    path = pathfinder.FindPath(currentPosition, pathfinder.hexGrid.hexNodes.Find(h => h.hexObj == hit.collider.gameObject));
                 }
                 else
                 {
                     Debug.Log("no collision");
                 }
+            }
+        }
+
+        if (path != null && path.Count > 0)
+        {
+            if (!navAgent.hasPath || (navAgent.hasPath && navAgent.remainingDistance < 0.1f))
+            {
+                currentPosition = path[0];
+                path.RemoveAt(0);
+
+                Vector3 dest = new Vector3(currentPosition.hexObj.transform.position.x, transform.position.y, currentPosition.hexObj.transform.position.z);
+                navAgent.SetDestination(dest);
             }
         }
     }
