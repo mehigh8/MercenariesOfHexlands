@@ -130,7 +130,7 @@ public class PlayerController : NetworkBehaviour
 
                         highlightedPath = pathfinder.FindPath(currentPosition, HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hit.collider.gameObject));
 
-                        highlightedPath.ForEach(hex => hex.hexRenderer.ChangeColor(Color.red));
+                        highlightedPath.ForEach(hex => hex.hexRenderer.ChangeColor(hex.hexRenderer.GetColor() + new Color(0.4f, 0.4f, 0.4f, 1f)));
 
                         lastHighlightedTarget = highlightedPath[highlightedPath.Count - 1];
                     }

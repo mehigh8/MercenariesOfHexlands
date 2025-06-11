@@ -156,4 +156,9 @@ public class HexRenderer : NetworkBehaviour
     {
         meshRenderer.material.color = color;
     }
+
+    public UnityEngine.Color GetColor()
+    {
+        return meshRenderer.material.color;
+    }
 }
