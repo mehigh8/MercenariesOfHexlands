@@ -3,10 +3,13 @@ using FishNet.Object;
 using UnityEngine.AI;
 using Unity.VisualScripting;
 using System.Collections.Generic;
+using FishNet.Connection;
+using FishNet.Transporting;
 
 //This is made by Bobsi Unity - Youtube
 public class PlayerController : NetworkBehaviour
 {
+    // TODO: 
     [Header("Camera Settings")]
     [SerializeField] private float cameraSpeed;
 
@@ -33,15 +36,8 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    private void OnDestroy()
-    {
-        currentlyOn.ChangeOccupying(null);
-    }
-
     private void Start()
     {
-        currentlyOn = HexGridLayout.instance.GetClosestHex(transform.position);
-        currentlyOn.ChangeOccupying(gameObject);
         navAgent = GetComponent<NavMeshAgent>();
         float minDist = float.MaxValue;
         foreach (HexGridLayout.HexNode node in HexGridLayout.instance.hexNodes)
@@ -113,8 +109,17 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    private void InitOccupying()
+    {
+        if (currentlyOn || !base.IsOwner)
+            return;    
+        currentlyOn = HexGridLayout.instance.GetClosestHex(transform.position);
+        currentlyOn.ChangeOccupying(gameObject);
+    }
+
     private void Update()
     {
+        InitOccupying();
         CameraMovement();
         PlayerMovement();
     }

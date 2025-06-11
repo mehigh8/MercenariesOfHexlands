@@ -44,7 +44,8 @@ public class HexRenderer : NetworkBehaviour
 
     private void OnOccupyingChange(GameObject oldVal, GameObject newVal, bool asServer)
     {
-        Debug.Log($"{gameObject.name} changed from {oldVal} to {newVal}");
+        ;
+        Debug.Log($"{(asServer ? "Server" : "Client")}{LocalConnection} - {gameObject.name} changed from {oldVal} to {newVal}");
     }
 
 
