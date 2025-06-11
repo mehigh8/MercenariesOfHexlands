@@ -41,6 +41,7 @@ public class HexRenderer : NetworkBehaviour
     public float height;
     public bool isFlatTopped;
     [AllowMutableSyncType] public SyncVar<GameObject> occupying = new SyncVar<GameObject>();
+    private UnityEngine.Color originalColor;
 
     private void OnOccupyingChange(GameObject oldVal, GameObject newVal, bool asServer)
     {
@@ -142,6 +143,17 @@ public class HexRenderer : NetworkBehaviour
     public void SetMaterial(Material material, UnityEngine.Color color)
     {
         meshRenderer.material = material;
+        meshRenderer.material.color = color;
+        originalColor = color;
+    }
+
+    public void ChangeColorToOriginal()
+    {
+        meshRenderer.material.color = originalColor;
+    }
+
+    public void ChangeColor(UnityEngine.Color color)
+    {
         meshRenderer.material.color = color;
     }
 }

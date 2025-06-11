@@ -27,8 +27,9 @@ public class HexGridLayout : NetworkBehaviour
         public HexNode connection;
 
         public GameObject hexObj;
+        public HexRenderer hexRenderer;
 
-        public HexNode(int x, int y, GameObject hexObj)
+        public HexNode(int x, int y, GameObject hexObj, HexRenderer hexRenderer)
         {
             this.x = x;
             this.y = y;
@@ -36,6 +37,7 @@ public class HexGridLayout : NetworkBehaviour
             r = y - (x - (x & 1)) / 2;
             s = -q - r;
             this.hexObj = hexObj;
+            this.hexRenderer = hexRenderer;
         }
 
         public int Distance(HexNode other)
@@ -127,7 +129,7 @@ public class HexGridLayout : NetworkBehaviour
                 tile.layer = gridLayer;
                 tile.transform.SetParent(transform);
 
-                hexNodes.Add(new HexNode(x, y, tile));
+                hexNodes.Add(new HexNode(x, y, tile, hexRenderer));
 
                 SpawnTile(tile);
             }

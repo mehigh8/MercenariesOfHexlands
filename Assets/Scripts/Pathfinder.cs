@@ -42,7 +42,7 @@ public class Pathfinder : MonoBehaviour
                     path.Add(currentNodeInPath);
                     currentNodeInPath = currentNodeInPath.connection;
                 }
-                Debug.Log("Found path with length: " + path.Count);
+                // Debug.Log("Found path with length: " + path.Count);
 
                 path.Reverse();
                 return path;

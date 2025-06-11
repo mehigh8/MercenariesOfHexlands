@@ -24,6 +24,8 @@ public class PlayerController : NetworkBehaviour
     private HexRenderer currentlyOn;
 
     private List<HexGridLayout.HexNode> path = null;
+    private List<HexGridLayout.HexNode> highlightedPath = null;
+    private HexGridLayout.HexNode lastHighlightedTarget = null;
     private HexGridLayout.HexNode currentPosition = null;
 
     public override void OnStartClient()
@@ -109,6 +111,39 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    private void HighlightMovement()
+    {
+        if (!base.IsOwner)
+            return;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, mask))
+        {
+            if (hit.collider != null)
+            {
+                if (hit.collider.TryGetComponent<HexRenderer>(out HexRenderer hex) && hex.occupying.Value == null)
+                {
+                    if (lastHighlightedTarget == null || (lastHighlightedTarget != null && hex != lastHighlightedTarget.hexRenderer))
+                    {
+                        if (highlightedPath != null)
+                            highlightedPath.ForEach(hex => hex.hexRenderer.ChangeColorToOriginal());
+
+                        highlightedPath = pathfinder.FindPath(currentPosition, HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hit.collider.gameObject));
+
+                        highlightedPath.ForEach(hex => hex.hexRenderer.ChangeColor(Color.red));
+
+                        lastHighlightedTarget = highlightedPath[highlightedPath.Count - 1];
+                    }
+
+                    return;
+                }
+            }
+        }
+
+        if (highlightedPath != null)
+            highlightedPath.ForEach(hex => hex.hexRenderer.ChangeColorToOriginal());
+    }
+
     private void InitOccupying()
     {
         if (currentlyOn || !base.IsOwner)
@@ -122,5 +157,6 @@ public class PlayerController : NetworkBehaviour
         InitOccupying();
         CameraMovement();
         PlayerMovement();
+        HighlightMovement();
     }
 }
