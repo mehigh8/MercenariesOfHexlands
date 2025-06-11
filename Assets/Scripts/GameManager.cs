@@ -51,7 +51,7 @@ public class GameManager : NetworkBehaviour
         {
             if (clientsTurnOrder.IndexOf((int)connection.ClientId) == turnOrderIndex)
                 currentPlayerTurn.Value = clientsTurnOrder[turnOrderIndex == clientsTurnOrder.Count - 1 ? 0 : turnOrderIndex + 1];
-            if (clientsTurnOrder.IndexOf((int)connection.ClientId) <= turnOrderIndex)
+            if (clientsTurnOrder.IndexOf((int)connection.ClientId) < turnOrderIndex)
                 turnOrderIndex--;
 
             clientsTurnOrder.Remove(connection.ClientId);
