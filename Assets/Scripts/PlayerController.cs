@@ -147,8 +147,9 @@ public class PlayerController : NetworkBehaviour
     private void InitOccupying()
     {
         if (currentlyOn || !base.IsOwner)
-            return;    
+            return;
         currentlyOn = HexGridLayout.instance.GetClosestHex(transform.position);
+        print(currentlyOn);
         currentlyOn.ChangeOccupying(gameObject);
     }
 
