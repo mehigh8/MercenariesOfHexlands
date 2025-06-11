@@ -84,9 +84,9 @@ public class PlayerController : NetworkBehaviour
                 {
                     if (hit.collider.TryGetComponent<HexRenderer>(out HexRenderer hex) && hex.occupying.Value == null)
                     {
-                        currentlyOn.ChangeOccupying(null);
+                        UpdateHex(currentlyOn.name, null);
                         currentlyOn = hex;
-                        currentlyOn.ChangeOccupying(gameObject);
+                        UpdateHex(currentlyOn.name, gameObject);
                         path = pathfinder.FindPath(currentPosition, HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hit.collider.gameObject));
                         EndTurn();
                     }
@@ -141,7 +141,7 @@ public class PlayerController : NetworkBehaviour
             return;
         currentlyOn = HexGridLayout.instance.GetClosestHex(transform.position);
         print(currentlyOn);
-        currentlyOn.ChangeOccupying(gameObject);
+        UpdateHex(currentlyOn.name, gameObject);
     }
 
     private void ApplyMovement()
@@ -175,5 +175,11 @@ public class PlayerController : NetworkBehaviour
     public void EndTurn()
     {
         GameManager.instance.NextTurn();
+    }
+
+    [ServerRpc]
+    public void UpdateHex(string hex, GameObject occupier)
+    {
+        HexGridLayout.instance.UpdateHex(hex, occupier);
     }
 }

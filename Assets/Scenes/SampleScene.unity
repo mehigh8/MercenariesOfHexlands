@@ -339,7 +339,7 @@ MonoBehaviour:
   seed:
     NetworkManager: {fileID: 1464462470}
     NetworkBehaviour: {fileID: 0}
-    _value: 0
+    _value: 5
   pSpawner: {fileID: 1464462468}
 --- !u!4 &375773324
 Transform:

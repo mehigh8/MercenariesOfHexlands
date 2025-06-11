@@ -145,6 +145,12 @@ public class HexGridLayout : NetworkBehaviour
         ServerManager.Spawn(tile);
     }
 
+    public void UpdateHex(string hex, GameObject occupier)
+    {
+        HexNode hexNode = hexNodes.Find(h => h.hexObj.name == hex);
+        hexNode.hexRenderer.occupying.Value = occupier;
+    }
+
     public Vector3 GetPositionForHexFromCoordinate(Vector2Int coordinate)
     {
         int column = coordinate.x;
