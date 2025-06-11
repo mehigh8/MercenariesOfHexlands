@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using FishNet.Connection;
 using FishNet.Transporting;
 
-//This is made by Bobsi Unity - Youtube
 public class PlayerController : NetworkBehaviour
 {
     // TODO: 
@@ -72,9 +71,9 @@ public class PlayerController : NetworkBehaviour
         playerCamera.transform.position += toMove.normalized * cameraSpeed;
     }
 
-    private void PlayerMovement()
+    private void PickMovement()
     {
-        if (!base.IsOwner)
+        if (!base.IsOwner || GameManager.instance.currentPlayerTurn.Value != LocalConnection.ClientId)
             return;
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
@@ -89,24 +88,13 @@ public class PlayerController : NetworkBehaviour
                         currentlyOn = hex;
                         currentlyOn.ChangeOccupying(gameObject);
                         path = pathfinder.FindPath(currentPosition, HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hit.collider.gameObject));
+                        EndTurn();
                     }
                 }
                 else
                 {
                     Debug.Log("no collision");
                 }
-            }
-        }
-
-        if (path != null && path.Count > 0)
-        {
-            if (!navAgent.hasPath || (navAgent.hasPath && navAgent.remainingDistance < 0.1f))
-            {
-                currentPosition = path[0];
-                path.RemoveAt(0);
-
-                Vector3 dest = new Vector3(currentPosition.hexObj.transform.position.x, transform.position.y, currentPosition.hexObj.transform.position.z);
-                navAgent.SetDestination(dest);
             }
         }
     }
@@ -116,26 +104,29 @@ public class PlayerController : NetworkBehaviour
         if (!base.IsOwner)
             return;
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, mask))
+        if (GameManager.instance.currentPlayerTurn.Value == LocalConnection.ClientId)
         {
-            if (hit.collider != null)
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, mask))
             {
-                if (hit.collider.TryGetComponent<HexRenderer>(out HexRenderer hex) && hex.occupying.Value == null)
+                if (hit.collider != null)
                 {
-                    if (lastHighlightedTarget == null || (lastHighlightedTarget != null && hex != lastHighlightedTarget.hexRenderer))
+                    if (hit.collider.TryGetComponent<HexRenderer>(out HexRenderer hex) && hex.occupying.Value == null)
                     {
-                        if (highlightedPath != null)
-                            highlightedPath.ForEach(hex => hex.hexRenderer.ChangeColorToOriginal());
+                        if (lastHighlightedTarget == null || hex != lastHighlightedTarget.hexRenderer)
+                        {
+                            if (highlightedPath != null)
+                                highlightedPath.ForEach(hex => hex.hexRenderer.ChangeColorToOriginal());
 
-                        highlightedPath = pathfinder.FindPath(currentPosition, HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hit.collider.gameObject));
+                            highlightedPath = pathfinder.FindPath(currentPosition, HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hit.collider.gameObject));
 
-                        highlightedPath.ForEach(hex => hex.hexRenderer.ChangeColor(hex.hexRenderer.GetColor() + new Color(0.4f, 0.4f, 0.4f, 1f)));
+                            highlightedPath.ForEach(hex => hex.hexRenderer.ChangeColor(hex.hexRenderer.GetColor() + new Color(0.4f, 0.4f, 0.4f, 1f)));
 
-                        lastHighlightedTarget = highlightedPath[highlightedPath.Count - 1];
+                            lastHighlightedTarget = highlightedPath != null && highlightedPath.Count > 0 ? highlightedPath[highlightedPath.Count - 1] : null;
+                        }
+
+                        return;
                     }
-
-                    return;
                 }
             }
         }
@@ -153,11 +144,36 @@ public class PlayerController : NetworkBehaviour
         currentlyOn.ChangeOccupying(gameObject);
     }
 
+    private void ApplyMovement()
+    {
+        if (path != null && path.Count > 0)
+        {
+            if (!navAgent.hasPath || (navAgent.hasPath && navAgent.remainingDistance < 0.1f))
+            {
+                currentPosition = path[0];
+                path.RemoveAt(0);
+
+                Vector3 dest = new Vector3(currentPosition.hexObj.transform.position.x, transform.position.y, currentPosition.hexObj.transform.position.z);
+                navAgent.SetDestination(dest);
+            }
+        }
+    }
+
     private void Update()
     {
         InitOccupying();
         CameraMovement();
-        PlayerMovement();
+        PickMovement();
+        ApplyMovement();
         HighlightMovement();
+
+        if (Input.GetKeyDown(KeyCode.E))
+            EndTurn();
+    }
+
+    [ServerRpc]
+    public void EndTurn()
+    {
+        GameManager.instance.NextTurn();
     }
 }
