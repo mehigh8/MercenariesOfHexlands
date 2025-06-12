@@ -5,6 +5,7 @@ using FishNet.Object.Synchronizing;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -36,12 +37,13 @@ public class HexRenderer : NetworkBehaviour
     private List<Face> faces;
 
     public Material material;
-    public float innerSize;
-    public float outerSize;
-    public float height;
-    public bool isFlatTopped;
+    [AllowMutableSyncType] public SyncVar<float> innerSize;
+    [AllowMutableSyncType] public SyncVar<float> outerSize;
+    [AllowMutableSyncType] public SyncVar<float> height;
+    [AllowMutableSyncType] public SyncVar<bool> isFlatTopped;
+    [AllowMutableSyncType] public SyncVar<Vector2Int> coords;
     [AllowMutableSyncType] public SyncVar<GameObject> occupying = new SyncVar<GameObject>();
-    private UnityEngine.Color originalColor;
+    [AllowMutableSyncType] public SyncVar<UnityEngine.Color> originalColor;
 
     private void OnOccupyingChange(GameObject oldVal, GameObject newVal, bool asServer)
     {
@@ -63,21 +65,31 @@ public class HexRenderer : NetworkBehaviour
         occupying.Value = occupier;
     }
 
-    private void Awake()
+    private void Start()
     {
         meshFilter = GetComponent<MeshFilter>();
         meshRenderer = GetComponent<MeshRenderer>();
         meshCollider = GetComponent<MeshCollider>();
-
-        mesh = new Mesh();
-        mesh.name = "Hex";
-
-        meshFilter.mesh = mesh;
         meshRenderer.material = material;
+
+        gameObject.name = $"Hex {coords.Value.x},{coords.Value.y}";
+        HexGridLayout.instance.transformList.Add(transform);
+        HexGridLayout.instance.hexNodes.Add(new HexGridLayout.HexNode(coords.Value.x, coords.Value.y, gameObject, this));
+
+        transform.parent = HexGridLayout.instance.transform;
+        if ( HexGridLayout.instance.transform.childCount ==  HexGridLayout.instance.gridSize.x * HexGridLayout.instance.gridSize.y)
+            HexGridLayout.instance.pSpawner.Spawns = HexGridLayout.instance.transformList.OrderBy(x => Random.value).ToArray();
+        
+        DrawMesh(); 
     }
 
     public void DrawMesh()
     {
+        mesh = new Mesh();
+        mesh.name = "Hex";
+
+        meshFilter.mesh = mesh;
+        meshRenderer.material.color = originalColor.Value;
         DrawFaces();
         CombineFaces();
     }
@@ -88,7 +100,7 @@ public class HexRenderer : NetworkBehaviour
 
         // Top faces
         for (int point = 0; point < 6; point++)
-            faces.Add(CreateFace(innerSize, outerSize, height / 2f, height / 2f, point));
+            faces.Add(CreateFace(innerSize.Value, outerSize.Value, height.Value / 2f, height.Value / 2f, point));
     }
 
     private void CombineFaces()
@@ -135,21 +147,14 @@ public class HexRenderer : NetworkBehaviour
 
     private Vector3 GetPoint(float size, float height, int index)
     {
-        float angle_deg = isFlatTopped ? 60 * index : 60 * index - 30;
+        float angle_deg = isFlatTopped.Value ? 60 * index : 60 * index - 30;
         float angle_rad = Mathf.PI / 180f * angle_deg;
         return new Vector3((size * Mathf.Cos(angle_rad)), height, size * Mathf.Sin(angle_rad));
     }
 
-    public void SetMaterial(Material material, UnityEngine.Color color)
-    {
-        meshRenderer.material = material;
-        meshRenderer.material.color = color;
-        originalColor = color;
-    }
-
     public void ChangeColorToOriginal()
     {
-        meshRenderer.material.color = originalColor;
+        meshRenderer.material.color = originalColor.Value;
     }
 
     public void ChangeColor(UnityEngine.Color color)

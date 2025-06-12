@@ -14,6 +14,7 @@ public class Pathfinder : MonoBehaviour
 
     public List<HexGridLayout.HexNode> FindPath(HexGridLayout.HexNode start, HexGridLayout.HexNode target)
     {
+        print(HexGridLayout.instance.hexNodes.Count);
         if (start == null || target == null)
             return null;
 

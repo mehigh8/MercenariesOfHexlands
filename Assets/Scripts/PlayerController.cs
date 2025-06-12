@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using System.Collections.Generic;
 using FishNet.Connection;
 using FishNet.Transporting;
+using System.Collections;
 
 public class PlayerController : NetworkBehaviour
 {
@@ -37,10 +38,13 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    private void Start()
+    private IEnumerator Start()
     {
         navAgent = GetComponent<NavMeshAgent>();
         float minDist = float.MaxValue;
+        while (HexGridLayout.instance.transform.childCount !=  HexGridLayout.instance.gridSize.x * HexGridLayout.instance.gridSize.y)
+            yield return 0;
+        print(HexGridLayout.instance.hexNodes.Count);
         foreach (HexGridLayout.HexNode node in HexGridLayout.instance.hexNodes)
             if (Vector3.Distance(node.hexObj.transform.position, transform.position) < minDist)
             {
@@ -119,7 +123,6 @@ public class PlayerController : NetworkBehaviour
                                 highlightedPath.ForEach(hex => hex.hexRenderer.ChangeColorToOriginal());
 
                             highlightedPath = pathfinder.FindPath(currentPosition, HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hit.collider.gameObject));
-
                             highlightedPath.ForEach(hex => hex.hexRenderer.ChangeColor(hex.hexRenderer.GetColor() + new Color(0.4f, 0.4f, 0.4f, 1f)));
 
                             lastHighlightedTarget = highlightedPath != null && highlightedPath.Count > 0 ? highlightedPath[highlightedPath.Count - 1] : null;

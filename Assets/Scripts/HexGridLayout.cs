@@ -6,6 +6,7 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FishNet.Observing;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class HexGridLayout : NetworkBehaviour
 {
@@ -70,8 +71,9 @@ public class HexGridLayout : NetworkBehaviour
     public List<HexNode> hexNodes = new List<HexNode>();
 
     [Header("References")]
-    [SerializeField] private PlayerSpawner pSpawner;
-    private List<Transform> transformList;
+    [SerializeField] public PlayerSpawner pSpawner;
+    public List<Transform> transformList;
+    [SerializeField] private GameObject hexPrefab;
 
     public HexRenderer GetClosestHex(Vector3 origin)
     {
@@ -99,50 +101,66 @@ public class HexGridLayout : NetworkBehaviour
     {
         Random.InitState(seed.Value);
         instance = this;
+    }
+
+    private void Start()
+    {
         LayoutGrid();
     }
 
+    private bool isGenerated;
+    [Server]
     private void LayoutGrid()
     {
+        if (isGenerated)
+            return;
+        isGenerated = true;
         transformList = new List<Transform>();
         print("Starting layout");
-        List<Transform> hexes = new List<Transform>();
         for (int y = 0; y < gridSize.y; y++)
         {
             for (int x = 0; x < gridSize.x; x++)
             {
-                GameObject tile = new GameObject($"Hex {x},{y}", typeof(HexRenderer));
+                GameObject tile = Instantiate(hexPrefab);
                 tile.transform.position = GetPositionForHexFromCoordinate(new Vector2Int((int)transform.position.x + x, (int)transform.position.y + y));
-                transformList.Add(tile.transform);
-                hexes.Add(tile.transform);
-
 
                 HexRenderer hexRenderer = tile.GetComponent<HexRenderer>();
-                hexRenderer.isFlatTopped = isFlatTopped;
-                hexRenderer.outerSize = outerSize;
-                hexRenderer.innerSize = innerSize;
-                hexRenderer.height = height;
+                hexRenderer.isFlatTopped.Value = isFlatTopped;
+                hexRenderer.isFlatTopped.NetworkManager = seed.NetworkManager;
+                hexRenderer.isFlatTopped.NetworkBehaviour = hexRenderer;
+
+                hexRenderer.outerSize.Value = outerSize;
+                hexRenderer.outerSize.NetworkManager = seed.NetworkManager;
+                hexRenderer.outerSize.NetworkBehaviour = hexRenderer;
+
+                hexRenderer.innerSize.Value = innerSize;
+                hexRenderer.innerSize.NetworkManager = seed.NetworkManager;
+                hexRenderer.innerSize.NetworkBehaviour = hexRenderer;
+                
+                hexRenderer.height.Value = height;
+                hexRenderer.height.NetworkManager = seed.NetworkManager;
+                hexRenderer.height.NetworkBehaviour = hexRenderer;
+
+                hexRenderer.coords.Value = new Vector2Int(x, y);
+                hexRenderer.coords.NetworkManager = seed.NetworkManager;
+                hexRenderer.coords.NetworkBehaviour = hexRenderer;
+
                 hexRenderer.occupying.NetworkManager = seed.NetworkManager;
                 hexRenderer.occupying.NetworkBehaviour = hexRenderer;
-                hexRenderer.SetMaterial(material, new Color(0, Random.Range(0f, 1f), 0, 1));
-                hexRenderer.DrawMesh();
+
+                hexRenderer.originalColor.Value = new Color(0, Random.Range(0f, 1f), 0, 1);
+                hexRenderer.originalColor.NetworkManager = seed.NetworkManager;
+                hexRenderer.originalColor.NetworkBehaviour = hexRenderer;
+
                 tile.layer = gridLayer;
                 tile.transform.SetParent(transform);
 
-                hexNodes.Add(new HexNode(x, y, tile, hexRenderer));
 
-                SpawnTile(tile);
+                ServerManager.Spawn(tile, null);
+                // SpawnTile(tile);
             }
         }
-        pSpawner.Spawns = transformList.OrderBy(x => Random.value).ToArray();
         // pSpawner.Spawns = transformList.ToArray();
-    }
-
-    [ServerRpc]
-    public void SpawnTile(GameObject tile)
-    {
-        tile.SetActive(true);
-        ServerManager.Spawn(tile);
     }
 
     public void UpdateHex(string hex, GameObject occupier)
@@ -197,3 +215,4 @@ public class HexGridLayout : NetworkBehaviour
         return new Vector3(xPosition, 0, -yPosition);
     }
 }
+
