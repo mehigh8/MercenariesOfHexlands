@@ -16,6 +16,7 @@ public class PlayerController : NetworkBehaviour
     [Header("Navigation Settings")]
     [SerializeField] private LayerMask mask;
     [SerializeField] private Pathfinder pathfinder;
+    [SerializeField] private PlayerInfo playerInfo;
 
     [SerializeField]
     private Vector3 cameraOffset = new Vector3(0, 9, -5);
@@ -41,17 +42,8 @@ public class PlayerController : NetworkBehaviour
     private IEnumerator Start()
     {
         navAgent = GetComponent<NavMeshAgent>();
-        float minDist = float.MaxValue;
-        while (HexGridLayout.instance.transform.childCount !=  HexGridLayout.instance.gridSize.x * HexGridLayout.instance.gridSize.y)
+        while (HexGridLayout.instance.transform.childCount != HexGridLayout.instance.gridSize.x * HexGridLayout.instance.gridSize.y)
             yield return 0;
-        print(HexGridLayout.instance.hexNodes.Count);
-        foreach (HexGridLayout.HexNode node in HexGridLayout.instance.hexNodes)
-            if (Vector3.Distance(node.hexObj.transform.position, transform.position) < minDist)
-            {
-                minDist = Vector3.Distance(node.hexObj.transform.position, transform.position);
-                currentPosition = node;
-            }
-        Debug.Log("My current hex is " + currentPosition.hexObj.name);
     }
 
     private void CameraMovement()
@@ -88,10 +80,16 @@ public class PlayerController : NetworkBehaviour
                 {
                     if (hit.collider.TryGetComponent<HexRenderer>(out HexRenderer hex) && hex.occupying.Value == null)
                     {
-                        UpdateHex(currentlyOn.name, null);
-                        currentlyOn = hex;
-                        UpdateHex(currentlyOn.name, gameObject);
                         path = pathfinder.FindPath(currentPosition, HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hit.collider.gameObject));
+                        if (path.Count > playerInfo.movementPerTurn)
+                            path.RemoveRange(playerInfo.movementPerTurn, path.Count - playerInfo.movementPerTurn);
+                        
+                        HexRenderer finalHex = path[path.Count - 1].hexRenderer;
+
+                        UpdateHex(currentlyOn.name, null);
+                        currentlyOn = finalHex;
+                        UpdateHex(currentlyOn.name, gameObject);
+                        
                         EndTurn();
                     }
                 }
@@ -123,7 +121,11 @@ public class PlayerController : NetworkBehaviour
                                 highlightedPath.ForEach(hex => hex.hexRenderer.ChangeColorToOriginal());
 
                             highlightedPath = pathfinder.FindPath(currentPosition, HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hit.collider.gameObject));
-                            highlightedPath.ForEach(hex => hex.hexRenderer.ChangeColor(hex.hexRenderer.GetColor() + new Color(0.4f, 0.4f, 0.4f, 1f)));
+                            if (highlightedPath != null)
+                            {
+                                for (int i = 0; i < highlightedPath.Count && i < playerInfo.movementPerTurn; i++)
+                                    highlightedPath[i].hexRenderer.ChangeColor(highlightedPath[i].hexRenderer.GetColor() + new Color(0.4f, 0.4f, 0.4f, 1f));
+                            }
 
                             lastHighlightedTarget = highlightedPath != null && highlightedPath.Count > 0 ? highlightedPath[highlightedPath.Count - 1] : null;
                         }
@@ -142,9 +144,11 @@ public class PlayerController : NetworkBehaviour
     {
         if (currentlyOn || !base.IsOwner)
             return;
-        currentlyOn = HexGridLayout.instance.GetClosestHex(transform.position);
+        currentPosition = HexGridLayout.instance.GetClosestHex(transform.position);
+        currentlyOn = currentPosition?.hexRenderer;
         print(currentlyOn);
-        UpdateHex(currentlyOn.name, gameObject);
+        if (currentlyOn)
+            UpdateHex(currentlyOn.name, gameObject);
     }
 
     private void ApplyMovement()

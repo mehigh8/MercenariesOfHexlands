@@ -75,26 +75,22 @@ public class HexGridLayout : NetworkBehaviour
     public List<Transform> transformList;
     [SerializeField] private GameObject hexPrefab;
 
-    public HexRenderer GetClosestHex(Vector3 origin)
+    public HexNode GetClosestHex(Vector3 origin)
     {
-        if (transformList == null || transformList.Count == 0)
+        if (hexNodes == null || hexNodes.Count == 0)
             return null;
-        float minDistance = 0;
-        Transform minTransform = null;
-        foreach (Transform t in transformList)
+
+        float minDistance = float.MaxValue;
+        HexNode closestHex = null;
+        foreach (HexNode hex in hexNodes)
         {
-            if (minTransform == null)
+            if (minDistance > Vector3.Distance(origin, hex.hexObj.transform.position))
             {
-                minDistance = Vector3.Distance(origin, t.position);
-                minTransform = t;
-            }
-            else if (minDistance > Vector3.Distance(origin, t.position))
-            {
-                minDistance = Vector3.Distance(origin, t.position);
-                minTransform = t;
+                minDistance = Vector3.Distance(origin, hex.hexObj.transform.position);
+                closestHex = hex;
             }
         }
-        return minTransform.GetComponent<HexRenderer>();
+        return closestHex;
     }
 
     private void Awake()

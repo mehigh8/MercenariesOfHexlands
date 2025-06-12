@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4231930951776552360}
   - component: {fileID: 2969058245022903750}
   - component: {fileID: -5122715637066728666}
+  - component: {fileID: 4864732434553502953}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -80,6 +81,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   pathfinder: {fileID: -5122715637066728666}
+  playerInfo: {fileID: 4864732434553502953}
   cameraOffset: {x: 0, y: 9, z: -5}
 --- !u!114 &4231930951776552360
 MonoBehaviour:
@@ -191,6 +193,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hexGrid: {fileID: 0}
+  obstacleThreshold: 0.25
+--- !u!114 &4864732434553502953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2882929944252777398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77a6230acb2ae8e4b9b785351500239c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movementPerTurn: 4
 --- !u!1 &5793890192578753998
 GameObject:
   m_ObjectHideFlags: 0

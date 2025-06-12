@@ -610,6 +610,9 @@ MonoBehaviour:
     NetworkBehaviour: {fileID: 0}
     _value: 0
   pSpawner: {fileID: 1043734916}
+  transformList: []
+  hexPrefab: {fileID: 6407880194688203491, guid: 4eb07c5f40a7aa045b05766fc88799e3,
+    type: 3}
 --- !u!4 &2046659610
 Transform:
   m_ObjectHideFlags: 0

@@ -6,6 +6,8 @@ using UnityEngine;
 public class Pathfinder : MonoBehaviour
 {
     public HexGridLayout hexGrid;
+    [Range(0f, 1f)]
+    public float obstacleThreshold;
 
     private void Awake()
     {
@@ -14,7 +16,6 @@ public class Pathfinder : MonoBehaviour
 
     public List<HexGridLayout.HexNode> FindPath(HexGridLayout.HexNode start, HexGridLayout.HexNode target)
     {
-        print(HexGridLayout.instance.hexNodes.Count);
         if (start == null || target == null)
             return null;
 
@@ -49,7 +50,7 @@ public class Pathfinder : MonoBehaviour
                 return path;
             }
 
-            List<HexGridLayout.HexNode> neighbours = current.GetNeighbours(HexGridLayout.instance.hexNodes).Where(h => !processed.Contains(h)).ToList();
+            List<HexGridLayout.HexNode> neighbours = current.GetNeighbours(HexGridLayout.instance.hexNodes).Where(h => !processed.Contains(h) && h.hexRenderer.originalColor.Value.g > obstacleThreshold).ToList();
             foreach (HexGridLayout.HexNode neighbour in neighbours)
             {
                 bool inSearch = toSearch.Contains(neighbour);
