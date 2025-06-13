@@ -171,10 +171,10 @@ public class PlayerController : NetworkBehaviour
         if (!IsOwner || GameManager.instance.currentPlayerTurn.Value != LocalConnection.ClientId)
             return;
 
-        if (Input.GetKeyDown(KeyCode.F) && currentPosition.hexRenderer.hasItem.Value != -1)
+        if (Input.GetKeyDown(KeyCode.F) && currentlyOn.hasItem.Value != -1)
         {
             playerInfo.EquipItem(currentPosition.hexRenderer.GetItem());
-            currentPosition.hexRenderer.PickupItem();
+            UpdateItemHex();
         }
 
     }
@@ -202,5 +202,11 @@ public class PlayerController : NetworkBehaviour
     public void UpdateHex(string hex, GameObject occupier)
     {
         HexGridLayout.instance.UpdateHex(hex, occupier);
+    }
+
+    [ServerRpc]
+    public void UpdateItemHex()
+    {
+        HexGridLayout.instance.UpdateItemHex(currentlyOn.name);
     }
 }

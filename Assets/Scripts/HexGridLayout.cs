@@ -160,6 +160,9 @@ public class HexGridLayout : NetworkBehaviour
                 hexRenderer.hasItem.NetworkManager = seed.NetworkManager;
                 hexRenderer.hasItem.NetworkBehaviour = hexRenderer;
 
+                hexRenderer.itemInstance.NetworkManager = seed.NetworkManager;
+                hexRenderer.itemInstance.NetworkBehaviour = hexRenderer;
+
                 tile.layer = gridLayer;
                 tile.transform.SetParent(transform);
 
@@ -175,6 +178,12 @@ public class HexGridLayout : NetworkBehaviour
     {
         HexNode hexNode = hexNodes.Find(h => h.hexObj.name == hex);
         hexNode.hexRenderer.occupying.Value = occupier;
+    }
+
+    public void UpdateItemHex(string hex)
+    {
+        HexNode hexNode = hexNodes.Find(h => h.hexObj.name == hex);
+        hexNode.hexRenderer.hasItem.Value = -1;
     }
 
     public Vector3 GetPositionForHexFromCoordinate(Vector2Int coordinate)
