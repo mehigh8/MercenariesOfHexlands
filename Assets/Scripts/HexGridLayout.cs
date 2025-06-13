@@ -59,6 +59,7 @@ public class HexGridLayout : NetworkBehaviour
 
     [Header("Grid Config")]
     public Vector2Int gridSize;
+    public float chanceToSpawnItem;
 
     [Header("Tile Config")]
     public float innerSize;
@@ -69,6 +70,8 @@ public class HexGridLayout : NetworkBehaviour
     public int gridLayer;
     [AllowMutableSyncType] public SyncVar<int> seed;
     public List<HexNode> hexNodes = new List<HexNode>();
+    [Range(0f, 0.4f)]
+    public float obstacleThreshold;
 
     [Header("References")]
     [SerializeField] public PlayerSpawner pSpawner;
@@ -113,6 +116,7 @@ public class HexGridLayout : NetworkBehaviour
         isGenerated = true;
         transformList = new List<Transform>();
         print("Starting layout");
+        List<ItemInfo> spawnableItems = GameManager.instance.allExistingItems?.Where(item => item.isSpawnable).ToList();
         for (int y = 0; y < gridSize.y; y++)
         {
             for (int x = 0; x < gridSize.x; x++)
@@ -144,9 +148,17 @@ public class HexGridLayout : NetworkBehaviour
                 hexRenderer.occupying.NetworkManager = seed.NetworkManager;
                 hexRenderer.occupying.NetworkBehaviour = hexRenderer;
 
-                hexRenderer.originalColor.Value = new Color(0, Random.Range(0f, 1f), 0, 1);
+                hexRenderer.originalColor.Value = GenerateColor();
                 hexRenderer.originalColor.NetworkManager = seed.NetworkManager;
                 hexRenderer.originalColor.NetworkBehaviour = hexRenderer;
+
+                ItemInfo spawnItem = null;
+                if (spawnableItems != null && spawnableItems.Count > 0)
+                    spawnItem = Random.value <= chanceToSpawnItem && hexRenderer.originalColor.Value.g > obstacleThreshold ? spawnableItems[Random.Range(0, spawnableItems.Count)] : null;
+
+                hexRenderer.hasItem.Value = spawnItem ? GameManager.instance.allExistingItems.IndexOf(spawnItem) : -1;
+                hexRenderer.hasItem.NetworkManager = seed.NetworkManager;
+                hexRenderer.hasItem.NetworkBehaviour = hexRenderer;
 
                 tile.layer = gridLayer;
                 tile.transform.SetParent(transform);
@@ -209,6 +221,13 @@ public class HexGridLayout : NetworkBehaviour
         }
 
         return new Vector3(xPosition, 0, -yPosition);
+    }
+
+    // Used to generate color for tiles so that obstacles are easily distinguished
+    private Color GenerateColor()
+    {
+        float g = Random.value < obstacleThreshold ? Random.Range(0, obstacleThreshold) : Random.Range(0.5f, 1f);
+        return new Color(0, g, 0, 1);
     }
 }
 

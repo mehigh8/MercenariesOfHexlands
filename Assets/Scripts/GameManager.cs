@@ -15,6 +15,7 @@ public class GameManager : NetworkBehaviour
     private List<int> clientsTurnOrder = new List<int>();
     private int turnOrderIndex = 0;
     [AllowMutableSyncType] public SyncVar<int> currentPlayerTurn = new SyncVar<int>();
+    public List<ItemInfo> allExistingItems = new List<ItemInfo>();
 
     private void Awake()
     {
@@ -55,13 +56,19 @@ public class GameManager : NetworkBehaviour
                 turnOrderIndex--;
 
             clientsTurnOrder.Remove(connection.ClientId);
+
+            if (clientsTurnOrder.Count == 0)
+            {
+                turnOrderIndex = 0;
+                currentPlayerTurn.Value = -1;
+            }
         }
     }
 
     public void NextTurn()
     {
         turnOrderIndex++;
-        if (turnOrderIndex == clientsTurnOrder.Count)
+        if (turnOrderIndex >= clientsTurnOrder.Count)
             turnOrderIndex = 0;
 
         currentPlayerTurn.Value = clientsTurnOrder[turnOrderIndex];

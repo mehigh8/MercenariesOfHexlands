@@ -166,6 +166,19 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    private void PickupItem()
+    {
+        if (!IsOwner || GameManager.instance.currentPlayerTurn.Value != LocalConnection.ClientId)
+            return;
+
+        if (Input.GetKeyDown(KeyCode.F) && currentPosition.hexRenderer.hasItem.Value != -1)
+        {
+            playerInfo.EquipItem(currentPosition.hexRenderer.GetItem());
+            currentPosition.hexRenderer.PickupItem();
+        }
+
+    }
+
     private void Update()
     {
         InitOccupying();
@@ -173,9 +186,10 @@ public class PlayerController : NetworkBehaviour
         PickMovement();
         ApplyMovement();
         HighlightMovement();
+        PickupItem();
 
-        if (Input.GetKeyDown(KeyCode.E))
-            EndTurn();
+        //if (Input.GetKeyDown(KeyCode.E))
+        //    EndTurn();
     }
 
     [ServerRpc]

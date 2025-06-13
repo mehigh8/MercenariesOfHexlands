@@ -599,6 +599,7 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 2046659611}
   _networkObjectCache: {fileID: 0}
   gridSize: {x: 25, y: 25}
+  chanceToSpawnItem: 0.05
   innerSize: 0
   outerSize: 1
   height: 0
@@ -609,6 +610,7 @@ MonoBehaviour:
     NetworkManager: {fileID: 0}
     NetworkBehaviour: {fileID: 0}
     _value: 0
+  obstacleThreshold: 0.25
   pSpawner: {fileID: 1043734916}
   transformList: []
   hexPrefab: {fileID: 6407880194688203491, guid: 4eb07c5f40a7aa045b05766fc88799e3,
