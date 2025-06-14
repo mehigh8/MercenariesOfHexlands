@@ -13,6 +13,13 @@ public class AbilityInfo : ScriptableObject
         public AbilityAnimations() { test = false; }
     }
 
+    [System.Serializable]
+    public class EffectClass
+    {
+        public Effects effect;
+        public int effectDuration;
+    }
+
     public enum Element
     {
         None,
@@ -66,6 +73,9 @@ public class AbilityInfo : ScriptableObject
     [Tooltip("How many turns should the hit hexes be afected for (-1 if no lingering)")]
     public int lingeringDuration;
 
+    [Tooltip("How many turns should it take for the ability to be used again")]
+    public int cooldown;
+
     [Header("Ability Modifiers")]
     [Tooltip("The element of the ability")]
     public Element element;
@@ -89,5 +99,5 @@ public class AbilityInfo : ScriptableObject
     public float weaponDamageModiferAmount;
 
     [Tooltip("Which effects this spell should inflict")]
-    public Effects[] appliedEffects;
+    public EffectClass[] appliedEffects;
 }

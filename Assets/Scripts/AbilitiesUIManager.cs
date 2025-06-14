@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class AbilitiesUIManager : MonoBehaviour
+public class AbilitiesUIManager : MonoBehaviour 
 {
     [Header("References")]
     [SerializeField] private Transform abilitySlotsRoot;
@@ -28,10 +30,10 @@ public class AbilitiesUIManager : MonoBehaviour
         foreach (Button child in abilitySlotsRoot.GetComponentsInChildren<Button>())
             Destroy(child.gameObject);
         if (abilities.Count == 0)
-            {
-                abilitySlotsRoot.gameObject.SetActive(false);
-                return;
-            }
+        {
+            abilitySlotsRoot.gameObject.SetActive(false);
+            return;
+        }
         abilitySlotsRoot.gameObject.SetActive(true);
         RectTransform rootRect = abilitySlotsRoot.GetComponent<RectTransform>();
         rootRect.sizeDelta = new Vector2((abilitySize + abilitySpacing) * abilities.Count + abilitySpacing, abilitySize + abilitySpacing * 2);
@@ -41,6 +43,9 @@ public class AbilitiesUIManager : MonoBehaviour
             Button createdButton = Instantiate(abilitySlotPrefab, cursor, Quaternion.identity, abilitySlotsRoot).GetComponent<Button>();
             int localI = i;
             createdButton.onClick.AddListener(delegate { OnAbilityClick(localI); });
+            HoverHandler hoverLogic = createdButton.GetComponent<HoverHandler>();
+            hoverLogic.abilityInfo = abilities[i];
+            hoverLogic.position = cursor + Vector3.up * abilitySize;
             cursor += Vector3.right * (abilitySize + abilitySpacing);
             createdButton.GetComponent<RectTransform>().sizeDelta = new Vector2(abilitySize, abilitySize);
             createdButton.GetComponent<Image>().sprite = abilities[i].displayImage;
