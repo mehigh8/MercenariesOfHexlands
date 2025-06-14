@@ -174,7 +174,7 @@ public class PlayerController : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.F) && currentlyOn.hasItem.Value != -1)
         {
             playerInfo.EquipItem(currentPosition.hexRenderer.GetItem());
-            UpdateItemHex();
+            PickupItemRPC(currentlyOn.name);
         }
 
     }
@@ -205,8 +205,8 @@ public class PlayerController : NetworkBehaviour
     }
 
     [ServerRpc]
-    public void UpdateItemHex()
+    public void PickupItemRPC(string hex)
     {
-        HexGridLayout.instance.UpdateItemHex(currentlyOn.name);
+        HexGridLayout.instance.PickupItem(hex);
     }
 }

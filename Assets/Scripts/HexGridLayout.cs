@@ -78,6 +78,8 @@ public class HexGridLayout : NetworkBehaviour
     public List<Transform> transformList;
     [SerializeField] private GameObject hexPrefab;
 
+    private List<GameObject> spawnedItems = new List<GameObject>();
+
     public HexNode GetClosestHex(Vector3 origin)
     {
         if (hexNodes == null || hexNodes.Count == 0)
@@ -160,14 +162,21 @@ public class HexGridLayout : NetworkBehaviour
                 hexRenderer.hasItem.NetworkManager = seed.NetworkManager;
                 hexRenderer.hasItem.NetworkBehaviour = hexRenderer;
 
-                hexRenderer.itemInstance.NetworkManager = seed.NetworkManager;
-                hexRenderer.itemInstance.NetworkBehaviour = hexRenderer;
-
                 tile.layer = gridLayer;
                 tile.transform.SetParent(transform);
 
 
                 ServerManager.Spawn(tile, null);
+
+                if (spawnItem)
+                {
+                    GameObject spawnedItem = Instantiate(spawnItem.prefab, tile.transform.position, Quaternion.identity);
+                    spawnedItem.name = $"Item {x},{y}";
+                    spawnedItem.transform.SetParent(transform);
+                    spawnedItems.Add(spawnedItem);
+                    ServerManager.Spawn(spawnedItem, null);
+                }
+
                 // SpawnTile(tile);
             }
         }
@@ -180,8 +189,16 @@ public class HexGridLayout : NetworkBehaviour
         hexNode.hexRenderer.occupying.Value = occupier;
     }
 
-    public void UpdateItemHex(string hex)
+    public void PickupItem(string hex)
     {
+        string item = "Item " + hex.Split(' ')[1];
+        GameObject spawnedItem = spawnedItems.Find(i => i.name == item);
+        if (spawnedItem != null)
+        {
+            spawnedItem.GetComponent<NetworkObject>().Despawn();
+            spawnedItems.Remove(spawnedItem);
+        }
+
         HexNode hexNode = hexNodes.Find(h => h.hexObj.name == hex);
         hexNode.hexRenderer.hasItem.Value = -1;
     }

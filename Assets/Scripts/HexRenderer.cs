@@ -45,48 +45,10 @@ public class HexRenderer : NetworkBehaviour
     [AllowMutableSyncType] public SyncVar<GameObject> occupying = new SyncVar<GameObject>();
     [AllowMutableSyncType] public SyncVar<UnityEngine.Color> originalColor;
     [AllowMutableSyncType] public SyncVar<int> hasItem; // This is the index of the item from all existing items (list found in GameManager) because FishNet doesn't support Sprites :(
-    [AllowMutableSyncType] public SyncVar<GameObject> itemInstance = new SyncVar<GameObject>();
-    private ItemInfo currentItem = null;
 
     private void OnOccupyingChange(GameObject oldVal, GameObject newVal, bool asServer)
     {
         Debug.Log($"{(asServer ? "Server" : "Client")}{LocalConnection.ClientId} - {gameObject.name} changed from {oldVal} to {newVal}");
-    }
-
-
-    private void OnItemChange(int oldVal, int newVal, bool asServer)
-    {
-        if (!asServer)
-            return;
-
-        Debug.Log($"{(asServer ? "Server" : "Client")}{LocalConnection.ClientId} - Item changed on {gameObject.name} from {oldVal} to {newVal}");
-
-        if (newVal == -1)
-        {
-            
-            if (itemInstance.Value != null)
-            {
-                Debug.Log($"{(asServer ? "Server" : "Client")}{LocalConnection.ClientId} - Deleting prefab");
-                DespawnItem();
-            }
-        }
-        else
-        {
-            if (!itemInstance.Value)
-            {
-                Debug.Log($"{(asServer ? "Server" : "Client")}{LocalConnection.ClientId} - Spawning prefab");
-                currentItem = GameManager.instance.allExistingItems[newVal];
-                itemInstance.Value = Instantiate(currentItem.prefab, transform.position + Vector3.up, Quaternion.identity);
-                ServerManager.Spawn(itemInstance.Value);
-            }
-        }
-    }
-
-    public void DespawnItem()
-    {
-        itemInstance.Value.GetComponent<NetworkObject>().Despawn();
-        itemInstance.Value = null;
-        currentItem = null;
     }
 
     public override void OnStartNetwork()
@@ -94,7 +56,6 @@ public class HexRenderer : NetworkBehaviour
         base.OnStartNetwork();
 
         occupying.OnChange += OnOccupyingChange;
-        hasItem.OnChange += OnItemChange;
     }
 
     public override void OnStopNetwork()
@@ -102,7 +63,6 @@ public class HexRenderer : NetworkBehaviour
         base.OnStartNetwork();
 
         occupying.OnChange -= OnOccupyingChange;
-        hasItem.OnChange -= OnItemChange;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -216,6 +176,9 @@ public class HexRenderer : NetworkBehaviour
 
     public ItemInfo GetItem()
     {
-        return currentItem;
+        if (hasItem.Value == -1)
+            return null;
+
+        return GameManager.instance.allExistingItems[hasItem.Value];
     }
 }
