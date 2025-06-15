@@ -10,14 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1899d5c37d9191d47b67466fb8414e55, type: 3}
-  m_Name: TestItem
+  m_Name: TestItem2
   m_EditorClassIdentifier: 
   modifiedStats:
   - stat: 0
-    value: 1
-  abilities: []
-  itemName: TestItem
-  itemImage: {fileID: 21300000, guid: 30c46b2a9d36bd1408a25693279db90a, type: 3}
+    value: 2
+  abilities:
+  - {fileID: 11400000, guid: e274d33143a400446955d9e518f8fb6a, type: 2}
+  itemName: Test Item 2
+  itemImage: {fileID: 21300000, guid: 0a690197cee07684db65c7a13515d601, type: 3}
   equipmentSlot: 0
   isSpawnable: 1
-  prefab: {fileID: 9140732358879796654, guid: 6c48df9cf7a8368478b3ebd27e321648, type: 3}
+  prefab: {fileID: 9140732358879796654, guid: 3c9f6d1bfc09f4f4dbc2a78719a3f687, type: 3}

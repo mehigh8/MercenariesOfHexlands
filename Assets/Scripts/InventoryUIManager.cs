@@ -72,6 +72,14 @@ public class InventoryUIManager : MonoBehaviour
     {
         inventoryObject.SetActive(false);
         isOpened = false;
+
+        if (heldItem != null)
+        {
+            heldItem.image.sprite = heldItem.GetItem().itemImage;
+            heldItem.image.color = Color.white;
+            heldItem = null;
+            heldItemImage.gameObject.SetActive(false);
+        }
     }
 
     public void ItemInteract(ItemSlot slot)
@@ -82,6 +90,8 @@ public class InventoryUIManager : MonoBehaviour
                 return;
 
             heldItem = slot;
+            heldItem.image.sprite = null;
+            heldItem.image.color = new Color(0.254717f, 0.254717f, 0.254717f);
             heldItemImage.sprite = heldItem.GetItem().itemImage;
             heldItemImage.gameObject.SetActive(true);
         }
