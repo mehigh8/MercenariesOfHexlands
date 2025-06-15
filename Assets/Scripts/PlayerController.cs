@@ -173,8 +173,8 @@ public class PlayerController : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.F) && currentlyOn.hasItem.Value != -1)
         {
-            playerInfo.EquipItem(currentPosition.hexRenderer.GetItem());
-            PickupItemRPC(currentlyOn.name);
+            if (UIManager.instance.inventoryUIManager.StoreItem(currentPosition.hexRenderer.GetItem()))
+                PickupItemRPC(currentlyOn.name);
         }
 
     }

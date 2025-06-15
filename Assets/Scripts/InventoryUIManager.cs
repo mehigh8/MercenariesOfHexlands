@@ -17,7 +17,7 @@ public class InventoryUIManager : MonoBehaviour
 
     [Header("Item Slots")]
     [SerializeField] private ItemSlot helmetSlot;
-    [SerializeField] private ItemSlot ringSlot;
+    [SerializeField] private ItemSlot weaponSlot;
     [SerializeField] private ItemSlot gloveSlot;
     [SerializeField] private ItemSlot chestplateSlot;
     [SerializeField] private ItemSlot leggingsSlot;
@@ -26,9 +26,12 @@ public class InventoryUIManager : MonoBehaviour
 
     [Header("Others")]
     [SerializeField] private GameObject inventoryObject;
+    [SerializeField] private Image heldItemImage;
 
     private PlayerInfo playerInfo;
     [HideInInspector] public bool isOpened = false;
+
+    private ItemSlot heldItem = null;
 
     void Start()
     {
@@ -37,7 +40,7 @@ public class InventoryUIManager : MonoBehaviour
 
     void Update()
     {
-        
+        heldItemImage.transform.position = Input.mousePosition;
     }
 
     public void OpenInventory(PlayerInfo playerInfo)
@@ -47,20 +50,20 @@ public class InventoryUIManager : MonoBehaviour
         isOpened = true;
 
         helmetSlot.button.onClick.RemoveAllListeners();
-        ringSlot.button.onClick.RemoveAllListeners();
+        weaponSlot.button.onClick.RemoveAllListeners();
         gloveSlot.button.onClick.RemoveAllListeners();
         chestplateSlot.button.onClick.RemoveAllListeners();
         leggingsSlot.button.onClick.RemoveAllListeners();
         bootsSlot.button.onClick.RemoveAllListeners();
         itemSlots.ForEach(i => i.button.onClick.RemoveAllListeners());
 
-        helmetSlot.button.onClick.AddListener(EquipmentInteract);
-        ringSlot.button.onClick.AddListener(EquipmentInteract);
-        gloveSlot.button.onClick.AddListener(EquipmentInteract);
-        chestplateSlot.button.onClick.AddListener(EquipmentInteract);
-        leggingsSlot.button.onClick.AddListener(EquipmentInteract);
-        bootsSlot.button.onClick.AddListener(EquipmentInteract);
-        itemSlots.ForEach(i => i.button.onClick.AddListener(ItemInteract));
+        helmetSlot.button.onClick.AddListener(delegate { ItemInteract(helmetSlot); });
+        weaponSlot.button.onClick.AddListener(delegate { ItemInteract(weaponSlot); });
+        gloveSlot.button.onClick.AddListener(delegate { ItemInteract(gloveSlot); });
+        chestplateSlot.button.onClick.AddListener(delegate { ItemInteract(chestplateSlot); });
+        leggingsSlot.button.onClick.AddListener(delegate { ItemInteract(leggingsSlot); });
+        bootsSlot.button.onClick.AddListener(delegate { ItemInteract(bootsSlot); });
+        itemSlots.ForEach(i => i.button.onClick.AddListener(delegate { ItemInteract(i); }));
 
         UpdateInfo();
     }
@@ -71,14 +74,64 @@ public class InventoryUIManager : MonoBehaviour
         isOpened = false;
     }
 
-    public void EquipmentInteract()
+    public void ItemInteract(ItemSlot slot)
     {
+        if (heldItem == null)
+        {
+            if (slot.GetItem() == null)
+                return;
 
+            heldItem = slot;
+            heldItemImage.sprite = heldItem.GetItem().itemImage;
+            heldItemImage.gameObject.SetActive(true);
+        }
+        else
+        {
+            if (heldItem.isEquipment)
+            {
+                if (slot.isEquipment)
+                    return;
+
+                if (slot.GetItem() == null || slot.GetItem().equipmentSlot == heldItem.equipmentType)
+                {
+                    SwapItems(heldItem, slot);
+                    heldItemImage.gameObject.SetActive(false);
+                    heldItem = null;
+                }
+            }
+            else
+            {
+                if (slot.isEquipment && slot.equipmentType != heldItem.GetItem().equipmentSlot)
+                    return;
+
+                SwapItems(heldItem, slot);
+                heldItemImage.gameObject.SetActive(false);
+                heldItem = null;
+            }
+        }
     }
 
-    public void ItemInteract()
+    private void SwapItems(ItemSlot aSlot, ItemSlot bSlot)
     {
+        ItemInfo aItem = aSlot.GetItem();
+        ItemInfo bItem = bSlot.GetItem();
 
+        _StoreItem(aItem, bSlot);
+        _StoreItem(bItem, aSlot);
+
+        if (aSlot.isEquipment)
+        {
+            playerInfo.UnequipItem(aItem);
+            playerInfo.EquipItem(bItem);
+        }
+
+        if (bSlot.isEquipment)
+        {
+            playerInfo.UnequipItem(bItem);
+            playerInfo.EquipItem(aItem);
+        }
+
+        UpdateInfo();
     }
 
     public void UpdateInfo()
@@ -100,5 +153,34 @@ public class InventoryUIManager : MonoBehaviour
         critText.text = (int)(playerInfo.critChance * 100) + " CRT";
         defenceText.text = playerInfo.defence + " DEF";
         movementText.text = playerInfo.movementPerTurn + " MOV";
+    }
+
+    public bool StoreItem(ItemInfo item)
+    {
+        foreach (ItemSlot slot in itemSlots)
+        {
+            if (slot.GetItem() == null)
+            {
+                _StoreItem(item, slot);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void _StoreItem(ItemInfo item, ItemSlot slot)
+    {
+        slot.SetItem(item);
+        if (item != null)
+        {
+            slot.image.sprite = item.itemImage;
+            slot.image.color = Color.white;
+        }
+        else
+        {
+            slot.image.sprite = null;
+            slot.image.color = new Color(0.254717f, 0.254717f, 0.254717f);
+        }
     }
 }

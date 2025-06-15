@@ -21,7 +21,7 @@ public class ItemInfo : ScriptableObject
         Leggings = 2,
         Boots = 3,
         Gloves = 4,
-        Ring = 5,
+        Weapon = 5,
     }
 
     [System.Serializable]

@@ -15,6 +15,9 @@ public class PlayerInfo : MonoBehaviour
 
     public void EquipItem(ItemInfo item)
     {
+        if (item == null)
+            return;
+
         foreach (ItemInfo.ModifyStat stat in item.modifiedStats)
         {
             switch (stat.stat)
@@ -30,6 +33,9 @@ public class PlayerInfo : MonoBehaviour
 
     public void UnequipItem(ItemInfo item)
     {
+        if (item == null)
+            return;
+
         foreach (ItemInfo.ModifyStat stat in item.modifiedStats)
         {
             switch (stat.stat)
