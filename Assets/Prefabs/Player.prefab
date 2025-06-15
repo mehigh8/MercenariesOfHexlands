@@ -192,8 +192,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3df3c3f5cf40fe84cb06705db565d37a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hexGrid: {fileID: 0}
-  obstacleThreshold: 0.25
 --- !u!114 &4864732434553502953
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -206,7 +204,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77a6230acb2ae8e4b9b785351500239c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHealth: 100
+  currentHealth: 0
+  damage: 5
+  critChance: 0.1
   movementPerTurn: 4
+  defence: 1
 --- !u!1 &5793890192578753998
 GameObject:
   m_ObjectHideFlags: 0

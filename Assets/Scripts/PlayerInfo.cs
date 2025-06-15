@@ -5,7 +5,13 @@ using UnityEngine;
 public class PlayerInfo : MonoBehaviour
 {
     [Header("Player Stats")]
+    public int maxHealth;
+    [HideInInspector] public int currentHealth;
+    public int damage;
+    [Range(0f, 1f)]
+    public float critChance;
     public int movementPerTurn;
+    public int defence;
 
     public void EquipItem(ItemInfo item)
     {
@@ -35,5 +41,10 @@ public class PlayerInfo : MonoBehaviour
         }
 
         // Here will go abilities
+    }
+
+    private void Awake()
+    {
+        currentHealth = maxHealth;
     }
 }

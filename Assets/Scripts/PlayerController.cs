@@ -179,6 +179,20 @@ public class PlayerController : NetworkBehaviour
 
     }
 
+    private void InventoryInteract()
+    {
+        if (!IsOwner || GameManager.instance.currentPlayerTurn.Value != LocalConnection.ClientId)
+            return;
+
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            if (UIManager.instance.inventoryUIManager.isOpened)
+                UIManager.instance.inventoryUIManager.CloseInventory();
+            else
+                UIManager.instance.inventoryUIManager.OpenInventory(playerInfo);
+        }
+    }
+
     private void Update()
     {
         InitOccupying();
@@ -186,10 +200,8 @@ public class PlayerController : NetworkBehaviour
         PickMovement();
         ApplyMovement();
         HighlightMovement();
+        InventoryInteract();
         PickupItem();
-
-        //if (Input.GetKeyDown(KeyCode.E))
-        //    EndTurn();
     }
 
     [ServerRpc]

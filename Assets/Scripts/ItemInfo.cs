@@ -14,6 +14,16 @@ public class ItemInfo : ScriptableObject
         Defence = 4,
     }
 
+    public enum EquipmentSlot
+    {
+        Helmet = 0,
+        Chestplate = 1,
+        Leggings = 2,
+        Boots = 3,
+        Gloves = 4,
+        Ring = 5,
+    }
+
     [System.Serializable]
     public struct ModifyStat
     {
@@ -30,6 +40,15 @@ public class ItemInfo : ScriptableObject
     public List<AbilityInfo> abilities = new List<AbilityInfo>();
 
     [Header("Other information")]
+    [Tooltip("Name of the item")]
+    public string itemName;
+
+    [Tooltip("Image that should be displayed for this item")]
+    public Sprite itemImage;
+
+    [Tooltip("Which equipment slot does the item use")]
+    public EquipmentSlot equipmentSlot;
+
     [Tooltip("Specifies whether this item can be spawned on a hex")]
     public bool isSpawnable;
 
