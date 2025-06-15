@@ -17,6 +17,11 @@ public class GameManager : NetworkBehaviour
     [AllowMutableSyncType] public SyncVar<int> currentPlayerTurn = new SyncVar<int>();
     public List<ItemInfo> allExistingItems = new List<ItemInfo>();
 
+    public bool IsMyTurn()
+    {
+        return currentPlayerTurn.Value == LocalConnection.ClientId;
+    }
+
     private void Awake()
     {
         if (instance == null)

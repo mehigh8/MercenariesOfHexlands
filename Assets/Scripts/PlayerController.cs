@@ -6,16 +6,16 @@ using System.Collections.Generic;
 using FishNet.Connection;
 using FishNet.Transporting;
 using System.Collections;
+using System.Linq;
 
 public class PlayerController : NetworkBehaviour
 {
-    // TODO: 
     [Header("Camera Settings")]
     [SerializeField] private float cameraSpeed;
 
     [Header("Navigation Settings")]
     [SerializeField] private LayerMask mask;
-    [SerializeField] private Pathfinder pathfinder;
+    [SerializeField] public Pathfinder pathfinder;
     [SerializeField] private PlayerInfo playerInfo;
 
     [SerializeField]
@@ -27,7 +27,9 @@ public class PlayerController : NetworkBehaviour
     private List<HexGridLayout.HexNode> path = null;
     private List<HexGridLayout.HexNode> highlightedPath = null;
     private HexGridLayout.HexNode lastHighlightedTarget = null;
-    private HexGridLayout.HexNode currentPosition = null;
+    [HideInInspector] public HexGridLayout.HexNode currentPosition = null;
+
+    private AbilityHandler abilityHandler;
 
     public override void OnStartClient()
     {
@@ -36,11 +38,14 @@ public class PlayerController : NetworkBehaviour
         {
             playerCamera = Camera.main;
             playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z) + cameraOffset;
+            UIManager.instance.abilitiesUIManager.client = GetComponent<AbilityHandler>();
         }
     }
 
     private IEnumerator Start()
     {
+        abilityHandler = GetComponent<AbilityHandler>();
+        abilityHandler.playerController = this;
         navAgent = GetComponent<NavMeshAgent>();
         while (HexGridLayout.instance.transform.childCount != HexGridLayout.instance.gridSize.x * HexGridLayout.instance.gridSize.y)
             yield return 0;
@@ -69,7 +74,7 @@ public class PlayerController : NetworkBehaviour
 
     private void PickMovement()
     {
-        if (!base.IsOwner || GameManager.instance.currentPlayerTurn.Value != LocalConnection.ClientId)
+        if (!base.IsOwner || GameManager.instance.currentPlayerTurn.Value != LocalConnection.ClientId || abilityHandler.currentAbility != null)
             return;
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
@@ -88,6 +93,7 @@ public class PlayerController : NetworkBehaviour
 
                         UpdateHex(currentlyOn.name, null);
                         currentlyOn = finalHex;
+                        currentPosition = path.Last();
                         UpdateHex(currentlyOn.name, gameObject);
                         
                         EndTurn();
@@ -106,7 +112,7 @@ public class PlayerController : NetworkBehaviour
         if (!base.IsOwner)
             return;
 
-        if (GameManager.instance.currentPlayerTurn.Value == LocalConnection.ClientId)
+        if (GameManager.instance.currentPlayerTurn.Value == LocalConnection.ClientId && abilityHandler.currentAbility == null)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit, mask))
@@ -137,7 +143,78 @@ public class PlayerController : NetworkBehaviour
         }
 
         if (highlightedPath != null)
+        {
             highlightedPath.ForEach(hex => hex.hexRenderer.ChangeColorToOriginal());
+            highlightedPath = null;
+        }
+        
+    }
+
+    private HexGridLayout.HexNode previousHex;
+    private void AbilityInput()
+    {
+        if (!IsOwner || !GameManager.instance.IsMyTurn())
+            return;
+
+        if (abilityHandler.currentAbility != null)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Mouse1))
+            {
+                if (previousHex != null)
+                {
+                    List<HexGridLayout.HexNode> AOENodes = HexGridLayout.instance.hexNodes.Where(h => h.Distance(previousHex) <= abilityHandler.currentAbility.areOfEffect).ToList();
+                        foreach (HexGridLayout.HexNode hex in AOENodes)
+                            hex.hexRenderer.ChangeColorToOriginal();
+                }
+                abilityHandler.CancelCasting();
+            }
+
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, mask))
+            {
+                HexGridLayout.HexNode centerHex = HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hit.collider.gameObject);
+                if (previousHex != null && previousHex != centerHex)
+                {
+                    List<HexGridLayout.HexNode> AOENodes = HexGridLayout.instance.hexNodes.Where(h => h.Distance(previousHex) <= abilityHandler.currentAbility.areOfEffect).ToList();
+                    foreach (HexGridLayout.HexNode hex in AOENodes)
+                    {
+                        if (abilityHandler.IsWithinRange(hex))
+                            hex.hexRenderer.ChangeColor(hex.hexRenderer.originalColor.Value + new Color(0.4f, 0.4f, 0.4f, 1f));
+                        else
+                            hex.hexRenderer.ChangeColorToOriginal();
+                    }
+
+                    AOENodes = HexGridLayout.instance.hexNodes.Where(h => h.Distance(centerHex) <= abilityHandler.currentAbility.areOfEffect).ToList();
+                    bool isValid = abilityHandler.IsHexValid(centerHex);
+                    foreach (HexGridLayout.HexNode hex in AOENodes)
+                    {
+                        if (isValid)
+                            hex.hexRenderer.ChangeColor(Color.green);
+                        else
+                            hex.hexRenderer.ChangeColor(Color.red);
+                    }
+                }
+                previousHex = centerHex;
+                if (Input.GetKeyDown(KeyCode.Mouse0) && abilityHandler.IsHexValid(previousHex))
+                {
+                    List<HexGridLayout.HexNode> AOENodes = HexGridLayout.instance.hexNodes.Where(h => h.Distance(previousHex) <= abilityHandler.currentAbility.areOfEffect).ToList();
+                    foreach (HexGridLayout.HexNode hex in AOENodes)
+                        hex.hexRenderer.ChangeColorToOriginal();
+                    abilityHandler.ConfirmCasting(previousHex);
+                }
+            }
+            else if (previousHex != null)
+            {
+                List<HexGridLayout.HexNode> AOENodes = HexGridLayout.instance.hexNodes.Where(h => h.Distance(previousHex) <= abilityHandler.currentAbility.areOfEffect).ToList();
+                foreach (HexGridLayout.HexNode hex in AOENodes)
+                {
+                    if (abilityHandler.IsWithinRange(hex))
+                        hex.hexRenderer.ChangeColor(hex.hexRenderer.originalColor.Value + new Color(0.4f, 0.4f, 0.4f, 1f));
+                    else
+                        hex.hexRenderer.ChangeColorToOriginal();
+                }
+            }
+        }
     }
 
     private void InitOccupying()
@@ -157,10 +234,8 @@ public class PlayerController : NetworkBehaviour
         {
             if (!navAgent.hasPath || (navAgent.hasPath && navAgent.remainingDistance < 0.1f))
             {
-                currentPosition = path[0];
+                Vector3 dest = new Vector3(path[0].hexObj.transform.position.x, transform.position.y, path[0].hexObj.transform.position.z);
                 path.RemoveAt(0);
-
-                Vector3 dest = new Vector3(currentPosition.hexObj.transform.position.x, transform.position.y, currentPosition.hexObj.transform.position.z);
                 navAgent.SetDestination(dest);
             }
         }
@@ -202,6 +277,7 @@ public class PlayerController : NetworkBehaviour
         HighlightMovement();
         InventoryInteract();
         PickupItem();
+        AbilityInput();
     }
 
     [ServerRpc]

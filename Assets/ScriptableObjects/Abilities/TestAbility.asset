@@ -18,12 +18,12 @@ MonoBehaviour:
   flairEvents:
     test: 0
   damage: 10
-  range: 2
-  areOfEffect: 4
+  range: 4
+  areOfEffect: 2
   lingeringDuration: 4
   cooldown: 5
   element: 3
-  requiresTarget: 1
+  requiresTarget: 0
   chargeToTarget: 1
   isHeal: 1
   useWeaponDamage: 1

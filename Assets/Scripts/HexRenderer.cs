@@ -84,10 +84,10 @@ public class HexRenderer : NetworkBehaviour
         HexGridLayout.instance.hexNodes.Add(new HexGridLayout.HexNode(coords.Value.x, coords.Value.y, gameObject, this));
 
         transform.parent = HexGridLayout.instance.transform;
-        if ( HexGridLayout.instance.transform.childCount ==  HexGridLayout.instance.gridSize.x * HexGridLayout.instance.gridSize.y)
+        if (HexGridLayout.instance.transform.childCount == HexGridLayout.instance.gridSize.x * HexGridLayout.instance.gridSize.y)
             HexGridLayout.instance.pSpawner.Spawns = HexGridLayout.instance.transformList.OrderBy(x => Random.value).ToArray();
-        
-        DrawMesh(); 
+
+        DrawMesh();
     }
 
     public void DrawMesh()
@@ -180,5 +180,10 @@ public class HexRenderer : NetworkBehaviour
             return null;
 
         return GameManager.instance.allExistingItems[hasItem.Value];
+    }
+
+    public bool IsObstacle()
+    {
+        return originalColor.Value.g <= HexGridLayout.instance.obstacleThreshold;
     }
 }

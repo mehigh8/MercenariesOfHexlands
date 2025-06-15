@@ -18,10 +18,14 @@ public class AbilitiesUIManager : MonoBehaviour
     [SerializeField] private float abilitySize;
     [SerializeField] private float abilitySpacing;
 
+    [HideInInspector] public AbilityHandler client;
+
 
     private void OnAbilityClick(int index)
     {
-        Debug.Log($"Using Ability {index}");
+        if (!GameManager.instance.IsMyTurn())
+            return;
+        StartCoroutine(client.PrepareCasting(abilities[index]));
     }
 
     private void GenerateAbilityUI()
@@ -31,10 +35,10 @@ public class AbilitiesUIManager : MonoBehaviour
             Destroy(child.gameObject);
         if (abilities.Count == 0)
         {
-            abilitySlotsRoot.gameObject.SetActive(false);
+            ShowAbilities(false);
             return;
         }
-        abilitySlotsRoot.gameObject.SetActive(true);
+        ShowAbilities(true);
         RectTransform rootRect = abilitySlotsRoot.GetComponent<RectTransform>();
         rootRect.sizeDelta = new Vector2((abilitySize + abilitySpacing) * abilities.Count + abilitySpacing, abilitySize + abilitySpacing * 2);
         Vector3 cursor = rootRect.position - Vector3.right * (rootRect.sizeDelta.x / 2 - abilitySpacing - abilitySize / 2) + Vector3.up * rootRect.sizeDelta.y / 2;
@@ -53,15 +57,13 @@ public class AbilitiesUIManager : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
+    public void ShowAbilities(bool shouldShow)
+    {
+        abilitySlotsRoot.gameObject.SetActive(shouldShow);
+    }
+
     void Start()
     {
         GenerateAbilityUI();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }

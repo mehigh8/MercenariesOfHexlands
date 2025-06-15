@@ -15,7 +15,8 @@ GameObject:
   - component: {fileID: 2969058245022903750}
   - component: {fileID: -5122715637066728666}
   - component: {fileID: 4864732434553502953}
-  m_Layer: 0
+  - component: {fileID: -3492774116805146939}
+  m_Layer: 2
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -128,7 +129,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 5
+  <PrefabId>k__BackingField: 6
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 7807759643866311769
   <SceneId>k__BackingField: 0
@@ -210,6 +211,20 @@ MonoBehaviour:
   critChance: 0.1
   movementPerTurn: 4
   defence: 1
+--- !u!114 &-3492774116805146939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2882929944252777398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e82270c85ebbe346ba54aceb3ec029d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentAbility: {fileID: 0}
+  playerController: {fileID: 0}
 --- !u!1 &5793890192578753998
 GameObject:
   m_ObjectHideFlags: 0
@@ -222,7 +237,7 @@ GameObject:
   - component: {fileID: 3416275333672346806}
   - component: {fileID: 7878259594465608034}
   - component: {fileID: 2811106755181396849}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -329,7 +344,7 @@ GameObject:
   - component: {fileID: 7750890413850357999}
   - component: {fileID: 2008882025071339540}
   - component: {fileID: 214979811179121351}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Visor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
