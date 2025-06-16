@@ -7,6 +7,7 @@ using FishNet.Component.Spawning;
 using FishNet.CodeGenerating;
 using FishNet.Connection;
 using FishNet.Transporting;
+using System;
 
 public class GameManager : NetworkBehaviour
 {
@@ -16,6 +17,8 @@ public class GameManager : NetworkBehaviour
     private int turnOrderIndex = 0;
     [AllowMutableSyncType] public SyncVar<int> currentPlayerTurn = new SyncVar<int>();
     public List<ItemInfo> allExistingItems = new List<ItemInfo>();
+
+    public event Action<int> OnBeginTurn;
 
     public bool IsMyTurn()
     {
@@ -82,5 +85,8 @@ public class GameManager : NetworkBehaviour
     private void OnTurnChange(int oldVal, int newVal, bool asServer)
     {
         Debug.Log($"{(asServer ? "Server" : "Client")}{LocalConnection} - Turn changed from {oldVal} to {newVal}");
+
+        if (!asServer)
+            OnBeginTurn?.Invoke(newVal);
     }
 }
