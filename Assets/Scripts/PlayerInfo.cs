@@ -46,10 +46,31 @@ public class PlayerInfo : NetworkBehaviour
                 case ItemInfo.AffectedStat.Movement:
                     movementPerTurn += stat.value;
                     break;
+                case ItemInfo.AffectedStat.Damage:
+                    damage += stat.value;
+                    break;
+                case ItemInfo.AffectedStat.Defence:
+                    defence += stat.value;
+                    break;
+                case ItemInfo.AffectedStat.Crit:
+                    critChance += stat.value / 100f;
+                    break;
+                case ItemInfo.AffectedStat.Health:
+                    float healthPercentage = (float)currentHealth / maxHealth;
+                    maxHealth += stat.value;
+                    currentHealth = (int)(healthPercentage * maxHealth);
+                    break;
             }
         }
 
-        // Here will go abilities
+        foreach (AbilityInfo ability in item.abilities)
+        {
+            if (!UIManager.instance.abilitiesUIManager.HasAbility(ability))
+            {
+                UIManager.instance.abilitiesUIManager.AddAbility(ability);
+                UIManager.instance.abilitiesUIManager.GenerateAbilityUI();
+            }
+        }
     }
 
     public void UnequipItem(ItemInfo item)
@@ -64,10 +85,31 @@ public class PlayerInfo : NetworkBehaviour
                 case ItemInfo.AffectedStat.Movement:
                     movementPerTurn -= stat.value;
                     break;
+                case ItemInfo.AffectedStat.Damage:
+                    damage -= stat.value;
+                    break;
+                case ItemInfo.AffectedStat.Defence:
+                    defence -= stat.value;
+                    break;
+                case ItemInfo.AffectedStat.Crit:
+                    critChance -= stat.value / 100f;
+                    break;
+                case ItemInfo.AffectedStat.Health:
+                    float healthPercentage = (float)currentHealth / maxHealth;
+                    maxHealth -= stat.value;
+                    currentHealth = (int)(healthPercentage * maxHealth);
+                    break;
             }
         }
 
-        // Here will go abilities
+        foreach (AbilityInfo ability in item.abilities)
+        {
+            if (UIManager.instance.abilitiesUIManager.HasAbility(ability))
+            {
+                UIManager.instance.abilitiesUIManager.RemoveAbility(ability);
+                UIManager.instance.abilitiesUIManager.GenerateAbilityUI();
+            }
+        }
     }
 
     private void Awake()

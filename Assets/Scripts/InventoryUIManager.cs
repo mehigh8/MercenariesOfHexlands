@@ -99,7 +99,7 @@ public class InventoryUIManager : MonoBehaviour
         {
             if (heldItem.isEquipment)
             {
-                if (slot.isEquipment)
+                if (slot.isEquipment && slot != heldItem)
                     return;
 
                 if (slot.GetItem() == null || slot.GetItem().equipmentSlot == heldItem.equipmentType)

@@ -28,7 +28,7 @@ public class AbilitiesUIManager : MonoBehaviour
         StartCoroutine(client.PrepareCasting(abilities[index]));
     }
 
-    private void GenerateAbilityUI()
+    public void GenerateAbilityUI()
     {
         abilitySlots.Clear();
         foreach (Button child in abilitySlotsRoot.GetComponentsInChildren<Button>())
@@ -66,5 +66,20 @@ public class AbilitiesUIManager : MonoBehaviour
     {
         GenerateAbilityUI();
         ShowAbilities(false);
+    }
+
+    public bool HasAbility(AbilityInfo abilityInfo)
+    {
+        return abilities.Contains(abilityInfo);
+    }
+
+    public void AddAbility(AbilityInfo abilityInfo)
+    {
+        abilities.Add(abilityInfo);
+    }
+
+    public void RemoveAbility(AbilityInfo abilityInfo)
+    {
+        abilities.Remove(abilityInfo);
     }
 }
