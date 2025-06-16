@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 57c9bca996890d544972e106941e834c, type: 3}
-  m_Name: TestAbility
+  m_Name: TestHeal
   m_EditorClassIdentifier: 
   name: Low Kick
   description: Pin the target for the duration
@@ -25,7 +25,7 @@ MonoBehaviour:
   element: 3
   requiresTarget: 0
   chargeToTarget: 1
-  isHeal: 0
+  isHeal: 1
   useWeaponDamage: 1
   weaponDamageModifiers: 1
   weaponDamageModiferAmount: 5

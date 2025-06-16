@@ -39,6 +39,7 @@ public class PlayerController : NetworkBehaviour
             playerCamera = Camera.main;
             playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z) + cameraOffset;
             UIManager.instance.abilitiesUIManager.client = GetComponent<AbilityHandler>();
+            UIManager.instance.abilitiesUIManager.ShowAbilities(true);
         }
     }
 
@@ -200,7 +201,7 @@ public class PlayerController : NetworkBehaviour
                     List<HexGridLayout.HexNode> AOENodes = HexGridLayout.instance.hexNodes.Where(h => h.Distance(previousHex) <= abilityHandler.currentAbility.areOfEffect).ToList();
                     foreach (HexGridLayout.HexNode hex in AOENodes)
                         hex.hexRenderer.ChangeColorToOriginal();
-                    abilityHandler.ConfirmCasting(previousHex);
+                    abilityHandler.ConfirmCasting(AOENodes);
                 }
             }
             else if (previousHex != null)

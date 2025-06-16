@@ -155,3 +155,10 @@ MonoBehaviour:
     NetworkManager: {fileID: 0}
     NetworkBehaviour: {fileID: 0}
     _value: 0
+  lingeringEffect:
+    NetworkManager: {fileID: 0}
+    NetworkBehaviour: {fileID: 0}
+    _value:
+      source: 0
+      element: 0
+      remainingDuration: 0

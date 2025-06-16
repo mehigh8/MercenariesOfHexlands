@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using FishNet.Object;
 using UnityEngine;
 
-public class AbilityHandler : MonoBehaviour
+public class AbilityHandler : NetworkBehaviour
 {
     [HideInInspector] public AbilityInfo currentAbility;
     [HideInInspector] public PlayerController playerController;
@@ -63,7 +64,24 @@ public class AbilityHandler : MonoBehaviour
         currentAbility = null;
     }
 
-    public void ConfirmCasting(HexGridLayout.HexNode centerNode)
+    [ServerRpc(RequireOwnership=false)]
+    private void ApplyHexEffects(List<HexRenderer> hexes, int damageAmount, int lingeringDuration, AbilityInfo.Element element, bool isHeal)
+    {
+        foreach (HexRenderer hex in hexes)
+        {
+            if (lingeringDuration > 0)
+                hex.lingeringEffect.Value = new HexRenderer.LingeringEffect(GameManager.instance.LocalConnection.ClientId, element, lingeringDuration);
+            if (hex.occupying.Value && hex.occupying.Value.TryGetComponent<PlayerInfo>(out PlayerInfo playerInfo))
+            {
+                if (isHeal)
+                    playerInfo.Heal(damageAmount);
+                else
+                    playerInfo.TakeDamage(damageAmount);
+            }
+        }
+    }
+
+    public void ConfirmCasting(List<HexGridLayout.HexNode> affectedNodes)
     {
         Debug.Log("Cast Ability");
         UIManager.instance.abilitiesUIManager.ShowAbilities(true);
@@ -72,6 +90,16 @@ public class AbilityHandler : MonoBehaviour
         foreach (HexGridLayout.HexNode hex in validHexes)
             hex.hexRenderer.ChangeColorToOriginal();
         validHexes = new List<HexGridLayout.HexNode>();
+
+        List<HexRenderer> hexRenderers = new List<HexRenderer>();
+        foreach (HexGridLayout.HexNode hex in affectedNodes)
+            hexRenderers.Add(hex.hexRenderer);
+
+        ApplyHexEffects(hexRenderers,
+                        currentAbility.useWeaponDamage ? currentAbility.GetDamage(1) /* TODO: replace with actual weapon damage */ : currentAbility.GetDamage(),
+                        currentAbility.lingeringDuration,
+                        currentAbility.element,
+                        currentAbility.isHeal);
 
         currentAbility = null;
     }

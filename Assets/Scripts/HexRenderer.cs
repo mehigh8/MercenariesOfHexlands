@@ -15,6 +15,28 @@ using UnityEngine;
 // [RequireComponent(typeof(NetworkObject))]
 public class HexRenderer : NetworkBehaviour
 {
+    [System.Serializable]
+    public class LingeringEffect
+    {
+        public int source;
+        public AbilityInfo.Element element;
+        public int remainingDuration;
+
+        public LingeringEffect()
+        {
+            this.source = -1;
+            this.element = AbilityInfo.Element.None;
+            this.remainingDuration = 0;
+        }
+
+        public LingeringEffect(int source, AbilityInfo.Element element, int remainingDuration)
+        {
+            this.source = source;
+            this.element = element;
+            this.remainingDuration = remainingDuration;
+        }
+    }
+
     public struct Face
     {
         public List<Vector3> vertices;
@@ -44,7 +66,8 @@ public class HexRenderer : NetworkBehaviour
     [AllowMutableSyncType] public SyncVar<Vector2Int> coords;
     [AllowMutableSyncType] public SyncVar<GameObject> occupying = new SyncVar<GameObject>();
     [AllowMutableSyncType] public SyncVar<UnityEngine.Color> originalColor;
-    [AllowMutableSyncType] public SyncVar<int> hasItem; // This is the index of the item from all existing items (list found in GameManager) because FishNet doesn't support Sprites :(
+    [AllowMutableSyncType] public SyncVar<int> hasItem; // This is the index of the item from all existing items (list found in GameManager) because FishNet doesn't support Sprites :( (bruh)
+    [AllowMutableSyncType] public SyncVar<LingeringEffect> lingeringEffect = new SyncVar<LingeringEffect>();
 
     private void OnOccupyingChange(GameObject oldVal, GameObject newVal, bool asServer)
     {
@@ -80,11 +103,14 @@ public class HexRenderer : NetworkBehaviour
         meshRenderer.material = material;
 
         gameObject.name = $"Hex {coords.Value.x},{coords.Value.y}";
-        HexGridLayout.instance.transformList.Add(transform);
+        if (hasItem.Value == -1 && !IsObstacle())
+            HexGridLayout.instance.transformList.Add(transform);
+        else
+            Debug.Log($"Exluded {coords.Value}, hasItem {hasItem.Value}, isObstacle {IsObstacle()}");
         HexGridLayout.instance.hexNodes.Add(new HexGridLayout.HexNode(coords.Value.x, coords.Value.y, gameObject, this));
 
         transform.parent = HexGridLayout.instance.transform;
-        if (HexGridLayout.instance.transform.childCount == HexGridLayout.instance.gridSize.x * HexGridLayout.instance.gridSize.y)
+        if (HexGridLayout.instance.hexNodes.Count == HexGridLayout.instance.gridSize.x * HexGridLayout.instance.gridSize.y)
             HexGridLayout.instance.pSpawner.Spawns = HexGridLayout.instance.transformList.OrderBy(x => Random.value).ToArray();
 
         DrawMesh();

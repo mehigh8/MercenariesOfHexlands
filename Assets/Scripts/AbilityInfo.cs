@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName="New Ability", menuName="Ability")]
+[CreateAssetMenu(fileName = "New Ability", menuName = "Ability")]
 public class AbilityInfo : ScriptableObject
 {
     [System.Serializable]
@@ -100,4 +100,26 @@ public class AbilityInfo : ScriptableObject
 
     [Tooltip("Which effects this spell should inflict")]
     public EffectClass[] appliedEffects;
+
+    public int HandleWeaponModifier(int weaponDamage, float modifierAmount, WeaponDamageModifiers modifier)
+    {
+        switch (modifier)
+        {
+            case WeaponDamageModifiers.Addition:
+                return (int)(weaponDamage + modifierAmount);
+            case WeaponDamageModifiers.Multiplication:
+                return (int)(weaponDamage * modifierAmount);
+            case WeaponDamageModifiers.Subtraction:
+                return (int)(weaponDamage - modifierAmount);
+            case WeaponDamageModifiers.Division:
+                return (int)(weaponDamage / modifierAmount);
+            default:
+                return weaponDamage;
+        }
+    }
+
+    public int GetDamage(int weaponDamgage = -1)
+    {
+        return useWeaponDamage ? HandleWeaponModifier(weaponDamgage, weaponDamageModiferAmount, weaponDamageModifiers) : damage;
+    }
 }

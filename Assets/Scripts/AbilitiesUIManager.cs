@@ -65,5 +65,6 @@ public class AbilitiesUIManager : MonoBehaviour
     void Start()
     {
         GenerateAbilityUI();
+        ShowAbilities(false);
     }
 }

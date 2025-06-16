@@ -1,17 +1,38 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using FishNet.CodeGenerating;
+using FishNet.Object;
+using FishNet.Object.Synchronizing;
 using UnityEngine;
 
-public class PlayerInfo : MonoBehaviour
+public class PlayerInfo : NetworkBehaviour
 {
     [Header("Player Stats")]
     public int maxHealth;
-    [HideInInspector] public int currentHealth;
+    [AllowMutableSyncType] public SyncVar<int> currentHealth = new SyncVar<int>();
     public int damage;
     [Range(0f, 1f)]
     public float critChance;
     public int movementPerTurn;
     public int defence;
+
+    public void Die()
+    {
+        Debug.Log("💀");
+    }
+
+    public void TakeDamage(int amount)
+    {
+        currentHealth.Value = Math.Max(0, currentHealth.Value - amount);
+        if (currentHealth.Value == 0)
+            Die();
+    }
+
+    public void Heal(int amount)
+    {
+        currentHealth.Value = Math.Min(maxHealth, currentHealth.Value + amount);
+    }
 
     public void EquipItem(ItemInfo item)
     {
@@ -51,6 +72,6 @@ public class PlayerInfo : MonoBehaviour
 
     private void Awake()
     {
-        currentHealth = maxHealth;
+        currentHealth.Value = maxHealth;
     }
 }

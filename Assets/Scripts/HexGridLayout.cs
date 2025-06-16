@@ -30,6 +30,8 @@ public class HexGridLayout : NetworkBehaviour
         public GameObject hexObj;
         public HexRenderer hexRenderer;
 
+        public HexNode(){}
+
         public HexNode(int x, int y, GameObject hexObj, HexRenderer hexRenderer)
         {
             this.x = x;
@@ -138,7 +140,7 @@ public class HexGridLayout : NetworkBehaviour
                 hexRenderer.innerSize.Value = innerSize;
                 hexRenderer.innerSize.NetworkManager = seed.NetworkManager;
                 hexRenderer.innerSize.NetworkBehaviour = hexRenderer;
-                
+
                 hexRenderer.height.Value = height;
                 hexRenderer.height.NetworkManager = seed.NetworkManager;
                 hexRenderer.height.NetworkBehaviour = hexRenderer;
@@ -161,10 +163,13 @@ public class HexGridLayout : NetworkBehaviour
                 hexRenderer.hasItem.Value = spawnItem ? GameManager.instance.allExistingItems.IndexOf(spawnItem) : -1;
                 hexRenderer.hasItem.NetworkManager = seed.NetworkManager;
                 hexRenderer.hasItem.NetworkBehaviour = hexRenderer;
+                
+                hexRenderer.lingeringEffect.Value = null;
+                hexRenderer.lingeringEffect.NetworkManager = seed.NetworkManager;
+                hexRenderer.lingeringEffect.NetworkBehaviour = hexRenderer;
 
                 tile.layer = gridLayer;
                 tile.transform.SetParent(transform);
-
 
                 ServerManager.Spawn(tile, null);
 
