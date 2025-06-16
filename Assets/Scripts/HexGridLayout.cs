@@ -208,6 +208,19 @@ public class HexGridLayout : NetworkBehaviour
         hexNode.hexRenderer.hasItem.Value = -1;
     }
 
+    public void PlaceItem(int item, string hex)
+    {
+        HexNode hexNode = hexNodes.Find(h => h.hexObj.name == hex);
+        hexNode.hexRenderer.hasItem.Value = item;
+
+        ItemInfo spawnItem = GameManager.instance.allExistingItems[item];
+        GameObject spawnedItem = Instantiate(spawnItem.prefab, hexNode.hexObj.transform.position, Quaternion.identity);
+        spawnedItem.name = "Item " + hex.Split(' ')[1];
+        spawnedItem.transform.SetParent(transform);
+        spawnedItems.Add(spawnedItem);
+        ServerManager.Spawn(spawnedItem, null);
+    }
+
     public Vector3 GetPositionForHexFromCoordinate(Vector2Int coordinate)
     {
         int column = coordinate.x;

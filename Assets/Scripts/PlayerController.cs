@@ -257,7 +257,12 @@ public class PlayerController : NetworkBehaviour
             if (UIManager.instance.inventoryUIManager.StoreItem(currentPosition.hexRenderer.GetItem()))
                 PickupItemRPC(currentlyOn.name);
         }
+    }
 
+    [ServerRpc]
+    public void DropItem(int item, string hex)
+    {
+        HexGridLayout.instance.PlaceItem(item, hex);
     }
 
     private void InventoryInteract()
@@ -270,7 +275,7 @@ public class PlayerController : NetworkBehaviour
             if (UIManager.instance.inventoryUIManager.isOpened)
                 UIManager.instance.inventoryUIManager.CloseInventory();
             else
-                UIManager.instance.inventoryUIManager.OpenInventory(playerInfo);
+                UIManager.instance.inventoryUIManager.OpenInventory(playerInfo, this);
         }
     }
 

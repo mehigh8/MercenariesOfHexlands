@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using FishNet.Object;
 
 public class InventoryUIManager : MonoBehaviour
 {
@@ -23,12 +24,14 @@ public class InventoryUIManager : MonoBehaviour
     [SerializeField] private ItemSlot leggingsSlot;
     [SerializeField] private ItemSlot bootsSlot;
     [SerializeField] private List<ItemSlot> itemSlots;
+    [SerializeField] private ItemSlot dropSlot;
 
     [Header("Others")]
     [SerializeField] private GameObject inventoryObject;
     [SerializeField] private Image heldItemImage;
 
     private PlayerInfo playerInfo;
+    private PlayerController playerController;
     [HideInInspector] public bool isOpened = false;
 
     private ItemSlot heldItem = null;
@@ -43,9 +46,10 @@ public class InventoryUIManager : MonoBehaviour
         heldItemImage.transform.position = Input.mousePosition;
     }
 
-    public void OpenInventory(PlayerInfo playerInfo)
+    public void OpenInventory(PlayerInfo playerInfo, PlayerController playerController)
     {
         this.playerInfo = playerInfo;
+        this.playerController = playerController;
         inventoryObject.SetActive(true);
         isOpened = true;
 
@@ -56,6 +60,7 @@ public class InventoryUIManager : MonoBehaviour
         leggingsSlot.button.onClick.RemoveAllListeners();
         bootsSlot.button.onClick.RemoveAllListeners();
         itemSlots.ForEach(i => i.button.onClick.RemoveAllListeners());
+        dropSlot.button.onClick.RemoveAllListeners();
 
         helmetSlot.button.onClick.AddListener(delegate { ItemInteract(helmetSlot); });
         weaponSlot.button.onClick.AddListener(delegate { ItemInteract(weaponSlot); });
@@ -64,6 +69,7 @@ public class InventoryUIManager : MonoBehaviour
         leggingsSlot.button.onClick.AddListener(delegate { ItemInteract(leggingsSlot); });
         bootsSlot.button.onClick.AddListener(delegate { ItemInteract(bootsSlot); });
         itemSlots.ForEach(i => i.button.onClick.AddListener(delegate { ItemInteract(i); }));
+        dropSlot.button.onClick.AddListener(DropInteract);
 
         UpdateInfo();
     }
@@ -117,6 +123,21 @@ public class InventoryUIManager : MonoBehaviour
                 SwapItems(heldItem, slot);
                 heldItemImage.gameObject.SetActive(false);
                 heldItem = null;
+            }
+        }
+    }
+
+    public void DropInteract()
+    {
+        if (heldItem != null)
+        {
+            if (playerController.currentPosition.hexRenderer.hasItem.Value == -1) // Has no item
+            {
+                ItemInfo droppedItem = heldItem.GetItem();
+                _StoreItem(null, heldItem);
+                heldItemImage.gameObject.SetActive(false);
+                heldItem = null;
+                playerController.DropItem(GameManager.instance.allExistingItems.IndexOf(droppedItem), playerController.currentPosition.hexObj.name);
             }
         }
     }
