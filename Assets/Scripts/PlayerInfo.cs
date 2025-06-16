@@ -56,9 +56,9 @@ public class PlayerInfo : NetworkBehaviour
                     critChance += stat.value / 100f;
                     break;
                 case ItemInfo.AffectedStat.Health:
-                    float healthPercentage = (float)currentHealth / maxHealth;
+                    float healthPercentage = (float)currentHealth.Value / maxHealth;
                     maxHealth += stat.value;
-                    currentHealth = (int)(healthPercentage * maxHealth);
+                    currentHealth.Value = (int)(healthPercentage * maxHealth);
                     break;
             }
         }
@@ -95,9 +95,9 @@ public class PlayerInfo : NetworkBehaviour
                     critChance -= stat.value / 100f;
                     break;
                 case ItemInfo.AffectedStat.Health:
-                    float healthPercentage = (float)currentHealth / maxHealth;
+                    float healthPercentage = (float)currentHealth.Value / maxHealth;
                     maxHealth -= stat.value;
-                    currentHealth = (int)(healthPercentage * maxHealth);
+                    currentHealth.Value = (int)(healthPercentage * maxHealth);
                     break;
             }
         }
