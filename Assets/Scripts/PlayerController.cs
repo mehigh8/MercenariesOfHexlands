@@ -45,6 +45,7 @@ public class PlayerController : NetworkBehaviour
             playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z) + cameraOffset;
             UIManager.instance.abilitiesUIManager.client = GetComponent<AbilityHandler>();
             UIManager.instance.abilitiesUIManager.ShowAbilities(true);
+            GameManager.instance.OnBeginTurn += GetComponent<AbilityHandler>().ReduceCooldowns;
         }
     }
 

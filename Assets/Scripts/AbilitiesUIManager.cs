@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class AbilitiesUIManager : MonoBehaviour 
+public class AbilitiesUIManager : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Transform abilitySlotsRoot;
@@ -19,15 +21,35 @@ public class AbilitiesUIManager : MonoBehaviour
     [SerializeField] private float abilitySpacing;
 
     [HideInInspector] public AbilityHandler client;
-    private PlayerController playerController;
 
+    public void UpdateAbilityCooldownsUI(List<AbilityHandler.AbilityCooldown> cooldowns)
+    {
+        foreach (Button slot in abilitySlots)
+        {
+            slot.GetComponentInChildren<TextMeshProUGUI>().text = "";
+            slot.interactable = true;
+        }
+
+        for (int i = 0; i < abilitySlots.Count; i++)
+        {
+            Button currentSlot = abilitySlots[i];
+            AbilityInfo currentAbility = abilities[i];
+            List<AbilityHandler.AbilityCooldown> foundCooldown = cooldowns.Where(c => c.ability == currentAbility).ToList();
+            if (foundCooldown.Count > 0)
+            {
+                TextMeshProUGUI cooldownText = currentSlot.GetComponentInChildren<TextMeshProUGUI>();
+                cooldownText.text = foundCooldown[0].remainingCooldown.ToString();
+                currentSlot.interactable = false;
+            }
+        }
+    }
 
     private void OnAbilityClick(int index)
     {
         if (!client.playerController)
             return;
         if (!GameManager.instance.IsMyTurn() || client.playerController.isMoving())
-                return;
+            return;
         StartCoroutine(client.PrepareCasting(abilities[index]));
     }
 
@@ -55,9 +77,12 @@ public class AbilitiesUIManager : MonoBehaviour
             hoverLogic.position = cursor + Vector3.up * abilitySize;
             cursor += Vector3.right * (abilitySize + abilitySpacing);
             createdButton.GetComponent<RectTransform>().sizeDelta = new Vector2(abilitySize, abilitySize);
+            createdButton.GetComponentInChildren<TextMeshProUGUI>().GetComponent<RectTransform>().sizeDelta = new Vector2(abilitySize, abilitySize);
             createdButton.GetComponent<Image>().sprite = abilities[i].displayImage;
             abilitySlots.Add(createdButton);
         }
+        if (client)
+            UpdateAbilityCooldownsUI(client.cooldowns);
     }
 
     public void ShowAbilities(bool shouldShow)
@@ -69,6 +94,7 @@ public class AbilitiesUIManager : MonoBehaviour
     {
         GenerateAbilityUI();
         ShowAbilities(false);
+        UpdateAbilityCooldownsUI(new List<AbilityHandler.AbilityCooldown>());
     }
 
     public bool HasAbility(AbilityInfo abilityInfo)

@@ -69,6 +69,17 @@ public class HexRenderer : NetworkBehaviour
     [AllowMutableSyncType] public SyncVar<int> hasItem; // This is the index of the item from all existing items (list found in GameManager) because FishNet doesn't support Sprites :( (bruh)
     [AllowMutableSyncType] public SyncVar<LingeringEffect> lingeringEffect = new SyncVar<LingeringEffect>();
 
+    [Server]
+    private void ReduceLingering(int turn)
+    {
+        if (lingeringEffect.Value == null)
+            return;
+        lingeringEffect.Value.remainingDuration -= 1;
+        if (lingeringEffect.Value.remainingDuration == 0)
+            lingeringEffect.Value = null;
+        
+    }
+
     private void OnOccupyingChange(GameObject oldVal, GameObject newVal, bool asServer)
     {
         Debug.Log($"{(asServer ? "Server" : "Client")}{LocalConnection.ClientId} - {gameObject.name} changed from {oldVal} to {newVal}");
@@ -114,6 +125,7 @@ public class HexRenderer : NetworkBehaviour
             HexGridLayout.instance.pSpawner.Spawns = HexGridLayout.instance.transformList.OrderBy(x => Random.value).ToArray();
 
         DrawMesh();
+        GameManager.instance.OnBeginTurn += ReduceLingering;
     }
 
     public void DrawMesh()

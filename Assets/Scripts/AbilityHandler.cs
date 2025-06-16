@@ -10,6 +10,39 @@ public class AbilityHandler : NetworkBehaviour
     [HideInInspector] public PlayerController playerController;
     private List<HexGridLayout.HexNode> validHexes = new List<HexGridLayout.HexNode>();
 
+    [System.Serializable]
+    public class AbilityCooldown
+    {
+        public AbilityInfo ability;
+        public int remainingCooldown;
+
+        public AbilityCooldown() { }
+        public AbilityCooldown(AbilityInfo ability, int remainingCooldown)
+        {
+            this.ability = ability;
+            this.remainingCooldown = remainingCooldown;
+        }
+    }
+
+    [HideInInspector] public List<AbilityCooldown> cooldowns = new List<AbilityCooldown>();
+
+    public void ReduceCooldowns(int turn)
+    {
+        if (!GameManager.instance.IsMyTurn())
+            return;
+        Debug.Log($"{turn} Reducing Cooldowns");
+        List<AbilityCooldown> newCooldowns = new List<AbilityCooldown>();
+        foreach (AbilityCooldown abilityCooldown in cooldowns)
+        {
+            abilityCooldown.remainingCooldown -= 1;
+            if (abilityCooldown.remainingCooldown > 0)
+                newCooldowns.Add(abilityCooldown);
+        }
+        cooldowns = newCooldowns;
+
+        UIManager.instance.abilitiesUIManager.UpdateAbilityCooldownsUI(cooldowns);
+    }
+
     public bool IsWithinRange(HexGridLayout.HexNode hex)
     {
         if (validHexes.IndexOf(hex) == -1)
@@ -64,7 +97,7 @@ public class AbilityHandler : NetworkBehaviour
         currentAbility = null;
     }
 
-    [ServerRpc(RequireOwnership=false)]
+    [ServerRpc(RequireOwnership = false)]
     private void ApplyHexEffects(List<HexRenderer> hexes, int damageAmount, int lingeringDuration, AbilityInfo.Element element, bool isHeal)
     {
         foreach (HexRenderer hex in hexes)
@@ -112,10 +145,13 @@ public class AbilityHandler : NetworkBehaviour
                 playerController.currentlyOn = tempPath.Last().hexRenderer;
                 playerController.currentPosition = tempPath.Last();
                 playerController.UpdateHex(playerController.currentlyOn.name, gameObject);
-                
+
                 playerController.path = tempPath;
             }
         }
+
+        cooldowns.Add(new AbilityCooldown(currentAbility, currentAbility.cooldown));
+        UIManager.instance.abilitiesUIManager.UpdateAbilityCooldownsUI(cooldowns);
 
         currentAbility = null;
     }

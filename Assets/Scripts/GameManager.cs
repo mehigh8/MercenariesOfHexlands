@@ -31,13 +31,13 @@ public class GameManager : NetworkBehaviour
             instance = this;
         else
             Despawn(gameObject);
+        currentPlayerTurn.OnChange += OnTurnChange;
     }
 
     public override void OnStartServer()
     {
         base.OnStartServer();
         ServerManager.OnRemoteConnectionState += OnPlayerConnectionChanged;
-        currentPlayerTurn.OnChange += OnTurnChange;
 
         currentPlayerTurn.Value = -1;
     }
@@ -55,13 +55,19 @@ public class GameManager : NetworkBehaviour
         {
             clientsTurnOrder.Add(connection.ClientId);
             if (currentPlayerTurn.Value == -1)
+            {
                 currentPlayerTurn.Value = connection.ClientId;
+                OnBeginTurn?.Invoke(currentPlayerTurn.Value);
+            }
         } else if (args.ConnectionState == RemoteConnectionState.Stopped)
         {
             if (clientsTurnOrder.IndexOf((int)connection.ClientId) == turnOrderIndex)
+            {
                 currentPlayerTurn.Value = clientsTurnOrder[turnOrderIndex == clientsTurnOrder.Count - 1 ? 0 : turnOrderIndex + 1];
+                OnBeginTurn?.Invoke(currentPlayerTurn.Value);
+            }
             if (clientsTurnOrder.IndexOf((int)connection.ClientId) < turnOrderIndex)
-                turnOrderIndex--;
+                    turnOrderIndex--;
 
             clientsTurnOrder.Remove(connection.ClientId);
 
@@ -80,13 +86,11 @@ public class GameManager : NetworkBehaviour
             turnOrderIndex = 0;
 
         currentPlayerTurn.Value = clientsTurnOrder[turnOrderIndex];
+        OnBeginTurn?.Invoke(currentPlayerTurn.Value);
     }
 
     private void OnTurnChange(int oldVal, int newVal, bool asServer)
     {
         Debug.Log($"{(asServer ? "Server" : "Client")}{LocalConnection} - Turn changed from {oldVal} to {newVal}");
-
-        if (!asServer)
-            OnBeginTurn?.Invoke(newVal);
     }
 }
