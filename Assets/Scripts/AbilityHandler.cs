@@ -81,7 +81,7 @@ public class AbilityHandler : NetworkBehaviour
         }
     }
 
-    public void ConfirmCasting(List<HexGridLayout.HexNode> affectedNodes)
+    public void ConfirmCasting(List<HexGridLayout.HexNode> affectedNodes, HexGridLayout.HexNode centerNode)
     {
         Debug.Log("Cast Ability");
         UIManager.instance.abilitiesUIManager.ShowAbilities(true);
@@ -100,6 +100,22 @@ public class AbilityHandler : NetworkBehaviour
                         currentAbility.lingeringDuration,
                         currentAbility.element,
                         currentAbility.isHeal);
+
+        if (currentAbility.chargeToTarget)
+        {
+            List<HexGridLayout.HexNode> tempPath = playerController.pathfinder.FindPath(playerController.currentPosition, centerNode);
+            if (centerNode.hexRenderer.occupying.Value)
+                tempPath.RemoveAt(tempPath.Count - 1);
+            if (tempPath.Count > 0)
+            {
+                playerController.UpdateHex(playerController.currentlyOn.name, null);
+                playerController.currentlyOn = tempPath.Last().hexRenderer;
+                playerController.currentPosition = tempPath.Last();
+                playerController.UpdateHex(playerController.currentlyOn.name, gameObject);
+                
+                playerController.path = tempPath;
+            }
+        }
 
         currentAbility = null;
     }

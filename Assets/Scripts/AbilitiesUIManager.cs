@@ -19,12 +19,15 @@ public class AbilitiesUIManager : MonoBehaviour
     [SerializeField] private float abilitySpacing;
 
     [HideInInspector] public AbilityHandler client;
+    private PlayerController playerController;
 
 
     private void OnAbilityClick(int index)
     {
-        if (!GameManager.instance.IsMyTurn())
+        if (!client.playerController)
             return;
+        if (!GameManager.instance.IsMyTurn() || client.playerController.isMoving())
+                return;
         StartCoroutine(client.PrepareCasting(abilities[index]));
     }
 

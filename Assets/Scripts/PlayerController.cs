@@ -22,14 +22,19 @@ public class PlayerController : NetworkBehaviour
     private Vector3 cameraOffset = new Vector3(0, 9, -5);
     private Camera playerCamera;
     private NavMeshAgent navAgent;
-    private HexRenderer currentlyOn;
+    [HideInInspector] public HexRenderer currentlyOn;
 
-    private List<HexGridLayout.HexNode> path = null;
+    [HideInInspector] public List<HexGridLayout.HexNode> path = null;
     private List<HexGridLayout.HexNode> highlightedPath = null;
     private HexGridLayout.HexNode lastHighlightedTarget = null;
     [HideInInspector] public HexGridLayout.HexNode currentPosition = null;
 
     private AbilityHandler abilityHandler;
+
+    public bool isMoving()
+    {
+        return (path != null && path.Count > 0) || (path != null && path.Count == 0 && navAgent.remainingDistance > 0.1f);
+    }
 
     public override void OnStartClient()
     {
@@ -75,7 +80,7 @@ public class PlayerController : NetworkBehaviour
 
     private void PickMovement()
     {
-        if (!base.IsOwner || GameManager.instance.currentPlayerTurn.Value != LocalConnection.ClientId || abilityHandler.currentAbility != null)
+        if (!base.IsOwner || GameManager.instance.currentPlayerTurn.Value != LocalConnection.ClientId || abilityHandler.currentAbility != null || isMoving())
             return;
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
@@ -113,7 +118,7 @@ public class PlayerController : NetworkBehaviour
         if (!base.IsOwner)
             return;
 
-        if (GameManager.instance.currentPlayerTurn.Value == LocalConnection.ClientId && abilityHandler.currentAbility == null)
+        if (GameManager.instance.currentPlayerTurn.Value == LocalConnection.ClientId && abilityHandler.currentAbility == null && !isMoving())
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit, mask))
@@ -201,7 +206,7 @@ public class PlayerController : NetworkBehaviour
                     List<HexGridLayout.HexNode> AOENodes = HexGridLayout.instance.hexNodes.Where(h => h.Distance(previousHex) <= abilityHandler.currentAbility.areOfEffect).ToList();
                     foreach (HexGridLayout.HexNode hex in AOENodes)
                         hex.hexRenderer.ChangeColorToOriginal();
-                    abilityHandler.ConfirmCasting(AOENodes);
+                    abilityHandler.ConfirmCasting(AOENodes, previousHex);
                 }
             }
             else if (previousHex != null)
