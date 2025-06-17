@@ -301,7 +301,7 @@ public class PlayerController : NetworkBehaviour
         PickupItem();
         AbilityInput();
 
-        if (IsOwner && Input.GetKeyDown(KeyCode.E))
+        if (IsOwner && GameManager.instance.IsMyTurn() && Input.GetKeyDown(KeyCode.E))
         {
             if (abilityHandler.currentAbility != null)
                 abilityHandler.CancelCasting();
