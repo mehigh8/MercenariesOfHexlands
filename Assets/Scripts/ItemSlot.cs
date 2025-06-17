@@ -11,11 +11,23 @@ public class ItemSlot : MonoBehaviour
     [Tooltip("Only relevant when isEquipment is true")]
     public ItemInfo.EquipmentSlot equipmentType;
     private ItemInfo item = null;
+    private HoverHandler hoverHandler;
 
     public void SetItem(ItemInfo item)
     {
         this.item = item;
+        if (!hoverHandler)
+            hoverHandler = GetComponent<HoverHandler>();
+        hoverHandler.itemInfo = item;
     }
 
     public ItemInfo GetItem() { return this.item; }
+
+    private void Awake()
+    {
+        if (!hoverHandler)
+            hoverHandler = GetComponent<HoverHandler>();
+        hoverHandler.itemInfo = item;
+        hoverHandler.position = transform.position + Vector3.right * GetComponent<RectTransform>().sizeDelta.x / 2;
+    }
 }

@@ -36,9 +36,9 @@ public class InventoryUIManager : MonoBehaviour
 
     private ItemSlot heldItem = null;
 
-    void Start()
+    public bool HasHeldItem()
     {
-        
+        return heldItem;
     }
 
     void Update()
@@ -94,7 +94,7 @@ public class InventoryUIManager : MonoBehaviour
         {
             if (slot.GetItem() == null)
                 return;
-
+            UIManager.instance.tooltipHandler.HideTooltip();
             heldItem = slot;
             heldItem.image.sprite = null;
             heldItem.image.color = new Color(0.254717f, 0.254717f, 0.254717f);

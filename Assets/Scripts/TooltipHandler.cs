@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TooltipHandler : MonoBehaviour
 {
@@ -20,6 +21,13 @@ public class TooltipHandler : MonoBehaviour
     [SerializeField] private TextMeshProUGUI abilityAOE;
     [SerializeField] private TextMeshProUGUI abilityLinger;
     [SerializeField] private TextMeshProUGUI abilityModifiers;
+
+    [Header("Item Tooltip")]
+    [SerializeField] private GameObject itemTooltip;
+    [SerializeField] private TextMeshProUGUI itemName;
+    [SerializeField] private TextMeshProUGUI itemStats;
+    [SerializeField] private Transform abilitiesHolder;
+    [SerializeField] private GameObject abilityItemPrefab;
 
     private GameObject currentTooltip;
 
@@ -48,6 +56,33 @@ public class TooltipHandler : MonoBehaviour
         abilityModifiers.text = "";
         foreach (AbilityInfo.EffectClass effectClass in abilityInfo.appliedEffects)
             abilityModifiers.text += effectClass.effectDuration + " " + Enum.GetName(typeof(AbilityInfo.Effects), effectClass.effect) + " ";
+
+        currentTooltip.SetActive(true);
+    }
+
+    public void ShowItemTooltip(ItemInfo itemInfo, Vector3 position)
+    {
+        tooltip.SetActive(true);
+        currentTooltip = itemTooltip;
+
+        tooltip.transform.position = position;
+
+        RectTransform rectTooltip = itemTooltip.GetComponent<RectTransform>();
+        rectTooltip.sizeDelta = new Vector2(rectTooltip.sizeDelta.x, 75 + 125 * itemInfo.abilities.Count);
+
+        foreach (Transform child in abilitiesHolder)
+            Destroy(child.gameObject);
+
+        itemName.text = String.Format("{0} ({1})", itemInfo.itemName, Enum.GetName(typeof(ItemInfo.EquipmentSlot), itemInfo.equipmentSlot));
+        itemStats.text = "";
+        foreach (ItemInfo.ModifyStat stat in itemInfo.modifiedStats)
+            itemStats.text += (stat.value > 0 ? "+" : "") + stat.value + " " + Enum.GetName(typeof(ItemInfo.AffectedStat), stat.stat) + " ";
+
+        for (int i = 0; i < itemInfo.abilities.Count; i++)
+        {
+            AbilityReferenceHolder currentAbilityUI = Instantiate(abilityItemPrefab, abilitiesHolder.position - Vector3.up * i * 125, Quaternion.identity, abilitiesHolder).GetComponent<AbilityReferenceHolder>();
+            currentAbilityUI.FillInFields(itemInfo.abilities[i]);
+        }
 
         currentTooltip.SetActive(true);
     }
