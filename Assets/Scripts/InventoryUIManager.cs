@@ -135,6 +135,9 @@ public class InventoryUIManager : MonoBehaviour
             {
                 ItemInfo droppedItem = heldItem.GetItem();
                 _StoreItem(null, heldItem);
+                playerInfo.UnequipItem(droppedItem);
+                UpdateInfo();
+
                 heldItemImage.gameObject.SetActive(false);
                 heldItem = null;
                 playerController.DropItem(GameManager.instance.allExistingItems.IndexOf(droppedItem), playerController.currentPosition.hexObj.name);

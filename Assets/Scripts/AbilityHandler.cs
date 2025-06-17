@@ -142,10 +142,10 @@ public class AbilityHandler : NetworkBehaviour
                 tempPath.RemoveAt(tempPath.Count - 1);
             if (tempPath.Count > 0)
             {
-                playerController.UpdateHex(playerController.currentlyOn.name, null);
-                playerController.currentlyOn = tempPath.Last().hexRenderer;
+                playerController.UpdateHex(playerController.currentPosition.hexObj.name, null);
+                playerController.UpdateCurrentlyOn(tempPath.Last().hexRenderer.name);
                 playerController.currentPosition = tempPath.Last();
-                playerController.UpdateHex(playerController.currentlyOn.name, gameObject);
+                playerController.UpdateHex(playerController.currentPosition.hexObj.name, gameObject);
 
                 playerController.path = tempPath;
             }
