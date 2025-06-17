@@ -31,6 +31,7 @@ public class PlayerInfo : NetworkBehaviour
     {
         print("Am murit");
         GameManager.instance.PlayerDied(OwnerId);
+        HexGridLayout.instance.UpdateHex(GetComponent<PlayerController>().currentlyOn.Value, null);
 
         if (GameManager.instance.currentPlayerTurn.Value == OwnerId)
             GameManager.instance.NextTurn();

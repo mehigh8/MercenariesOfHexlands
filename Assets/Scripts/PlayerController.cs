@@ -7,6 +7,8 @@ using FishNet.Connection;
 using FishNet.Transporting;
 using System.Collections;
 using System.Linq;
+using FishNet.CodeGenerating;
+using FishNet.Object.Synchronizing;
 
 public class PlayerController : NetworkBehaviour
 {
@@ -22,7 +24,7 @@ public class PlayerController : NetworkBehaviour
     private Vector3 cameraOffset = new Vector3(0, 9, -5);
     private Camera playerCamera;
     private NavMeshAgent navAgent;
-    [HideInInspector] public HexRenderer currentlyOn;
+    [AllowMutableSyncType] public SyncVar<string> currentlyOn;
 
     [HideInInspector] public List<HexGridLayout.HexNode> path = null;
     private List<HexGridLayout.HexNode> highlightedPath = null;
@@ -107,10 +109,10 @@ public class PlayerController : NetworkBehaviour
                         
                         HexRenderer finalHex = path[path.Count - 1].hexRenderer;
 
-                        UpdateHex(currentlyOn.name, null);
-                        currentlyOn = finalHex;
+                        UpdateHex(currentPosition.hexObj.name, null);
+                        UpdateCurrentlyOn(finalHex.name);
                         currentPosition = path.Last();
-                        UpdateHex(currentlyOn.name, gameObject);
+                        UpdateHex(currentPosition.hexObj.name, gameObject);
 
                         playerInfo.canMoveThisTurn -= path.Count;
                     }
@@ -235,13 +237,12 @@ public class PlayerController : NetworkBehaviour
 
     private void InitOccupying()
     {
-        if (currentlyOn || !base.IsOwner)
+        if (currentlyOn.Value != "" || !base.IsOwner)
             return;
         currentPosition = HexGridLayout.instance.GetClosestHex(transform.position);
-        currentlyOn = currentPosition?.hexRenderer;
-        print(currentlyOn);
-        if (currentlyOn)
-            UpdateHex(currentlyOn.name, gameObject);
+        UpdateCurrentlyOn(currentPosition.hexRenderer.name);
+        if (currentPosition != null)
+            UpdateHex(currentPosition.hexObj.name, gameObject);
     }
 
     private void ApplyMovement()
@@ -262,10 +263,10 @@ public class PlayerController : NetworkBehaviour
         if (!IsOwner || GameManager.instance.currentPlayerTurn.Value != LocalConnection.ClientId)
             return;
 
-        if (Input.GetKeyDown(KeyCode.F) && currentlyOn.hasItem.Value != -1)
+        if (Input.GetKeyDown(KeyCode.F) && currentPosition.hexRenderer.hasItem.Value != -1)
         {
             if (UIManager.instance.inventoryUIManager.StoreItem(currentPosition.hexRenderer.GetItem()))
-                PickupItemRPC(currentlyOn.name);
+                PickupItemRPC(currentPosition.hexObj.name);
         }
     }
 
@@ -324,5 +325,11 @@ public class PlayerController : NetworkBehaviour
     public void PickupItemRPC(string hex)
     {
         HexGridLayout.instance.PickupItem(hex);
+    }
+
+    [ServerRpc]
+    public void UpdateCurrentlyOn(string hex)
+    {
+        currentlyOn.Value = hex;
     }
 }
