@@ -1021,8 +1021,7 @@ MonoBehaviour:
     type: 3}
   abilitySlots: []
   abilities:
-  - {fileID: 11400000, guid: e274d33143a400446955d9e518f8fb6a, type: 2}
-  - {fileID: 11400000, guid: 71ddae691ac45874fa62a4d40f00fdc5, type: 2}
+  - {fileID: 11400000, guid: f371c0a66119073429517eecb0e50a21, type: 2}
   abilitySize: 100
   abilitySpacing: 10
   client: {fileID: 0}

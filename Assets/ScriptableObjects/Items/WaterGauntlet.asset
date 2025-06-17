@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1899d5c37d9191d47b67466fb8414e55, type: 3}
+  m_Name: WaterGauntlet
+  m_EditorClassIdentifier: 
+  modifiedStats: []
+  abilities:
+  - {fileID: 11400000, guid: c8fc8bbc212fe094c963246b6d6c9921, type: 2}
+  - {fileID: 11400000, guid: 8ec682d6266b33b49aaf8a415deac83e, type: 2}
+  itemName: Water Gauntlet
+  itemImage: {fileID: 21300000, guid: a672fb4ce1662bd4fbf3a5da4417a1f8, type: 3}
+  equipmentSlot: 4
+  isSpawnable: 1
+  prefab: {fileID: 5467717127047937420, guid: 8a8fa5ed9c00bc440b32e0adeedc999e, type: 3}

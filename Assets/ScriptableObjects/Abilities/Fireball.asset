@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57c9bca996890d544972e106941e834c, type: 3}
+  m_Name: Fireball
+  m_EditorClassIdentifier: 
+  name: Fireball
+  description: Shoot a fireball in an area
+  displayImage: {fileID: 21300000, guid: 446a9c043f7e2c743b807b9e7f8fe429, type: 3}
+  flairEvents:
+    test: 0
+  damage: 20
+  range: 3
+  areOfEffect: 1
+  lingeringDuration: 2
+  cooldown: 4
+  element: 1
+  requiresTarget: 0
+  chargeToTarget: 0
+  isHeal: 0
+  useWeaponDamage: 0
+  weaponDamageModifiers: 0
+  weaponDamageModiferAmount: 0
+  appliedEffects: []

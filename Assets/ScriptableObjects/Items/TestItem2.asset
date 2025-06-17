@@ -15,8 +15,7 @@ MonoBehaviour:
   modifiedStats:
   - stat: 0
     value: 2
-  abilities:
-  - {fileID: 11400000, guid: e274d33143a400446955d9e518f8fb6a, type: 2}
+  abilities: []
   itemName: Test Item 2
   itemImage: {fileID: 21300000, guid: 0a690197cee07684db65c7a13515d601, type: 3}
   equipmentSlot: 0

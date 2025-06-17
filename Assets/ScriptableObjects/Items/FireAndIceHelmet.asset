@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1899d5c37d9191d47b67466fb8414e55, type: 3}
+  m_Name: FireAndIceHelmet
+  m_EditorClassIdentifier: 
+  modifiedStats: []
+  abilities:
+  - {fileID: 11400000, guid: 8ec682d6266b33b49aaf8a415deac83e, type: 2}
+  - {fileID: 11400000, guid: 33bf68b3f46435f4190100ba613901c3, type: 2}
+  - {fileID: 11400000, guid: db371ec211dfc634292e88c569e50e1d, type: 2}
+  itemName: Firey Ice Helmet
+  itemImage: {fileID: 21300000, guid: 7557e08080277c74089a5cecc6b25eb5, type: 3}
+  equipmentSlot: 0
+  isSpawnable: 1
+  prefab: {fileID: 1023707555754996238, guid: 797c6e165d4eb7641903a1a1f29ac7cc, type: 3}
