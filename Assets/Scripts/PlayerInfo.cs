@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using FishNet.CodeGenerating;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using TMPro;
 using UnityEngine;
 
 public class PlayerInfo : NetworkBehaviour
@@ -16,6 +17,9 @@ public class PlayerInfo : NetworkBehaviour
     public float critChance;
     public int movementPerTurn;
     public int defence;
+    [Header("Others")]
+    public LookAtCamera playerCanvas;
+    [AllowMutableSyncType] public SyncVar<string> playerName;
 
     public void Die()
     {
@@ -115,5 +119,32 @@ public class PlayerInfo : NetworkBehaviour
     private void Awake()
     {
         currentHealth.Value = maxHealth;
+    }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        StartCoroutine(SetPlayerName());
+    }
+
+    IEnumerator SetPlayerName()
+    {
+        if (IsOwner)
+        {
+            UpdateName(GameObject.Find("PlayerName").GetComponent<TMP_InputField>().text, LocalConnection.ClientId);
+        }
+
+        while (playerName.Value == "")
+            yield return null;
+
+        playerCanvas.nameText.text = playerName.Value;
+    }
+
+    [ServerRpc]
+    public void UpdateName(string name, int id)
+    {
+        if (name == "")
+            name = "Player" + id;
+        playerName.Value = name;
     }
 }
