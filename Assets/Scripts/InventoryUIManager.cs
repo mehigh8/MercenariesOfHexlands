@@ -178,8 +178,8 @@ public class InventoryUIManager : MonoBehaviour
             return;
         }
 
-        healthBar.value = (float)playerInfo.currentHealth.Value / playerInfo.maxHealth;
-        healthText.text = playerInfo.currentHealth.Value + " / " + playerInfo.maxHealth;
+        healthBar.value = (float)playerInfo.currentHealth.Value / playerInfo.maxHealth.Value;
+        healthText.text = playerInfo.currentHealth.Value + " / " + playerInfo.maxHealth.Value;
         damageText.text = playerInfo.damage + " DMG";
         critText.text = (int)(playerInfo.critChance * 100) + " CRT";
         defenceText.text = playerInfo.defence + " DEF";

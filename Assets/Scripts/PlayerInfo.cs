@@ -6,11 +6,12 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerInfo : NetworkBehaviour
 {
     [Header("Player Stats")]
-    public int maxHealth;
+    [AllowMutableSyncType] public SyncVar<int> maxHealth = new SyncVar<int>();
     [AllowMutableSyncType] public SyncVar<int> currentHealth = new SyncVar<int>();
     public int damage;
     [Range(0f, 1f)]
@@ -20,10 +21,21 @@ public class PlayerInfo : NetworkBehaviour
     [Header("Others")]
     public LookAtCamera playerCanvas;
     [AllowMutableSyncType] public SyncVar<string> playerName;
+    public Slider healthBar;
+    public TMP_Text healthText;
 
+    [HideInInspector] public int canMoveThisTurn;
+
+    //[ServerRpc(RequireOwnership = false)]
     public void Die()
     {
-        Debug.Log("💀");
+        print("Am murit");
+        GameManager.instance.PlayerDied(OwnerId);
+
+        if (GameManager.instance.currentPlayerTurn.Value == OwnerId)
+            GameManager.instance.NextTurn();
+
+        GetComponent<NetworkObject>().Despawn();
     }
 
     public void TakeDamage(int amount)
@@ -35,7 +47,7 @@ public class PlayerInfo : NetworkBehaviour
 
     public void Heal(int amount)
     {
-        currentHealth.Value = Math.Min(maxHealth, currentHealth.Value + amount);
+        currentHealth.Value = Math.Min(maxHealth.Value, currentHealth.Value + amount);
     }
 
     public void EquipItem(ItemInfo item)
@@ -49,6 +61,7 @@ public class PlayerInfo : NetworkBehaviour
             {
                 case ItemInfo.AffectedStat.Movement:
                     movementPerTurn += stat.value;
+                    canMoveThisTurn += stat.value;
                     break;
                 case ItemInfo.AffectedStat.Damage:
                     damage += stat.value;
@@ -60,9 +73,9 @@ public class PlayerInfo : NetworkBehaviour
                     critChance += stat.value / 100f;
                     break;
                 case ItemInfo.AffectedStat.Health:
-                    float healthPercentage = (float)currentHealth.Value / maxHealth;
-                    maxHealth += stat.value;
-                    currentHealth.Value = (int)(healthPercentage * maxHealth);
+                    float healthPercentage = (float)currentHealth.Value / maxHealth.Value;
+                    maxHealth.Value += stat.value;
+                    currentHealth.Value = (int)Mathf.Ceil(healthPercentage * maxHealth.Value);
                     break;
             }
         }
@@ -88,6 +101,7 @@ public class PlayerInfo : NetworkBehaviour
             {
                 case ItemInfo.AffectedStat.Movement:
                     movementPerTurn -= stat.value;
+                    canMoveThisTurn -= stat.value;
                     break;
                 case ItemInfo.AffectedStat.Damage:
                     damage -= stat.value;
@@ -99,9 +113,9 @@ public class PlayerInfo : NetworkBehaviour
                     critChance -= stat.value / 100f;
                     break;
                 case ItemInfo.AffectedStat.Health:
-                    float healthPercentage = (float)currentHealth.Value / maxHealth;
-                    maxHealth -= stat.value;
-                    currentHealth.Value = (int)(healthPercentage * maxHealth);
+                    float healthPercentage = (float)currentHealth.Value / maxHealth.Value;
+                    maxHealth.Value -= stat.value;
+                    currentHealth.Value = (int)Mathf.Ceil(healthPercentage * maxHealth.Value);
                     break;
             }
         }
@@ -118,7 +132,10 @@ public class PlayerInfo : NetworkBehaviour
 
     private void Awake()
     {
-        currentHealth.Value = maxHealth;
+        currentHealth.OnChange += OnCurrentHealthChange;
+
+        currentHealth.Value = maxHealth.Value;
+        canMoveThisTurn = movementPerTurn;
     }
 
     public override void OnStartClient()
@@ -146,5 +163,11 @@ public class PlayerInfo : NetworkBehaviour
         if (name == "")
             name = "Player" + id;
         playerName.Value = name;
+    }
+
+    public void OnCurrentHealthChange(int oldVal, int newVal, bool asServer)
+    {
+        healthBar.value = (float)newVal / maxHealth.Value;
+        healthText.text = newVal + " / " + maxHealth.Value;
     }
 }

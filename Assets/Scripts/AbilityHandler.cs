@@ -155,6 +155,8 @@ public class AbilityHandler : NetworkBehaviour
         UIManager.instance.abilitiesUIManager.UpdateAbilityCooldownsUI(cooldowns);
 
         currentAbility = null;
+
+        playerController.EndTurn();
     }
 
     public IEnumerator PrepareCasting(AbilityInfo selectedAbility)

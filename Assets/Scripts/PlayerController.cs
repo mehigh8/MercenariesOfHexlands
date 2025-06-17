@@ -46,6 +46,7 @@ public class PlayerController : NetworkBehaviour
             UIManager.instance.abilitiesUIManager.client = GetComponent<AbilityHandler>();
             UIManager.instance.abilitiesUIManager.ShowAbilities(true);
             GameManager.instance.OnBeginTurn += GetComponent<AbilityHandler>().ReduceCooldowns;
+            GameManager.instance.OnBeginTurn += ResetMovementThisTurn;
         }
     }
 
@@ -56,6 +57,14 @@ public class PlayerController : NetworkBehaviour
         navAgent = GetComponent<NavMeshAgent>();
         while (HexGridLayout.instance.transform.childCount != HexGridLayout.instance.gridSize.x * HexGridLayout.instance.gridSize.y)
             yield return 0;
+    }
+
+    public void ResetMovementThisTurn(int turn)
+    {
+        if (LocalConnection.ClientId != turn)
+            return;
+
+        playerInfo.canMoveThisTurn = playerInfo.movementPerTurn;
     }
 
     private void CameraMovement()
@@ -93,8 +102,8 @@ public class PlayerController : NetworkBehaviour
                     if (hit.collider.TryGetComponent<HexRenderer>(out HexRenderer hex) && hex.occupying.Value == null && !hex.IsObstacle())
                     {
                         path = pathfinder.FindPath(currentPosition, HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hit.collider.gameObject));
-                        if (path.Count > playerInfo.movementPerTurn)
-                            path.RemoveRange(playerInfo.movementPerTurn, path.Count - playerInfo.movementPerTurn);
+                        if (path.Count > playerInfo.canMoveThisTurn)
+                            path.RemoveRange(playerInfo.canMoveThisTurn, path.Count - playerInfo.canMoveThisTurn);
                         
                         HexRenderer finalHex = path[path.Count - 1].hexRenderer;
 
@@ -102,8 +111,8 @@ public class PlayerController : NetworkBehaviour
                         currentlyOn = finalHex;
                         currentPosition = path.Last();
                         UpdateHex(currentlyOn.name, gameObject);
-                        
-                        EndTurn();
+
+                        playerInfo.canMoveThisTurn -= path.Count;
                     }
                 }
                 else
@@ -136,7 +145,7 @@ public class PlayerController : NetworkBehaviour
                             highlightedPath = pathfinder.FindPath(currentPosition, HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hit.collider.gameObject));
                             if (highlightedPath != null)
                             {
-                                for (int i = 0; i < highlightedPath.Count && i < playerInfo.movementPerTurn; i++)
+                                for (int i = 0; i < highlightedPath.Count && i < playerInfo.canMoveThisTurn; i++)
                                     highlightedPath[i].hexRenderer.ChangeColor(highlightedPath[i].hexRenderer.GetColor() + new Color(0.4f, 0.4f, 0.4f, 1f));
                             }
 
@@ -290,6 +299,13 @@ public class PlayerController : NetworkBehaviour
         InventoryInteract();
         PickupItem();
         AbilityInput();
+
+        if (IsOwner && Input.GetKeyDown(KeyCode.E))
+        {
+            if (abilityHandler.currentAbility != null)
+                abilityHandler.CancelCasting();
+            EndTurn();
+        }
     }
 
     [ServerRpc]
