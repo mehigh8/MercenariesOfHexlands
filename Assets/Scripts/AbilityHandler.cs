@@ -28,7 +28,8 @@ public class AbilityHandler : NetworkBehaviour
 
     public void ReduceCooldowns(int turn)
     {
-        if (!GameManager.instance.IsMyTurn())
+        Debug.Log(LocalConnection.ClientId + " - triggered event");
+        if (LocalConnection.ClientId != turn)
             return;
         Debug.Log($"{turn} Reducing Cooldowns");
         List<AbilityCooldown> newCooldowns = new List<AbilityCooldown>();

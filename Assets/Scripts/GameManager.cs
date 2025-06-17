@@ -57,14 +57,14 @@ public class GameManager : NetworkBehaviour
             if (currentPlayerTurn.Value == -1)
             {
                 currentPlayerTurn.Value = connection.ClientId;
-                OnBeginTurn?.Invoke(currentPlayerTurn.Value);
+                BeginTurnClient(connection.ClientId);
             }
         } else if (args.ConnectionState == RemoteConnectionState.Stopped)
         {
             if (clientsTurnOrder.IndexOf((int)connection.ClientId) == turnOrderIndex)
             {
                 currentPlayerTurn.Value = clientsTurnOrder[turnOrderIndex == clientsTurnOrder.Count - 1 ? 0 : turnOrderIndex + 1];
-                OnBeginTurn?.Invoke(currentPlayerTurn.Value);
+                BeginTurnClient(clientsTurnOrder[turnOrderIndex == clientsTurnOrder.Count - 1 ? 0 : turnOrderIndex + 1]);
             }
             if (clientsTurnOrder.IndexOf((int)connection.ClientId) < turnOrderIndex)
                     turnOrderIndex--;
@@ -86,11 +86,22 @@ public class GameManager : NetworkBehaviour
             turnOrderIndex = 0;
 
         currentPlayerTurn.Value = clientsTurnOrder[turnOrderIndex];
-        OnBeginTurn?.Invoke(currentPlayerTurn.Value);
+        BeginTurnClient(clientsTurnOrder[turnOrderIndex]);
     }
 
     private void OnTurnChange(int oldVal, int newVal, bool asServer)
     {
         Debug.Log($"{(asServer ? "Server" : "Client")}{LocalConnection} - Turn changed from {oldVal} to {newVal}");
+    }
+
+    [ObserversRpc]
+    public void BeginTurnClient(int turn)
+    {
+        BeginTurn(turn);
+    }
+
+    private void BeginTurn(int turn)
+    {
+        OnBeginTurn?.Invoke(turn);
     }
 }
