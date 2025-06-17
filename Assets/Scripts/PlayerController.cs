@@ -90,7 +90,7 @@ public class PlayerController : NetworkBehaviour
             {
                 if (hit.collider != null)
                 {
-                    if (hit.collider.TryGetComponent<HexRenderer>(out HexRenderer hex) && hex.occupying.Value == null)
+                    if (hit.collider.TryGetComponent<HexRenderer>(out HexRenderer hex) && hex.occupying.Value == null && !hex.IsObstacle())
                     {
                         path = pathfinder.FindPath(currentPosition, HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hit.collider.gameObject));
                         if (path.Count > playerInfo.movementPerTurn)

@@ -104,7 +104,7 @@ public class AbilityHandler : NetworkBehaviour
         foreach (HexRenderer hex in hexes)
         {
             if (lingeringDuration > 0)
-                hex.lingeringEffect.Value = new HexRenderer.LingeringEffect(GameManager.instance.LocalConnection.ClientId, element, lingeringDuration);
+                hex.ApplyLingering(GameManager.instance.LocalConnection.ClientId, element, lingeringDuration);
             if (hex.occupying.Value && hex.occupying.Value.TryGetComponent<PlayerInfo>(out PlayerInfo playerInfo))
             {
                 if (isHeal)
@@ -135,7 +135,7 @@ public class AbilityHandler : NetworkBehaviour
                         currentAbility.element,
                         currentAbility.isHeal);
 
-        if (currentAbility.chargeToTarget)
+        if (currentAbility.chargeToTarget && centerNode != playerController.currentPosition)
         {
             List<HexGridLayout.HexNode> tempPath = playerController.pathfinder.FindPath(playerController.currentPosition, centerNode);
             if (centerNode.hexRenderer.occupying.Value)

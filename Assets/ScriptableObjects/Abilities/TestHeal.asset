@@ -19,7 +19,7 @@ MonoBehaviour:
     test: 0
   damage: 10
   range: 4
-  areOfEffect: 0
+  areOfEffect: 2
   lingeringDuration: 4
   cooldown: 5
   element: 3

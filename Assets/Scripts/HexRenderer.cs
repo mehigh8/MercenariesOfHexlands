@@ -58,6 +58,8 @@ public class HexRenderer : NetworkBehaviour
 
     private List<Face> faces;
 
+    [SerializeField] private List<Texture> elementMapper;
+    [SerializeField] private MeshRenderer elementObject;
     public Material material;
     [AllowMutableSyncType] public SyncVar<float> innerSize;
     [AllowMutableSyncType] public SyncVar<float> outerSize;
@@ -69,7 +71,25 @@ public class HexRenderer : NetworkBehaviour
     [AllowMutableSyncType] public SyncVar<int> hasItem; // This is the index of the item from all existing items (list found in GameManager) because FishNet doesn't support Sprites :( (bruh)
     [AllowMutableSyncType] public SyncVar<LingeringEffect> lingeringEffect = new SyncVar<LingeringEffect>();
 
-    [Server]
+    private void OnLingeringChange(LingeringEffect oldVal, LingeringEffect newVal, bool asServer)
+    {
+        if (lingeringEffect.Value == null)
+        {
+            elementObject.material.mainTexture = null;
+            elementObject.enabled = false;
+        }
+        else
+        {
+            elementObject.enabled = true;
+            elementObject.material.mainTexture = elementMapper[(int)newVal.element];
+        }
+    }
+
+    public void ApplyLingering(int clientId, AbilityInfo.Element element, int lingeringDuration)
+    {
+        lingeringEffect.Value = new HexRenderer.LingeringEffect(clientId, element, lingeringDuration);
+    }
+
     private void ReduceLingering(int turn)
     {
         if (lingeringEffect.Value == null)
@@ -77,7 +97,6 @@ public class HexRenderer : NetworkBehaviour
         lingeringEffect.Value.remainingDuration -= 1;
         if (lingeringEffect.Value.remainingDuration == 0)
             lingeringEffect.Value = null;
-        
     }
 
     private void OnOccupyingChange(GameObject oldVal, GameObject newVal, bool asServer)
@@ -126,6 +145,7 @@ public class HexRenderer : NetworkBehaviour
 
         DrawMesh();
         GameManager.instance.OnBeginTurn += ReduceLingering;
+        lingeringEffect.OnChange += OnLingeringChange;
     }
 
     public void DrawMesh()
