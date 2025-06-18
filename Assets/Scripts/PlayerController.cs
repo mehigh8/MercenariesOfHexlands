@@ -309,8 +309,14 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
     public void EndTurn()
+    {
+        UIManager.instance.inventoryUIManager.CloseInventory();
+        EndTurnRPC();
+    }
+
+    [ServerRpc]
+    public void EndTurnRPC()
     {
         GameManager.instance.NextTurn();
     }

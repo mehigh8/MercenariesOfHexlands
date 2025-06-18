@@ -8,6 +8,8 @@ using FishNet.CodeGenerating;
 using FishNet.Connection;
 using FishNet.Transporting;
 using System;
+using TMPro;
+using Unity.VisualScripting;
 
 public class GameManager : NetworkBehaviour
 {
@@ -22,6 +24,7 @@ public class GameManager : NetworkBehaviour
     public event Action<int> OnBeginTurn;
 
     private int alivePlayers = 0;
+    private TMP_Text currentTurnText;
 
     public bool IsMyTurn()
     {
@@ -35,6 +38,12 @@ public class GameManager : NetworkBehaviour
         else
             Despawn(gameObject);
         currentPlayerTurn.OnChange += OnTurnChange;
+    }
+
+    private void Start()
+    {
+        currentTurnText = GameObject.Find("CurrentTurnText").GetComponent<TMP_Text>();
+        StartCoroutine(UpdateTurnText(currentPlayerTurn.Value));
     }
 
     public override void OnStartServer()
@@ -110,6 +119,36 @@ public class GameManager : NetworkBehaviour
     private void OnTurnChange(int oldVal, int newVal, bool asServer)
     {
         Debug.Log($"{(asServer ? "Server" : "Client")}{LocalConnection} - Turn changed from {oldVal} to {newVal}");
+
+        StartCoroutine(UpdateTurnText(newVal));
+    }
+
+    IEnumerator UpdateTurnText(int turn)
+    {
+        if (turn == -1)
+        {
+            currentTurnText.text = "";
+        }
+        else
+        {
+            bool foundPlayer = false;
+            PlayerInfo[] playerInfos = FindObjectsOfType<PlayerInfo>();
+            foreach (PlayerInfo playerInfo in playerInfos)
+            {
+                if (playerInfo.GetComponent<NetworkObject>().OwnerId == turn)
+                {
+                    while (playerInfo.playerName.Value == "")
+                        yield return null;
+
+                    currentTurnText.text = playerInfo.playerName.Value + "'s turn";
+                    foundPlayer = true;
+                    break;
+                }
+            }
+
+            if (!foundPlayer)
+                currentTurnText.text = "";
+        }
     }
 
     [ObserversRpc]
