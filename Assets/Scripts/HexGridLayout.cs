@@ -80,6 +80,10 @@ public class HexGridLayout : NetworkBehaviour
     public List<Transform> transformList;
     [SerializeField] private GameObject hexPrefab;
 
+    [Header("Visuals")]
+    [SerializeField] private GameObject hexVisualsPrefab;
+    public float visualHeightVariance;
+
     private List<GameObject> spawnedItems = new List<GameObject>();
 
     public HexNode GetClosestHex(Vector3 origin)
@@ -125,8 +129,12 @@ public class HexGridLayout : NetworkBehaviour
         {
             for (int x = 0; x < gridSize.x; x++)
             {
+                Vector3 hexPosition = GetPositionForHexFromCoordinate(new Vector2Int((int)transform.position.x + x, (int)transform.position.y + y));
+                Color visualColor = GenerateColor();
+                GameObject hexVisual = Instantiate(hexVisualsPrefab, new Vector3(hexPosition.x, -visualColor.g * visualHeightVariance, hexPosition.z), Quaternion.Euler(-90, 0, 0));
                 GameObject tile = Instantiate(hexPrefab);
-                tile.transform.position = GetPositionForHexFromCoordinate(new Vector2Int((int)transform.position.x + x, (int)transform.position.y + y));
+                // tile.transform.position = hexVisual.transform.position + Vector3.up * hexVisual.transform.lossyScale.y / 2;
+                tile.transform.position = hexPosition + Vector3.up * (-visualColor.g * visualHeightVariance + 0.51f);
 
                 HexRenderer hexRenderer = tile.GetComponent<HexRenderer>();
                 hexRenderer.isFlatTopped.Value = isFlatTopped;
@@ -152,7 +160,7 @@ public class HexGridLayout : NetworkBehaviour
                 hexRenderer.occupying.NetworkManager = seed.NetworkManager;
                 hexRenderer.occupying.NetworkBehaviour = hexRenderer;
 
-                hexRenderer.originalColor.Value = GenerateColor();
+                hexRenderer.originalColor.Value = visualColor;
                 hexRenderer.originalColor.NetworkManager = seed.NetworkManager;
                 hexRenderer.originalColor.NetworkBehaviour = hexRenderer;
 
@@ -170,6 +178,7 @@ public class HexGridLayout : NetworkBehaviour
 
                 tile.layer = gridLayer;
                 tile.transform.SetParent(transform);
+                // hexVisual.transform.SetParent(tile.transform);
 
                 ServerManager.Spawn(tile, null);
 

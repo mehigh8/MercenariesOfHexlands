@@ -172,6 +172,9 @@ MonoBehaviour:
   transformList: []
   hexPrefab: {fileID: 6407880194688203491, guid: 4eb07c5f40a7aa045b05766fc88799e3,
     type: 3}
+  hexVisualsPrefab: {fileID: 4286001034590426998, guid: e42adffbc698444438d9f302139a5a37,
+    type: 3}
+  visualHeightVariance: 1
 --- !u!4 &375773324
 Transform:
   m_ObjectHideFlags: 0
