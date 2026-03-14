@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Lightning Storm
   description: Cast a storm at a location
-  displayImage: {fileID: 0}
+  displayImage: {fileID: 21300000, guid: ea92c1e7caf9ea14cac4e233b0dde39d, type: 3}
   flairEvents:
     test: 0
   damage: 20
