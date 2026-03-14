@@ -130,7 +130,6 @@ public class HexGridLayout : NetworkBehaviour
             {
                 Vector3 hexPosition = GetPositionForHexFromCoordinate(new Vector2Int((int)transform.position.x + x, (int)transform.position.y + y));
                 Color visualColor = GenerateColor();
-                GameObject hexVisual = Instantiate(hexVisualsPrefab, new Vector3(hexPosition.x, -visualColor.g * visualHeightVariance, hexPosition.z), Quaternion.Euler(-90, 0, 0));
                 GameObject tile = Instantiate(hexPrefab);
                 // tile.transform.position = hexVisual.transform.position + Vector3.up * hexVisual.transform.lossyScale.y / 2;
                 tile.transform.position = hexPosition + Vector3.up * (-visualColor.g * visualHeightVariance + 0.51f);
@@ -163,6 +162,10 @@ public class HexGridLayout : NetworkBehaviour
                 hexRenderer.originalColor.NetworkManager = seed.NetworkManager;
                 hexRenderer.originalColor.NetworkBehaviour = hexRenderer;
 
+                hexRenderer.hexVisualPrefab.Value = Random.Range(0, GameManager.instance.allPossibleTiles.Count);
+                hexRenderer.hexVisualPrefab.NetworkManager = seed.NetworkManager;
+                hexRenderer.hexVisualPrefab.NetworkBehaviour = hexRenderer;
+
                 ItemInfo spawnItem = null;
                 if (spawnableItems != null && spawnableItems.Count > 0)
                     spawnItem = Random.value <= chanceToSpawnItem && hexRenderer.originalColor.Value.g > obstacleThreshold ? spawnableItems[Random.Range(0, spawnableItems.Count)] : null;
@@ -177,7 +180,6 @@ public class HexGridLayout : NetworkBehaviour
 
                 tile.layer = gridLayer;
                 tile.transform.SetParent(transform);
-                hexVisual.transform.SetParent(tile.transform);
 
                 ServerManager.Spawn(tile, null);
 

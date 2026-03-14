@@ -61,6 +61,7 @@ public class HexRenderer : NetworkBehaviour
     [SerializeField] private List<Texture> elementMapper;
     [SerializeField] private MeshRenderer elementObject;
     public Material material;
+    [AllowMutableSyncType] public SyncVar<int> hexVisualPrefab;
     [AllowMutableSyncType] public SyncVar<float> innerSize;
     [AllowMutableSyncType] public SyncVar<float> outerSize;
     [AllowMutableSyncType] public SyncVar<float> height;
@@ -143,6 +144,8 @@ public class HexRenderer : NetworkBehaviour
         if (HexGridLayout.instance.hexNodes.Count == HexGridLayout.instance.gridSize.x * HexGridLayout.instance.gridSize.y)
             NetworkManagerObject.Instance.pSpawner.Spawns = HexGridLayout.instance.transformList.OrderBy(x => Random.value).ToArray();
 
+        Instantiate(GameManager.instance.allPossibleTiles[hexVisualPrefab.Value], transform.position - Vector3.up * 0.51f, Quaternion.Euler(-90, 0, 0), transform);
+
         DrawMesh();
         GameManager.instance.OnBeginTurn += ReduceLingering;
         lingeringEffect.OnChange += OnLingeringChange;
@@ -157,6 +160,8 @@ public class HexRenderer : NetworkBehaviour
         meshRenderer.material.color = originalColor.Value;
         DrawFaces();
         CombineFaces();
+
+        
     }
 
     private void DrawFaces()

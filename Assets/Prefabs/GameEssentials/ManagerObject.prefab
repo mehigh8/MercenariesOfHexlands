@@ -472,7 +472,6 @@ MonoBehaviour:
     NetworkBehaviour: {fileID: 0}
     _value: 0
   obstacleThreshold: 0.25
-  pSpawner: {fileID: 0}
   transformList: []
   hexPrefab: {fileID: 6407880194688203491, guid: 4eb07c5f40a7aa045b05766fc88799e3,
     type: 3}
@@ -678,6 +677,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8412867195503020534, guid: 2e245ae3f6c6fcc4c90e49b7253f24a5,
+        type: 3}
+      propertyPath: allPossibleTiles.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8412867195503020534, guid: 2e245ae3f6c6fcc4c90e49b7253f24a5,
+        type: 3}
+      propertyPath: allPossibleTiles.Array.data[0]
+      value: 
+      objectReference: {fileID: 4286001034590426998, guid: e42adffbc698444438d9f302139a5a37,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
