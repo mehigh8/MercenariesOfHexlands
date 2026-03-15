@@ -142,7 +142,7 @@ public class HexRenderer : NetworkBehaviour
 
         transform.parent = HexGridLayout.instance.transform;
         if (HexGridLayout.instance.hexNodes.Count == HexGridLayout.instance.gridSize.x * HexGridLayout.instance.gridSize.y)
-            NetworkManagerObject.Instance.pSpawner.Spawns = HexGridLayout.instance.transformList.OrderBy(x => Random.value).ToArray();
+            NPCManager.instance.GenerateNPCs();
 
         Instantiate(GameManager.instance.allPossibleTiles[hexVisualPrefab.Value], transform.position - Vector3.up * 0.51f, Quaternion.Euler(-90, 0, 0), transform);
 

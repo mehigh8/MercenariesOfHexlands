@@ -20,6 +20,7 @@ public class GameManager : NetworkBehaviour
     private int turnOrderIndex = 0;
     [AllowMutableSyncType] public SyncVar<int> currentPlayerTurn = new SyncVar<int>();
     public List<ItemInfo> allExistingItems = new List<ItemInfo>();
+    public List<AbilityInfo> allExistingAbilities = new List<AbilityInfo>();
     public List<GameObject> allPossibleTiles = new List<GameObject>();
 
     public event Action<int> OnBeginTurn;
