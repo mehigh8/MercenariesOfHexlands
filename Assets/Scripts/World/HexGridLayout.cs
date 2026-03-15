@@ -112,6 +112,7 @@ public class HexGridLayout : NetworkBehaviour
     private void Start()
     {
         LayoutGrid();
+        //NPCManager.instance.GenerateNPCs();
     }
 
     private bool isGenerated;
