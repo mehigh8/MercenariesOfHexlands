@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using FishNet.CodeGenerating;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using Steamworks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -149,13 +149,13 @@ public class PlayerInfo : NetworkBehaviour
     {
         if (IsOwner)
         {
-            UpdateName(GameObject.Find("PlayerName").GetComponent<TMP_InputField>().text, LocalConnection.ClientId);
+            UpdateName(SteamFriends.GetPersonaName(), LocalConnection.ClientId);
         }
 
-        while (playerName.Value == "")
+        while (SteamFriends.GetPersonaName() == "")
             yield return null;
 
-        playerCanvas.nameText.text = playerName.Value;
+        playerCanvas.nameText.text = SteamFriends.GetPersonaName();
     }
 
     [ServerRpc]
