@@ -122,6 +122,18 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &1530575180 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9208021400402744187, guid: 2224a8fc214ecd6438c8ef62f7227d45,
+    type: 3}
+  m_PrefabInstance: {fileID: 2652083492920148075}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2652083492920148075
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -135,6 +147,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: ManagerObject
       objectReference: {fileID: 0}
+    - target: {fileID: 2008536908665405329, guid: 2224a8fc214ecd6438c8ef62f7227d45,
+        type: 3}
+      propertyPath: _addedNetworkObject
+      value: 
+      objectReference: {fileID: 1530575180}
+    - target: {fileID: 2008536908665405329, guid: 2224a8fc214ecd6438c8ef62f7227d45,
+        type: 3}
+      propertyPath: _networkObjectCache
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3073519281081313916, guid: 2224a8fc214ecd6438c8ef62f7227d45,
         type: 3}
       propertyPath: WasActiveDuringEdit
@@ -145,11 +167,11 @@ PrefabInstance:
       propertyPath: <SceneId>k__BackingField
       value: 3153319386
       objectReference: {fileID: 0}
-    - target: {fileID: 5048389164851666789, guid: 2224a8fc214ecd6438c8ef62f7227d45,
+    - target: {fileID: 3073519281081313916, guid: 2224a8fc214ecd6438c8ef62f7227d45,
         type: 3}
-      propertyPath: pSpawner
+      propertyPath: InitializedParentNetworkBehaviour
       value: 
-      objectReference: {fileID: 7443408887620583543}
+      objectReference: {fileID: 0}
     - target: {fileID: 5048389164851666789, guid: 2224a8fc214ecd6438c8ef62f7227d45,
         type: 3}
       propertyPath: seed.NetworkManager
@@ -164,6 +186,11 @@ PrefabInstance:
         type: 3}
       propertyPath: <SceneId>k__BackingField
       value: 2011428655
+      objectReference: {fileID: 0}
+    - target: {fileID: 6156072365420084723, guid: 2224a8fc214ecd6438c8ef62f7227d45,
+        type: 3}
+      propertyPath: InitializedParentNetworkBehaviour
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8647544775600761563, guid: 2224a8fc214ecd6438c8ef62f7227d45,
         type: 3}
@@ -214,6 +241,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9208021400402744187, guid: 2224a8fc214ecd6438c8ef62f7227d45,
+        type: 3}
+      propertyPath: WasActiveDuringEdit
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9208021400402744187, guid: 2224a8fc214ecd6438c8ef62f7227d45,
+        type: 3}
+      propertyPath: <SceneId>k__BackingField
+      value: 4294367202
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -293,18 +330,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9ec04f2109786d241b47a631e45484c0, type: 3}
---- !u!114 &7443408887620583543 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8492028745755242529, guid: 9ec04f2109786d241b47a631e45484c0,
-    type: 3}
-  m_PrefabInstance: {fileID: 5694518960781927898}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 211a9f6ec51ddc14f908f5acc0cd0423, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &7443408887620583545 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6767867088014908777, guid: 9ec04f2109786d241b47a631e45484c0,
