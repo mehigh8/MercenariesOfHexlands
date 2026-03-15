@@ -82,14 +82,15 @@ public class LobbyManager : MonoBehaviour
             lobby.transform.position = lobbyContainer.transform.position - Vector3.up * (i * lobbyHeight);
             lobby.GetComponent<LobbyReferenceHolder>().lobbyName.text = foundLobbies[i].name;
             lobby.GetComponent<LobbyReferenceHolder>().playerCount.text = $"{foundLobbies[i].playerCount}/4";
-            lobby.GetComponent<LobbyReferenceHolder>().joinButton.onClick.AddListener(() => JoinMatch(foundLobbies[i].steamID));
+            string steamID = foundLobbies[i].steamID;
+            lobby.GetComponent<LobbyReferenceHolder>().joinButton.onClick.AddListener(() => JoinMatch(steamID));
         }
     }
 
     private void HostMatch()
     {
         // load the lobby scene and start the server
-        string steamID = SteamUser.GetSteamID().m_SteamID.ToString(); // FIXME: dunno if this works yet
+        string steamID = SteamUser.GetSteamID().m_SteamID.ToString();
         NetworkManagerObject.Instance.fishySteamworks.SetClientAddress(steamID);
         SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
 
@@ -108,7 +109,6 @@ public class LobbyManager : MonoBehaviour
         }
 
         CSteamID lobbyID = new CSteamID(callback.m_ulSteamIDLobby);
-
 
         SteamMatchmaking.SetLobbyData(lobbyID, "game", "Mercenaries of Hexlands");
         SteamMatchmaking.SetLobbyData(lobbyID, "lobbyName", SteamFriends.GetPersonaName() + "'s Lobby");

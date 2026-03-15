@@ -152,10 +152,10 @@ public class PlayerInfo : NetworkBehaviour
             UpdateName(SteamFriends.GetPersonaName(), LocalConnection.ClientId);
         }
 
-        while (SteamFriends.GetPersonaName() == "")
+        while (playerName.Value == "")
             yield return null;
 
-        playerCanvas.nameText.text = SteamFriends.GetPersonaName();
+        playerCanvas.nameText.text = playerName.Value;
     }
 
     [ServerRpc]
