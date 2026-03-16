@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4101124930127019279}
   - component: {fileID: 3702797207363758065}
   - component: {fileID: 8412867195503020534}
+  - component: {fileID: 8889096618992292212}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -122,3 +123,23 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8b807f586eb4cb747921938a6d24ac32, type: 2}
   - {fileID: 11400000, guid: c816fecaf006fe54aa75762d6b43769a, type: 2}
   - {fileID: 11400000, guid: 62e1f03ed906f2a48a18fc1de24f357d, type: 2}
+  allExistingAbilities: []
+  allPossibleTiles: []
+--- !u!114 &8889096618992292212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3109432137062688595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd707ec07b7aae44a84aba4cc16b5963, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerRowPrefab: {fileID: 126307328770477716, guid: 3278924efcd37fb4d8b4747b8083ec56,
+    type: 3}
+  startMatchButton: {fileID: 0}
+  backToMenuButton: {fileID: 0}
+  lobbyNameText: {fileID: 0}
+  playerListContainer: {fileID: 0}
