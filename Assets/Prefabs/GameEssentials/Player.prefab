@@ -103,7 +103,6 @@ GameObject:
   - component: {fileID: 4377053942288531369}
   - component: {fileID: 4231930951776552360}
   - component: {fileID: 2969058245022903750}
-  - component: {fileID: -5122715637066728666}
   - component: {fileID: 4864732434553502953}
   - component: {fileID: -3492774116805146939}
   m_Layer: 2
@@ -170,7 +169,6 @@ MonoBehaviour:
   mask:
     serializedVersion: 2
     m_Bits: 64
-  pathfinder: {fileID: -5122715637066728666}
   playerInfo: {fileID: 4864732434553502953}
   cameraOffset: {x: 0, y: 9, z: -5}
   currentlyOn:
@@ -276,18 +274,6 @@ MonoBehaviour:
     X: 0
     Y: 0
     Z: 0
---- !u!114 &-5122715637066728666
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2882929944252777398}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3df3c3f5cf40fe84cb06705db565d37a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4864732434553502953
 MonoBehaviour:
   m_ObjectHideFlags: 0

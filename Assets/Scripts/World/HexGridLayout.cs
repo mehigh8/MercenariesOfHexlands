@@ -45,6 +45,12 @@ public class HexGridLayout : NetworkBehaviour
 
         public int Distance(HexNode other)
         {
+            if (other == null)
+            {
+                Debug.LogError("Hex Node is null");
+                return int.MaxValue;
+            }
+
             int vecQ = q - other.q;
             int vecR = r - other.r;
             int vecS = s - other.s;

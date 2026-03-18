@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Pathfinder : MonoBehaviour
+public class Pathfinder
 {
-    public List<HexGridLayout.HexNode> FindPath(HexGridLayout.HexNode start, HexGridLayout.HexNode target)
+    public static List<HexGridLayout.HexNode> FindPath(HexGridLayout.HexNode start, HexGridLayout.HexNode target)
     {
         if (start == null || target == null)
             return null;
@@ -41,7 +41,7 @@ public class Pathfinder : MonoBehaviour
                 return path;
             }
 
-            List<HexGridLayout.HexNode> neighbours = current.GetNeighbours(HexGridLayout.instance.hexNodes).Where(h => !processed.Contains(h) && h.hexRenderer.originalColor.Value.g > HexGridLayout.instance.obstacleThreshold).ToList();
+            List<HexGridLayout.HexNode> neighbours = current.GetNeighbours(HexGridLayout.instance.hexNodes).Where(h => !processed.Contains(h) && !h.hexRenderer.IsObstacle()).ToList();
             foreach (HexGridLayout.HexNode neighbour in neighbours)
             {
                 bool inSearch = toSearch.Contains(neighbour);

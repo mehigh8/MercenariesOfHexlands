@@ -17,7 +17,6 @@ public class PlayerController : NetworkBehaviour
 
     [Header("Navigation Settings")]
     [SerializeField] private LayerMask mask;
-    [SerializeField] public Pathfinder pathfinder;
     [SerializeField] private PlayerInfo playerInfo;
 
     [SerializeField]
@@ -103,7 +102,7 @@ public class PlayerController : NetworkBehaviour
                 {
                     if (hit.collider.TryGetComponent<HexRenderer>(out HexRenderer hex) && hex.occupying.Value == null && !hex.IsObstacle())
                     {
-                        path = pathfinder.FindPath(currentPosition, HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hit.collider.gameObject));
+                        path = Pathfinder.FindPath(currentPosition, HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hit.collider.gameObject));
                         if (path.Count > playerInfo.canMoveThisTurn)
                             path.RemoveRange(playerInfo.canMoveThisTurn, path.Count - playerInfo.canMoveThisTurn);
                         
@@ -144,7 +143,7 @@ public class PlayerController : NetworkBehaviour
                             if (highlightedPath != null)
                                 highlightedPath.ForEach(hex => hex.hexRenderer.ChangeColorToOriginal());
 
-                            highlightedPath = pathfinder.FindPath(currentPosition, HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hit.collider.gameObject));
+                            highlightedPath = Pathfinder.FindPath(currentPosition, HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hit.collider.gameObject));
                             if (highlightedPath != null)
                             {
                                 for (int i = 0; i < highlightedPath.Count && i < playerInfo.canMoveThisTurn; i++)

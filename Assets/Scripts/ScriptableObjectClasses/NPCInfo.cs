@@ -37,4 +37,5 @@ public class NPCInfo : ScriptableObject
     [Header("Abilities")]
     [Tooltip("List of abilities this NPC can use")]
     public List<AbilityInfo> abilities;
+
 }

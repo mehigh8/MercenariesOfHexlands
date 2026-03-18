@@ -98,7 +98,14 @@ public class GameManager : NetworkBehaviour
             return;
 
         turnOrderIndex++;
-        if (turnOrderIndex >= clientsTurnOrder.Count)
+
+        if (turnOrderIndex == clientsTurnOrder.Count)
+        {
+            NPCManager.instance.DoNPCTurn();
+            return;
+        }
+
+        if (turnOrderIndex > clientsTurnOrder.Count)
             turnOrderIndex = 0;
 
         currentPlayerTurn.Value = clientsTurnOrder[turnOrderIndex];

@@ -70,7 +70,7 @@ public class AbilityHandler : NetworkBehaviour
             {
                 if (hex.hexRenderer.IsObstacle())
                     continue;
-                List<HexGridLayout.HexNode> path = playerController.pathfinder.FindPath(playerController.currentPosition, HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hex.hexRenderer.gameObject));
+                List<HexGridLayout.HexNode> path = Pathfinder.FindPath(playerController.currentPosition, HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hex.hexRenderer.gameObject));
                 if (path.Count > currentAbility.range)
                     path.RemoveRange(currentAbility.range, path.Count - currentAbility.range);
 
@@ -137,7 +137,7 @@ public class AbilityHandler : NetworkBehaviour
 
         if (currentAbility.chargeToTarget && centerNode != playerController.currentPosition)
         {
-            List<HexGridLayout.HexNode> tempPath = playerController.pathfinder.FindPath(playerController.currentPosition, centerNode);
+            List<HexGridLayout.HexNode> tempPath = Pathfinder.FindPath(playerController.currentPosition, centerNode);
             if (centerNode.hexRenderer.occupying.Value)
                 tempPath.RemoveAt(tempPath.Count - 1);
             if (tempPath.Count > 0)

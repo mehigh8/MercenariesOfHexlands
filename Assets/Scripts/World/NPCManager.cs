@@ -100,8 +100,24 @@ public class NPCManager : NetworkBehaviour
             ServerManager.Spawn(spawnedNPC, null);
 
             HexGridLayout.instance.transformList.Remove(parentHexTransform);
+
+            HexGridLayout.instance.UpdateHex(parentHexTransform.name, spawnedNPC);
+            
+            npcBehaviour.currentHex.Value = parentHexTransform.name;
+            npcBehaviour.currentHex.NetworkManager = NetworkManager;
+            npcBehaviour.currentHex.NetworkBehaviour = npcBehaviour;
         }
 
         NetworkManagerObject.Instance.pSpawner.Spawns = HexGridLayout.instance.transformList.OrderBy(x => Random.value).ToArray();
+    }
+
+    public void DoNPCTurn()
+    {
+        foreach (NPCBehaviour npc in npcs)
+        {
+            npc.ChooseAction();
+        }
+
+        GameManager.instance.NextTurn();
     }
 }
