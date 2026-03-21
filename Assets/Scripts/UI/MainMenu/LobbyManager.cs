@@ -35,6 +35,16 @@ public class LobbyManager : MonoBehaviour
 
     private void OnLobbyJoined(LobbyEnter_t result)
     {
+        CSteamID lobbyID = new CSteamID(result.m_ulSteamIDLobby);
+        // check one last time if the lobby is still joinable
+        if (SteamMatchmaking.GetNumLobbyMembers(lobbyID) >= 4 || SteamMatchmaking.GetLobbyData(lobbyID, "gameStarted") == "true")
+        {        
+            SteamMatchmaking.LeaveLobby(lobbyID);
+            Debug.LogWarning("Lobby is full or game already started");
+            FetchLobbies();
+            return;
+        }
+
         // if we are the host 
         if (NetworkManagerObject.Instance.mySteamID == SteamMatchmaking.GetLobbyOwner((CSteamID)result.m_ulSteamIDLobby))
         {
@@ -73,6 +83,11 @@ public class LobbyManager : MonoBehaviour
         for (int i = 0; i < result.m_nLobbiesMatching; i++)
         {
             CSteamID lobbyId = SteamMatchmaking.GetLobbyByIndex(i);
+
+            string value = SteamMatchmaking.GetLobbyData(lobbyId, "kick_" + NetworkManagerObject.Instance.mySteamID);
+
+            if (value == "1")
+                continue;
 
             foundLobbies.Add(new LobbyInfo()
             {
@@ -142,17 +157,9 @@ public class LobbyManager : MonoBehaviour
 
     private void JoinMatch(LobbyInfo lobbyInfo)
     {
-        // check one last time if the lobby is still joinable
-        if (SteamMatchmaking.GetNumLobbyMembers(lobbyInfo.lobbyID) >= 4 || SteamMatchmaking.GetLobbyData(lobbyInfo.lobbyID, "gameStarted") == "true")
-        {
-            Debug.LogWarning("Lobby is full or game already started");
-            FetchLobbies();
-            return;
-        }
-
         // connect to the lobby with the given steamID
-        NetworkManagerObject.Instance.fishySteamworks.SetClientAddress(lobbyInfo.steamID);
         SteamMatchmaking.JoinLobby(lobbyInfo.lobbyID);
+        NetworkManagerObject.Instance.fishySteamworks.SetClientAddress(lobbyInfo.steamID);
         Debug.Log($"Joining lobby with host {lobbyInfo.steamID}");
     }
 
