@@ -50,6 +50,7 @@ public class GameManager : NetworkBehaviour
         ServerManager.OnRemoteConnectionState += OnPlayerConnectionChanged;
 
         currentPlayerTurn.Value = -1;
+        Debug.LogWarning("Current player turn set to -1");
     }
 
     public override void OnStopServer()
@@ -68,6 +69,7 @@ public class GameManager : NetworkBehaviour
             if (currentPlayerTurn.Value == -1)
             {
                 currentPlayerTurn.Value = connection.ClientId;
+                Debug.LogWarning("Current player turn set to " + connection.ClientId);
                 BeginTurnClient(connection.ClientId);
             }
         } else if (args.ConnectionState == RemoteConnectionState.Stopped)
@@ -75,6 +77,7 @@ public class GameManager : NetworkBehaviour
             clientsDead.Remove(connection.ClientId);
             if (clientsTurnOrder.IndexOf((int)connection.ClientId) == turnOrderIndex)
             {
+                Debug.LogError("Removed me for some reason");
                 currentPlayerTurn.Value = clientsTurnOrder[turnOrderIndex == clientsTurnOrder.Count - 1 ? 0 : turnOrderIndex + 1];
                 BeginTurnClient(clientsTurnOrder[turnOrderIndex == clientsTurnOrder.Count - 1 ? 0 : turnOrderIndex + 1]);
             }
@@ -93,7 +96,7 @@ public class GameManager : NetworkBehaviour
 
     public void NextTurn()
     {
-        print("NextTurn start");
+        Debug.LogWarning("NextTurn start");
         if (clientsTurnOrder.Count > 0 && alivePlayers <= 0)
             return;
 
@@ -101,6 +104,7 @@ public class GameManager : NetworkBehaviour
 
         if (turnOrderIndex == clientsTurnOrder.Count)
         {
+            Debug.LogWarning("Doing npc turn");
             NPCManager.instance.DoNPCTurn();
             return;
         }
@@ -108,16 +112,17 @@ public class GameManager : NetworkBehaviour
         if (turnOrderIndex > clientsTurnOrder.Count)
             turnOrderIndex = 0;
 
+        Debug.LogWarning("NextTurn: " + turnOrderIndex + " " + clientsTurnOrder.Count + " alive players: " + alivePlayers);
         currentPlayerTurn.Value = clientsTurnOrder[turnOrderIndex];
 
         if (clientsDead.Contains(clientsTurnOrder[turnOrderIndex]))
         {
-            print("NextTurn again because player ded");
+            Debug.LogWarning("NextTurn again because player ded");
             NextTurn();
             return;
         }
 
-        print("NextTurn event");
+        Debug.LogWarning("NextTurn event");
         BeginTurnClient(clientsTurnOrder[turnOrderIndex]);
     }
 

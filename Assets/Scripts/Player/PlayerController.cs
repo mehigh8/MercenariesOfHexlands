@@ -70,7 +70,7 @@ public class PlayerController : NetworkBehaviour
 
     private void CameraMovement()
     {
-        if (!playerCamera)
+        if (!GameLobbyManager.Instance.gameStarted || !playerCamera)
             return;
         if (Input.GetKeyDown(KeyCode.Space))
                 playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z) + cameraOffset;
@@ -91,7 +91,7 @@ public class PlayerController : NetworkBehaviour
 
     private void PickMovement()
     {
-        if (!base.IsOwner || GameManager.instance.currentPlayerTurn.Value != LocalConnection.ClientId || abilityHandler.currentAbility != null || isMoving())
+        if (!GameLobbyManager.Instance.gameStarted || !base.IsOwner || GameManager.instance.currentPlayerTurn.Value != LocalConnection.ClientId || abilityHandler.currentAbility != null || isMoving())
             return;
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
@@ -126,7 +126,7 @@ public class PlayerController : NetworkBehaviour
 
     private void HighlightMovement()
     {
-        if (!base.IsOwner)
+        if (!GameLobbyManager.Instance.gameStarted || !base.IsOwner)
             return;
 
         if (GameManager.instance.currentPlayerTurn.Value == LocalConnection.ClientId && abilityHandler.currentAbility == null && !isMoving())
@@ -170,7 +170,7 @@ public class PlayerController : NetworkBehaviour
     private HexGridLayout.HexNode previousHex;
     private void AbilityInput()
     {
-        if (!IsOwner || !GameManager.instance.IsMyTurn())
+        if (!GameLobbyManager.Instance.gameStarted || !IsOwner || !GameManager.instance.IsMyTurn())
             return;
 
         if (abilityHandler.currentAbility != null)
@@ -259,7 +259,7 @@ public class PlayerController : NetworkBehaviour
 
     private void PickupItem()
     {
-        if (!IsOwner || GameManager.instance.currentPlayerTurn.Value != LocalConnection.ClientId)
+        if (!GameLobbyManager.Instance.gameStarted || !IsOwner || GameManager.instance.currentPlayerTurn.Value != LocalConnection.ClientId)
             return;
 
         if (Input.GetKeyDown(KeyCode.F) && currentPosition.hexRenderer.hasItem.Value != -1)
@@ -277,7 +277,7 @@ public class PlayerController : NetworkBehaviour
 
     private void InventoryInteract()
     {
-        if (!IsOwner || GameManager.instance.currentPlayerTurn.Value != LocalConnection.ClientId)
+        if (!GameLobbyManager.Instance.gameStarted || !IsOwner || GameManager.instance.currentPlayerTurn.Value != LocalConnection.ClientId)
             return;
 
         if (Input.GetKeyDown(KeyCode.I))
@@ -300,7 +300,7 @@ public class PlayerController : NetworkBehaviour
         PickupItem();
         AbilityInput();
 
-        if (IsOwner && GameManager.instance.IsMyTurn() && Input.GetKeyDown(KeyCode.E))
+        if (!GameLobbyManager.Instance.gameStarted || IsOwner && GameManager.instance.IsMyTurn() && Input.GetKeyDown(KeyCode.E))
         {
             if (abilityHandler.currentAbility != null)
                 abilityHandler.CancelCasting();

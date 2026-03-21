@@ -1,5 +1,6 @@
 using FishNet.Component.Spawning;
 using FishNet.Managing;
+using Steamworks;
 using UnityEngine;
 
 public class NetworkManagerObject : MonoBehaviour
@@ -9,6 +10,9 @@ public class NetworkManagerObject : MonoBehaviour
     [HideInInspector] public FishySteamworks.FishySteamworks fishySteamworks;
     [HideInInspector] public SteamManager steamManager;
     [HideInInspector] public NetworkManager networkManager;
+
+    [HideInInspector] public CSteamID mySteamID;
+    [HideInInspector] public CSteamID currentLobbyID;
 
     private void Awake()
     {
@@ -24,5 +28,10 @@ public class NetworkManagerObject : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void Start()
+    {
+        mySteamID = SteamUser.GetSteamID();
     }
 }

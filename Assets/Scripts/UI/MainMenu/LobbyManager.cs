@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Steamworks;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -23,6 +22,7 @@ public class LobbyManager : MonoBehaviour
         public string name;
         public int playerCount;
         public string steamID;
+        public CSteamID lobbyID;
     }
     
     private List<LobbyInfo> foundLobbies = new List<LobbyInfo>();
@@ -31,6 +31,23 @@ public class LobbyManager : MonoBehaviour
 
     private Callback<LobbyMatchList_t> lobbyMatchList;
     private Callback<LobbyCreated_t> lobbyCreated;
+    private Callback<LobbyEnter_t> lobbyJoined;
+
+    private void OnLobbyJoined(LobbyEnter_t result)
+    {
+        // if we are the host 
+        if (NetworkManagerObject.Instance.mySteamID == SteamMatchmaking.GetLobbyOwner((CSteamID)result.m_ulSteamIDLobby))
+        {
+            SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+            NetworkManagerObject.Instance.networkManager.ServerManager.StartConnection();
+        }
+        else
+        {
+            SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+        }
+        NetworkManagerObject.Instance.currentLobbyID = (CSteamID)result.m_ulSteamIDLobby;
+        Debug.LogWarning("Successfully joined lobby " + NetworkManagerObject.Instance.currentLobbyID);
+    }
     public void FetchLobbies()
     {
         foundLobbies = new List<LobbyInfo>();
@@ -40,6 +57,11 @@ public class LobbyManager : MonoBehaviour
         SteamMatchmaking.AddRequestLobbyListStringFilter(
             "game",
             "Mercenaries of Hexlands",
+            ELobbyComparison.k_ELobbyComparisonEqual
+        );
+        SteamMatchmaking.AddRequestLobbyListStringFilter(
+            "gameStarted",
+            "false",
             ELobbyComparison.k_ELobbyComparisonEqual
         );
 
@@ -56,7 +78,8 @@ public class LobbyManager : MonoBehaviour
             {
                 name = SteamMatchmaking.GetLobbyData(lobbyId, "lobbyName"),
                 playerCount = SteamMatchmaking.GetNumLobbyMembers(lobbyId),
-                steamID = SteamMatchmaking.GetLobbyData(lobbyId, "hostSteamID")
+                steamID = SteamMatchmaking.GetLobbyData(lobbyId, "hostSteamID"),
+                lobbyID = lobbyId
             });
         }
         UpdateLobbyWindow();
@@ -82,8 +105,8 @@ public class LobbyManager : MonoBehaviour
             lobby.transform.position = lobbyContainer.transform.position - Vector3.up * (i * lobbyHeight);
             lobby.GetComponent<LobbyReferenceHolder>().lobbyName.text = foundLobbies[i].name;
             lobby.GetComponent<LobbyReferenceHolder>().playerCount.text = $"{foundLobbies[i].playerCount}/4";
-            string steamID = foundLobbies[i].steamID;
-            lobby.GetComponent<LobbyReferenceHolder>().joinButton.onClick.AddListener(() => JoinMatch(steamID));
+            LobbyInfo lobbyInfo = foundLobbies[i];
+            lobby.GetComponent<LobbyReferenceHolder>().joinButton.onClick.AddListener(() => JoinMatch(lobbyInfo));
         }
     }
 
@@ -92,7 +115,6 @@ public class LobbyManager : MonoBehaviour
         // load the lobby scene and start the server
         string steamID = SteamUser.GetSteamID().m_SteamID.ToString();
         NetworkManagerObject.Instance.fishySteamworks.SetClientAddress(steamID);
-        SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
 
         SteamMatchmaking.CreateLobby(
             ELobbyType.k_ELobbyTypePublic,
@@ -113,20 +135,25 @@ public class LobbyManager : MonoBehaviour
         SteamMatchmaking.SetLobbyData(lobbyID, "game", "Mercenaries of Hexlands");
         SteamMatchmaking.SetLobbyData(lobbyID, "lobbyName", SteamFriends.GetPersonaName() + "'s Lobby");
         SteamMatchmaking.SetLobbyData(lobbyID, "hostSteamID", SteamUser.GetSteamID().m_SteamID.ToString());
+        SteamMatchmaking.SetLobbyData(lobbyID, "gameStarted", "false");
 
         Debug.Log($"Lobby created: {lobbyID} with name {SteamFriends.GetPersonaName()}'s Lobby and host {SteamUser.GetSteamID().m_SteamID}");
-
-        NetworkManagerObject.Instance.networkManager.ServerManager.StartConnection();
-        NetworkManagerObject.Instance.networkManager.ClientManager.StartConnection();
     }
 
-    private void JoinMatch(string steamID)
+    private void JoinMatch(LobbyInfo lobbyInfo)
     {
+        // check one last time if the lobby is still joinable
+        if (SteamMatchmaking.GetNumLobbyMembers(lobbyInfo.lobbyID) >= 4 || SteamMatchmaking.GetLobbyData(lobbyInfo.lobbyID, "gameStarted") == "true")
+        {
+            Debug.LogWarning("Lobby is full or game already started");
+            FetchLobbies();
+            return;
+        }
+
         // connect to the lobby with the given steamID
-        NetworkManagerObject.Instance.fishySteamworks.SetClientAddress(steamID);
-        SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
-        Debug.Log($"Joining lobby with host {steamID}");
-        NetworkManagerObject.Instance.networkManager.ClientManager.StartConnection();
+        NetworkManagerObject.Instance.fishySteamworks.SetClientAddress(lobbyInfo.steamID);
+        SteamMatchmaking.JoinLobby(lobbyInfo.lobbyID);
+        Debug.Log($"Joining lobby with host {lobbyInfo.steamID}");
     }
 
     private void ScrollLobbyWindow()
@@ -151,6 +178,17 @@ public class LobbyManager : MonoBehaviour
 
         lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
         lobbyMatchList = Callback<LobbyMatchList_t>.Create(OnLobbyMatchList);
+        lobbyJoined = Callback<LobbyEnter_t>.Create(OnLobbyJoined);
+    }
+
+    private void OnDisable()
+    {   
+        // lobbyCreated.Dispose(); 
+        // lobbyMatchList.Dispose();
+        // lobbyJoined.Dispose();
+
+        RefreshButton.onClick.RemoveAllListeners();
+        hostMatchButton.onClick.RemoveAllListeners();
     }
 
     // Update is called once per frame

@@ -33,7 +33,12 @@ public class MainMenuManager : MonoBehaviour
         quitButton.onClick.AddListener(() => Application.Quit());
     }
 
-
+    private void OnDisable()
+    {
+        lobbyButton.onClick.RemoveAllListeners();
+        settingsButton.onClick.RemoveAllListeners();
+        quitButton.onClick.RemoveAllListeners();
+    }
     private void OpenWindow(GameObject window)
     {
         if (activeWindow != null)
