@@ -9,7 +9,8 @@ using UnityEngine.AI;
 
 public class NPCBehaviour : NetworkBehaviour
 {
-    [Header("NPC Stats")]
+    // These SyncVars are necessary for the NPC's health bar and information panel
+    [Header("NPC Stats and Info")]
     [AllowMutableSyncType] public SyncVar<string> npcName;
     [AllowMutableSyncType] public SyncVar<int> npcId;
     [Tooltip("0 - passive; 1 - neutral; 2 - agressive")]
@@ -22,13 +23,13 @@ public class NPCBehaviour : NetworkBehaviour
     [AllowMutableSyncType] public SyncVar<int> defence;
     [AllowMutableSyncType] public SyncVar<float> critChance;
     [AllowMutableSyncType] public SyncVar<int> movement;
-    [Header("Information")]
-    [AllowMutableSyncType] public SyncVar<string> currentHex;
+    [Header("Additional information")]
+    [AllowMutableSyncType] public SyncVar<string> currentHex; // Name of the hex this NPC is standing on
 
-    private NavMeshAgent navAgent;
-    private HexGridLayout.HexNode currentHexNode = null;
+    private NavMeshAgent navAgent; // NavMeshAgent component of this NPC
+    private HexGridLayout.HexNode currentHexNode = null; // The actual hex this NPc is standing on (is updated from the SyncVar hex name)
 
-    public NPCInfo npcInfo;
+    [HideInInspector] public NPCInfo npcInfo; // NPC Info reference (This is only usable on the Server)
 
     private void Awake()
     {
