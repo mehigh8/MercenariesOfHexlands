@@ -1,23 +1,28 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// This is a script attached to the UI element that gives a brief description of abilities inside an item tooltip
+/// </summary>
 public class AbilityReferenceHolder : MonoBehaviour
 {
-    [SerializeField] private Image abilityImage;
-    [SerializeField] private TextMeshProUGUI abilityName;
-    [SerializeField] private TextMeshProUGUI abilityDescription;
-    [SerializeField] private TextMeshProUGUI abilityCooldown;
-    [SerializeField] private TextMeshProUGUI abilityDamage;
-    [SerializeField] private TextMeshProUGUI abilityRange;
-    [SerializeField] private TextMeshProUGUI abilityAOE;
-    [SerializeField] private TextMeshProUGUI abilityLinger;
-    [SerializeField] private TextMeshProUGUI abilityModifiers;
+    [SerializeField] private Image abilityImage; // Reference to the image display of the ability
+    [SerializeField] private TextMeshProUGUI abilityName; // Reference to the ability name
+    [SerializeField] private TextMeshProUGUI abilityDescription; // Reference to the ability description
+    [SerializeField] private TextMeshProUGUI abilityCooldown; // Reference to the cooldown display
+    [SerializeField] private TextMeshProUGUI abilityDamage; // Reference to the damage display
+    [SerializeField] private TextMeshProUGUI abilityRange; // Reference to the range display
+    [SerializeField] private TextMeshProUGUI abilityAOE; // Reference to the AOE display
+    [SerializeField] private TextMeshProUGUI abilityLinger; // Reference to the lingering display
+    [SerializeField] private TextMeshProUGUI abilityModifiers; // Reference to the modifiers display
 
 
+    /// <summary>
+    /// Function that updates all of the UI elements to the provided ability info
+    /// </summary>
+    /// <param name="abilityInfo">Ability object that contains all relevant information</param>
     public void FillInFields(AbilityInfo abilityInfo)
     {
         abilityImage.sprite = abilityInfo.displayImage;

@@ -168,7 +168,7 @@ public class GameLobbyManager : MonoBehaviour
     }
 #endregion
 
-#region Button Listeners
+#region Button Functions
     /// <summary>
     /// Function that sends kick data to the lobby, which will be checked inside the callback
     /// </summary>
@@ -221,5 +221,5 @@ public class GameLobbyManager : MonoBehaviour
         NetworkManagerObject.Instance.currentLobbyID = new CSteamID(0);
         SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
     }
-}
 #endregion
+}

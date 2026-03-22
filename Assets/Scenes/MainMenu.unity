@@ -901,14 +901,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd083ddf48046a843b3287ed923cd13a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  settingsManager: {fileID: 0}
-  lobbyManager: {fileID: 0}
-  activeWindow: {fileID: 0}
   lobbyButton: {fileID: 2054016563}
   lobbyWindow: {fileID: 1267711803}
   settingsButton: {fileID: 561278679}
   settingsWindow: {fileID: 1721874620}
   quitButton: {fileID: 658699158}
+  settingsManager: {fileID: 0}
+  lobbyManager: {fileID: 0}
+  activeWindow: {fileID: 0}
 --- !u!1 &561278677
 GameObject:
   m_ObjectHideFlags: 0
@@ -1469,7 +1469,7 @@ MonoBehaviour:
   lobbyContainer: {fileID: 363446342}
   lobbyMask: {fileID: 1693647523}
   hostMatchButton: {fileID: 664226750}
-  RefreshButton: {fileID: 2101098548}
+  refreshButton: {fileID: 2101098548}
   scrollSpeed: 50000
 --- !u!1 &1611491138
 GameObject:
