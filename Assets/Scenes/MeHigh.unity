@@ -130,6 +130,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1157052082732539383, guid: 2224a8fc214ecd6438c8ef62f7227d45,
+        type: 3}
+      propertyPath: _addedNetworkObject
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1157052082732539383, guid: 2224a8fc214ecd6438c8ef62f7227d45,
+        type: 3}
+      propertyPath: _networkObjectCache
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1588473778066109273, guid: 2224a8fc214ecd6438c8ef62f7227d45,
         type: 3}
       propertyPath: m_Name
@@ -144,6 +154,16 @@ PrefabInstance:
         type: 3}
       propertyPath: <SceneId>k__BackingField
       value: 4260877178
+      objectReference: {fileID: 0}
+    - target: {fileID: 3085000536742543892, guid: 2224a8fc214ecd6438c8ef62f7227d45,
+        type: 3}
+      propertyPath: <SceneId>k__BackingField
+      value: 3069431995
+      objectReference: {fileID: 0}
+    - target: {fileID: 3085000536742543892, guid: 2224a8fc214ecd6438c8ef62f7227d45,
+        type: 3}
+      propertyPath: InitializedParentNetworkBehaviour
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6156072365420084723, guid: 2224a8fc214ecd6438c8ef62f7227d45,
         type: 3}
@@ -164,6 +184,11 @@ PrefabInstance:
         type: 3}
       propertyPath: <SceneId>k__BackingField
       value: 3051877050
+      objectReference: {fileID: 0}
+    - target: {fileID: 8473963361929440135, guid: 2224a8fc214ecd6438c8ef62f7227d45,
+        type: 3}
+      propertyPath: WasActiveDuringEdit
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8647544775600761563, guid: 2224a8fc214ecd6438c8ef62f7227d45,
         type: 3}
@@ -225,7 +250,9 @@ PrefabInstance:
       propertyPath: <SceneId>k__BackingField
       value: 3187397311
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8473963361929440135, guid: 2224a8fc214ecd6438c8ef62f7227d45, type: 3}
+    - {fileID: 1157052082732539383, guid: 2224a8fc214ecd6438c8ef62f7227d45, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

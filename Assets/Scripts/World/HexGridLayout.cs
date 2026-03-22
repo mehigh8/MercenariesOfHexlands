@@ -10,6 +10,9 @@ using UnityEngine.Tilemaps;
 
 public class HexGridLayout : NetworkBehaviour
 {
+    /// <summary>
+    /// Class used to store information for the pathfinder
+    /// </summary>
     public class HexNode
     {
         // Offset coordinates (Usual coordinates; used in name)
@@ -43,6 +46,11 @@ public class HexGridLayout : NetworkBehaviour
             this.hexRenderer = hexRenderer;
         }
 
+        /// <summary>
+        /// Function used to calculate the distance between this HexNode and another
+        /// </summary>
+        /// <param name="other">Another HexNode</param>
+        /// <returns>Distance between the 2 HexNodes</returns>
         public int Distance(HexNode other)
         {
             if (other == null)
@@ -58,6 +66,11 @@ public class HexGridLayout : NetworkBehaviour
             return (Mathf.Abs(vecQ) + Mathf.Abs(vecR) + Mathf.Abs(vecS)) / 2;
         }
 
+        /// <summary>
+        /// Function used to get the neighbours of a HexNode
+        /// </summary>
+        /// <param name="hexes">List of all the hexes</param>
+        /// <returns>List of hexes that are at a distance of 1 from the current hex</returns>
         public List<HexNode> GetNeighbours(List<HexNode> hexes)
         {
             return hexes.Where(h => h.Distance(this) == 1).ToList();
@@ -66,81 +79,74 @@ public class HexGridLayout : NetworkBehaviour
     public static HexGridLayout instance;
 
     [Header("Grid Config")]
-    public Vector2Int gridSize;
-    public float chanceToSpawnItem;
+    public Vector2Int gridSize; // Size of the grid
+    [SerializeField] private float chanceToSpawnItem; // Chance to spawn an item on a hex
 
     [Header("Tile Config")]
-    public float innerSize;
-    public float outerSize;
-    public float height;
-    public bool isFlatTopped;
-    public Material material;
-    public int gridLayer;
-    [AllowMutableSyncType] public SyncVar<int> seed;
-    public List<HexNode> hexNodes = new List<HexNode>();
+    [SerializeField] private float innerSize; // Hex's inner size (If bigger than 0 it will create a hole in the middle of the hex; Most likely will not be used)
+    [SerializeField] private float outerSize; // Hex's outer size (You can consider this as the pure size of the hex)
+    [SerializeField] private float height; // Hex's height (Most likely will not be used since we now use prefabs for visuals)
+    [SerializeField] private bool isFlatTopped; // Specifies if the top of the hex is flat or pointy
+    [SerializeField] private int gridLayer; // Layer of the hex (TODO: May not be necessary as we also put the layer on the prefab)
+    [AllowMutableSyncType] public SyncVar<int> seed; // Seed used for the Random system
     [Range(0f, 0.4f)]
-    public float obstacleThreshold;
+    public float obstacleThreshold; // Threshold from which a hex start to be considered an obstacle
 
     [Header("References")]
-    public List<Transform> transformList;
-    [SerializeField] private GameObject hexPrefab;
+    [HideInInspector] public List<Transform> transformList; // List with the transforms of the hexes that are not obstacles or have items or have NPCs
+    [SerializeField] private GameObject hexPrefab; // Prefab of the hex
 
     [Header("Visuals")]
-    [SerializeField] private GameObject hexVisualsPrefab;
-    public float visualHeightVariance;
+    [SerializeField] private float visualHeightVariance; // Variance of the hexes' height
 
-    private List<GameObject> spawnedItems = new List<GameObject>();
+    [HideInInspector] public bool populateHexNodeList = true; // Bool used to specify if the HexRenderer should add the hex to the hex nodes list
 
-    public HexNode GetClosestHex(Vector3 origin)
-    {
-        if (hexNodes == null || hexNodes.Count == 0)
-            return null;
+    public List<HexNode> hexNodes = new List<HexNode>(); // List of all hex nodes
+    private List<GameObject> spawnedItems = new List<GameObject>(); // List of all spawned items
 
-        float minDistance = float.MaxValue;
-        HexNode closestHex = null;
-        foreach (HexNode hex in hexNodes)
-        {
-            if (minDistance > Vector3.Distance(origin, hex.hexObj.transform.position))
-            {
-                minDistance = Vector3.Distance(origin, hex.hexObj.transform.position);
-                closestHex = hex;
-            }
-        }
-        return closestHex;
-    }
-
+    #region Unity Functions
     private void Awake()
     {
+        // Set the seed for the Random system
         Random.InitState(seed.Value);
-        instance = this;
+        // Singleton logic
+        if (instance == null)
+            instance = this;
+        else
+            Despawn(gameObject);
     }
+    #endregion
 
-    private void Start()
-    {
-        LayoutGrid();
-        //NPCManager.instance.GenerateNPCs();
-    }
-
-    private bool isGenerated;
+    #region Grid Generation
+    /// <summary>
+    /// Function used to generate the grid by spawning hexes<br/>
+    /// Shoul only be called on Server
+    /// </summary>
     [Server]
-    private void LayoutGrid()
+    public void LayoutGrid()
     {
-        if (isGenerated)
-            return;
-        isGenerated = true;
+        // On the Server the Hex Node list is populated at the end of this function
+        populateHexNodeList = false;
+
         transformList = new List<Transform>();
         print("Starting layout");
+        // Get all spawnable items
         List<ItemInfo> spawnableItems = GameManager.instance.allExistingItems?.Where(item => item.isSpawnable).ToList();
         for (int y = 0; y < gridSize.y; y++)
         {
             for (int x = 0; x < gridSize.x; x++)
             {
+                // Calculate hex position
                 Vector3 hexPosition = GetPositionForHexFromCoordinate(new Vector2Int((int)transform.position.x + x, (int)transform.position.y + y));
+                // Generate the hex's color
                 Color visualColor = GenerateColor();
+                // Instantiate the prefab
                 GameObject tile = Instantiate(hexPrefab);
-                // tile.transform.position = hexVisual.transform.position + Vector3.up * hexVisual.transform.lossyScale.y / 2;
+                // Set the hex's name and position
+                tile.name = $"Hex {x},{y}";
                 tile.transform.position = hexPosition + Vector3.up * (-visualColor.g * visualHeightVariance + 0.51f);
 
+                // Get HexRenderer component and set SyncVars
                 HexRenderer hexRenderer = tile.GetComponent<HexRenderer>();
                 hexRenderer.isFlatTopped.Value = isFlatTopped;
                 hexRenderer.isFlatTopped.NetworkManager = seed.NetworkManager;
@@ -169,13 +175,14 @@ public class HexGridLayout : NetworkBehaviour
                 hexRenderer.originalColor.NetworkManager = seed.NetworkManager;
                 hexRenderer.originalColor.NetworkBehaviour = hexRenderer;
 
-                hexRenderer.hexVisualPrefab.Value = Random.Range(0, GameManager.instance.allPossibleTiles.Count);
+                hexRenderer.hexVisualPrefab.Value = Random.Range(0, GameManager.instance.allExistingTiles.Count);
                 hexRenderer.hexVisualPrefab.NetworkManager = seed.NetworkManager;
                 hexRenderer.hexVisualPrefab.NetworkBehaviour = hexRenderer;
 
+                // Randomly pick if and what item to spawn on the tile (only if the tile is not an obstacle)
                 ItemInfo spawnItem = null;
                 if (spawnableItems != null && spawnableItems.Count > 0)
-                    spawnItem = Random.value <= chanceToSpawnItem && hexRenderer.originalColor.Value.g > obstacleThreshold ? spawnableItems[Random.Range(0, spawnableItems.Count)] : null;
+                    spawnItem = Random.value <= chanceToSpawnItem && !hexRenderer.IsObstacle() ? spawnableItems[Random.Range(0, spawnableItems.Count)] : null;
 
                 hexRenderer.hasItem.Value = spawnItem ? GameManager.instance.allExistingItems.IndexOf(spawnItem) : -1;
                 hexRenderer.hasItem.NetworkManager = seed.NetworkManager;
@@ -185,11 +192,15 @@ public class HexGridLayout : NetworkBehaviour
                 hexRenderer.lingeringEffect.NetworkManager = seed.NetworkManager;
                 hexRenderer.lingeringEffect.NetworkBehaviour = hexRenderer;
 
+                // Set hex's layer
                 tile.layer = gridLayer;
+                // Set hex's parent
                 tile.transform.SetParent(transform);
 
+                // Spawn hex on the network
                 ServerManager.Spawn(tile, null);
 
+                // If this hex has an item, instantiate it and spawn it on the network
                 if (spawnItem)
                 {
                     GameObject spawnedItem = Instantiate(spawnItem.prefab, tile.transform.position, Quaternion.identity);
@@ -199,37 +210,62 @@ public class HexGridLayout : NetworkBehaviour
                     ServerManager.Spawn(spawnedItem, null);
                 }
 
-                // SpawnTile(tile);
+                // If the hex is not an obstacle and doesn't have an item, add it to the tranform list
+                if (spawnItem == null && !hexRenderer.IsObstacle())
+                    transformList.Add(tile.transform);
+
+                // Add the corresponding hex node to the list
+                hexNodes.Add(new HexNode(x, y, tile, hexRenderer));
             }
         }
-        // pSpawner.Spawns = transformList.ToArray();
     }
+    #endregion
 
+    #region Hex Interaction
+    /// <summary>
+    /// Update the occupier of a hex
+    /// </summary>
+    /// <param name="hex">Name of the hex</param>
+    /// <param name="occupier">New occupier</param>
     public void UpdateHex(string hex, GameObject occupier)
     {
         HexNode hexNode = hexNodes.Find(h => h.hexObj.name == hex);
         hexNode.hexRenderer.occupying.Value = occupier;
     }
 
+    /// <summary>
+    /// Function used to pick an item from a hex
+    /// </summary>
+    /// <param name="hex">Name of the hex</param>
     public void PickupItem(string hex)
     {
+        // Determine the item name and search for it
         string item = "Item " + hex.Split(' ')[1];
         GameObject spawnedItem = spawnedItems.Find(i => i.name == item);
         if (spawnedItem != null)
         {
+            // Despawn the item and remove from the list
             spawnedItem.GetComponent<NetworkObject>().Despawn();
             spawnedItems.Remove(spawnedItem);
         }
 
+        // Update hasItem SyncVar
         HexNode hexNode = hexNodes.Find(h => h.hexObj.name == hex);
         hexNode.hexRenderer.hasItem.Value = -1;
     }
 
+    /// <summary>
+    /// Function used to place an item on a hex
+    /// </summary>
+    /// <param name="item">Index of the item to be placed</param>
+    /// <param name="hex">Name of the hex</param>
     public void PlaceItem(int item, string hex)
     {
+        // Search for the hex and update its hasItem SyncVar
         HexNode hexNode = hexNodes.Find(h => h.hexObj.name == hex);
         hexNode.hexRenderer.hasItem.Value = item;
 
+        // Get corresponding item, instantiate it and spawn it across the network
         ItemInfo spawnItem = GameManager.instance.allExistingItems[item];
         GameObject spawnedItem = Instantiate(spawnItem.prefab, hexNode.hexObj.transform.position, Quaternion.identity);
         spawnedItem.name = "Item " + hex.Split(' ')[1];
@@ -237,7 +273,14 @@ public class HexGridLayout : NetworkBehaviour
         spawnedItems.Add(spawnedItem);
         ServerManager.Spawn(spawnedItem, null);
     }
+    #endregion
 
+    #region Utils
+    /// <summary>
+    /// Function used to calculate the correct position of the hex based on the coordinates received
+    /// </summary>
+    /// <param name="coordinate">Coordinates from layout generation</param>
+    /// <returns>Correct position</returns>
     public Vector3 GetPositionForHexFromCoordinate(Vector2Int coordinate)
     {
         int column = coordinate.x;
@@ -284,11 +327,38 @@ public class HexGridLayout : NetworkBehaviour
         return new Vector3(xPosition, 0, -yPosition);
     }
 
-    // Used to generate color for tiles so that obstacles are easily distinguished
+    /// <summary>
+    /// Used to generate color for tiles so that obstacles are easily distinguished
+    /// </summary>
+    /// <returns>New color for the hex</returns>
     private Color GenerateColor()
     {
         float g = Random.value < obstacleThreshold ? Random.Range(0, obstacleThreshold) : Random.Range(0.5f, 1f);
         return new Color(0, g, 0, 1);
     }
+
+    /// <summary>
+    /// Function used to find the closest hex to the given position
+    /// </summary>
+    /// <param name="origin">Given position</param>
+    /// <returns>Closest HexNode</returns>
+    public HexNode GetClosestHex(Vector3 origin)
+    {
+        if (hexNodes == null || hexNodes.Count == 0)
+            return null;
+
+        float minDistance = float.MaxValue;
+        HexNode closestHex = null;
+        foreach (HexNode hex in hexNodes)
+        {
+            if (minDistance > Vector3.Distance(origin, hex.hexObj.transform.position))
+            {
+                minDistance = Vector3.Distance(origin, hex.hexObj.transform.position);
+                closestHex = hex;
+            }
+        }
+        return closestHex;
+    }
+    #endregion
 }
 
