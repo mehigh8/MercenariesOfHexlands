@@ -301,7 +301,7 @@ MonoBehaviour:
   critChance: 0.1
   movementPerTurn: 4
   defence: 1
-  playerCanvas: {fileID: 311185374950549730}
+  nameText: {fileID: 8498826273635487349}
   playerName:
     NetworkManager: {fileID: 0}
     NetworkBehaviour: {fileID: 0}
@@ -925,8 +925,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cfe1c79bc98004459508ed35b6d4387, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 7019964216269390284}
-  nameText: {fileID: 8498826273635487349}
 --- !u!1 &7096662652702992796
 GameObject:
   m_ObjectHideFlags: 0

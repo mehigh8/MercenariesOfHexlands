@@ -1,19 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
-public class LookAtCamera : MonoBehaviour
+/// <summary>
+/// This script will generally be used for canvas objects to make them look at the main camera
+/// </summary>
+public class LookAtCamera : MonoBehaviour 
 {
-    public GameObject canvas;
-    public TMP_Text nameText;
-    private GameObject cameraObj;
+    private GameObject cameraObj; // Camera to point our object at
     void Start()
     {
         cameraObj = Camera.main.gameObject;
     }
     void Update()
     {
-        canvas.transform.LookAt(cameraObj.transform.position);
+        transform.LookAt(cameraObj.transform.position);
     }
 }

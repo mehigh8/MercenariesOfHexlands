@@ -19,7 +19,7 @@ public class PlayerInfo : NetworkBehaviour
     public int movementPerTurn;
     public int defence;
     [Header("Others")]
-    public LookAtCamera playerCanvas;
+    [SerializeField] private TMP_Text nameText;
     [AllowMutableSyncType] public SyncVar<string> playerName;
     public Slider healthBar;
     public TMP_Text healthText;
@@ -155,7 +155,7 @@ public class PlayerInfo : NetworkBehaviour
         while (playerName.Value == "")
             yield return null;
 
-        playerCanvas.nameText.text = playerName.Value;
+        nameText.text = playerName.Value;
     }
 
     [ServerRpc]
