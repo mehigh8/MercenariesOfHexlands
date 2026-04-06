@@ -289,6 +289,10 @@ MonoBehaviour:
   _componentIndexCache: 2
   _addedNetworkObject: {fileID: 4231930951776552360}
   _networkObjectCache: {fileID: 4231930951776552360}
+  playerName:
+    NetworkManager: {fileID: 0}
+    NetworkBehaviour: {fileID: 0}
+    _value: 
   maxHealth:
     NetworkManager: {fileID: 0}
     NetworkBehaviour: {fileID: 0}
@@ -302,10 +306,6 @@ MonoBehaviour:
   movementPerTurn: 4
   defence: 1
   nameText: {fileID: 8498826273635487349}
-  playerName:
-    NetworkManager: {fileID: 0}
-    NetworkBehaviour: {fileID: 0}
-    _value: 
   healthBar: {fileID: 2374242237454727767}
   healthText: {fileID: 9000300741276180340}
   canMoveThisTurn: 0
@@ -324,9 +324,9 @@ MonoBehaviour:
   _componentIndexCache: 3
   _addedNetworkObject: {fileID: 4231930951776552360}
   _networkObjectCache: {fileID: 4231930951776552360}
+  cooldowns: []
   currentAbility: {fileID: 0}
   playerController: {fileID: 0}
-  cooldowns: []
 --- !u!1 &4857569472824283213
 GameObject:
   m_ObjectHideFlags: 0
@@ -1215,8 +1215,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278254591
+  m_fontColor: {r: 1, g: 0.98466915, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1249,7 +1249,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}

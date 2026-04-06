@@ -4,8 +4,10 @@ using FishNet.Object.Synchronizing;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class NPCBehaviour : NetworkBehaviour
@@ -26,6 +28,10 @@ public class NPCBehaviour : NetworkBehaviour
     [AllowMutableSyncType] public SyncVar<int> movement; // NPC's movement stat
     [Header("Additional information")]
     [AllowMutableSyncType] public SyncVar<string> currentHex; // Name of the hex this NPC is standing on
+    [Header("References")]
+    [SerializeField] private TMP_Text nameText; // Reference to the text object used for the name above the NPC
+    [SerializeField] private Slider healthBar; // Reference to the health bar above the NPC
+    [SerializeField] private TMP_Text healthText; // Reference to the health text above the NPC
 
     // The following variables are relevant only for the Server
     private NavMeshAgent navAgent; // NavMeshAgent component of this NPC
@@ -36,8 +42,11 @@ public class NPCBehaviour : NetworkBehaviour
     #region Unity Functions
     private void Awake()
     {
-        // Add callback to update current hex node
+        // Add callbacks
         currentHex.OnChange += OnUpdateHex;
+        maxHealth.OnChange += OnMaxHealthChange;
+        currentHealth.OnChange += OnCurrentHealthChange;
+        npcName.OnChange += OnNameChange;
     }
 
 
@@ -51,6 +60,9 @@ public class NPCBehaviour : NetworkBehaviour
     {
         // Remove callbacks
         currentHex.OnChange -= OnUpdateHex;
+        maxHealth.OnChange -= OnMaxHealthChange;
+        currentHealth.OnChange -= OnCurrentHealthChange;
+        npcName.OnChange -= OnNameChange;
     }
     #endregion
 
@@ -60,7 +72,7 @@ public class NPCBehaviour : NetworkBehaviour
     /// </summary>
     /// <param name="oldVal">Old value of the SyncVar</param>
     /// <param name="newVal">New value of the SyncVar</param>
-    /// <param name="asServer">Bool specifying if callback was called as Server of Client</param>
+    /// <param name="asServer">Bool specifying if callback was called as Server or Client</param>
     private void OnUpdateHex(string oldVal, string newVal, bool asServer)
     {
         // If this callback is called on a client we should return as the clients don't need this and they could get the wrong hex
@@ -76,6 +88,41 @@ public class NPCBehaviour : NetworkBehaviour
             Debug.LogWarning("Invalid hex name: " + newVal);
     }
     #endregion
+
+    /// <summary>
+    /// Callback that updates the health bar when the current health of the NPC changes
+    /// </summary>
+    /// <param name="oldVal">Old health value</param>
+    /// <param name="newVal">New health value</param>
+    /// <param name="asServer">Bool specifying if callback was called as Server or Client</param>
+    private void OnCurrentHealthChange(int oldVal, int newVal, bool asServer)
+    {
+        healthBar.value = (float)newVal / maxHealth.Value;
+        healthText.text = newVal + " / " + maxHealth.Value;
+    }
+
+    /// <summary>
+    /// Callback that updates the health bar when the max health of the NPC changes
+    /// </summary>
+    /// <param name="oldVal">Old health value</param>
+    /// <param name="newVal">New health value</param>
+    /// <param name="asServer">Bool specifying if callback was called as Server or Client</param>
+    private void OnMaxHealthChange(int oldVal, int newVal, bool asServer)
+    {
+        healthBar.value = (float)currentHealth.Value / newVal;
+        healthText.text = currentHealth.Value + " / " + newVal;
+    }
+
+    /// <summary>
+    /// Callback that changes the name text of the NPC
+    /// </summary>
+    /// <param name="oldVal">Old name</param>
+    /// <param name="newVal">New name</param>
+    /// <param name="asServer">Bool specifying if callback was called as Server or Client</param>
+    private void OnNameChange(string oldVal, string newVal, bool asServer)
+    {
+        nameText.text = newVal;
+    }
 
     #region Behaviour Functions
     /// <summary>
