@@ -175,6 +175,10 @@ public class InventoryUIManager : MonoBehaviour
                 heldItem = null;
                 // Place item on the ground
                 playerController.DropItem(GameManager.instance.allExistingItems.IndexOf(droppedItem), playerController.currentPosition.hexObj.name);
+
+                // Update HUD
+                UIManager.instance.hudManager.ClearButtons();
+                UIManager.instance.hudManager.AddButton("Pick-up item", playerController.PickupItem);
             }
         }
     }

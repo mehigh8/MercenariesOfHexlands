@@ -43,6 +43,12 @@ public class PlayerController : NetworkBehaviour
             UIManager.instance.abilitiesUIManager.ShowAbilities(true);
             GameManager.instance.OnBeginTurn += GetComponent<AbilityHandler>().ReduceCooldowns;
             GameManager.instance.OnBeginTurn += ResetMovementThisTurn;
+
+            // Configure HUD buttons
+            UIManager.instance.hudManager.inventoryButton.onClick.RemoveAllListeners();
+            UIManager.instance.hudManager.endTurnButton.onClick.RemoveAllListeners();
+            UIManager.instance.hudManager.inventoryButton.onClick.AddListener(InventoryInteract);
+            UIManager.instance.hudManager.endTurnButton.onClick.AddListener(EndTurn);
         }
     }
 
@@ -72,10 +78,13 @@ public class PlayerController : NetworkBehaviour
             {
                 PickMovement();
                 HighlightMovement();
-                InventoryInteract();
-                PickupItem();
+                if (Input.GetKeyDown(KeyCode.I))
+                    InventoryInteract();
+                if (Input.GetKeyDown(KeyCode.F))
+                    PickupItem();
                 AbilityInput();
-                EndTurn();
+                if (Input.GetKeyDown(KeyCode.E))
+                    EndTurn();
             }
         }
 
@@ -117,10 +126,10 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     private void CameraMovement()
     {
-        if (!playerCamera)
+        if (!playerCamera || Input.GetKey(KeyCode.H))
             return;
         if (Input.GetKeyDown(KeyCode.Space))
-                playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z) + cameraOffset;
+            playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z) + cameraOffset;
 
         Vector3 toMove = Vector3.zero;
 
@@ -173,6 +182,11 @@ public class PlayerController : NetworkBehaviour
 
                         // Update remaining movement
                         playerInfo.canMoveThisTurn -= path.Count;
+
+                        // Update HUD
+                        UIManager.instance.hudManager.ClearButtons();
+                        if (finalHex.hasItem.Value != -1)
+                            UIManager.instance.hudManager.AddButton("Pick-up item", PickupItem);
                     }
                 }
                 else
@@ -205,7 +219,7 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     private void HighlightMovement()
     {
-        if (abilityHandler.currentAbility == null && !isMoving())
+        if (Input.GetKey(KeyCode.H) && abilityHandler.currentAbility == null && !isMoving())
         {
             // Use ray to check if the cursor is on top of a hex
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -246,6 +260,7 @@ public class PlayerController : NetworkBehaviour
         {
             highlightedPath.ForEach(hex => hex.hexRenderer.ChangeColorToOriginal());
             highlightedPath = null;
+            lastHighlightedTarget = null;
         }
         
     }
@@ -255,25 +270,25 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     private void InventoryInteract()
     {
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            if (UIManager.instance.inventoryUIManager.isOpened)
-                UIManager.instance.inventoryUIManager.CloseInventory();
-            else
-                UIManager.instance.inventoryUIManager.OpenInventory(playerInfo, this);
-        }
+        if (UIManager.instance.inventoryUIManager.isOpened)
+            UIManager.instance.inventoryUIManager.CloseInventory();
+        else
+            UIManager.instance.inventoryUIManager.OpenInventory(playerInfo, this);
     }
 
     /// <summary>
     /// Function used to pick up an item from the hex underneath the player
     /// </summary>
-    private void PickupItem()
+    public void PickupItem()
     {
-        if (Input.GetKeyDown(KeyCode.F) && currentPosition.hexRenderer.hasItem.Value != -1)
+        if (currentPosition.hexRenderer.hasItem.Value != -1)
         {
             // Check if the player has space in its inventory
             if (UIManager.instance.inventoryUIManager.StoreItem(currentPosition.hexRenderer.GetItem()))
+            {
                 PickupItemRPC(currentPosition.hexObj.name);
+                UIManager.instance.hudManager.ClearButtons();
+            }
         }
     }
 
@@ -348,13 +363,11 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     public void EndTurn()
     {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            if (abilityHandler.currentAbility != null)
-                abilityHandler.CancelCasting();
-            UIManager.instance.inventoryUIManager.CloseInventory();
-            EndTurnRPC();
-        }
+        if (abilityHandler.currentAbility != null)
+            abilityHandler.CancelCasting();
+        UIManager.instance.inventoryUIManager.CloseInventory();
+        UIManager.instance.hudManager.CloseHUD();
+        EndTurnRPC();
     }
     #endregion
 

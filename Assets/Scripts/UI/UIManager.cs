@@ -7,6 +7,7 @@ public class UIManager : MonoBehaviour
     [HideInInspector] public AbilitiesUIManager abilitiesUIManager; // Reference to the ability UI manager
     [HideInInspector] public InventoryUIManager inventoryUIManager; // Reference to the inventory UI manager
     [HideInInspector] public TooltipHandler tooltipHandler; // Reference to the tooltip UI manager
+    [HideInInspector] public HUDManager hudManager; // Reference to the HUD manager
 
     void Start()
     {
@@ -14,6 +15,7 @@ public class UIManager : MonoBehaviour
         abilitiesUIManager = GetComponent<AbilitiesUIManager>();
         inventoryUIManager = GetComponent<InventoryUIManager>();
         tooltipHandler = GetComponent<TooltipHandler>();
+        hudManager = GetComponent<HUDManager>();
     }
 
     void Awake()
