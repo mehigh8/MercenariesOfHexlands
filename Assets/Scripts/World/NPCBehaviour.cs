@@ -35,9 +35,10 @@ public class NPCBehaviour : NetworkBehaviour
 
     // The following variables are relevant only for the Server
     private NavMeshAgent navAgent; // NavMeshAgent component of this NPC
-    private HexGridLayout.HexNode currentHexNode = null; // The actual hex this NPC is standing on (is updated from the SyncVar hex name)
+    [HideInInspector] public HexGridLayout.HexNode currentHexNode = null; // The actual hex this NPC is standing on (is updated from the SyncVar hex name)
 
     [HideInInspector] public NPCInfo npcInfo; // NPC Info reference
+    [HideInInspector] public PlayerController threat;
 
     #region Unity Functions
     private void Awake()
@@ -132,7 +133,7 @@ public class NPCBehaviour : NetworkBehaviour
     public void ChooseAction()
     {
         // For now we only have the Move action so it will automatically be chosen
-        Move();
+        //Move();
     }
     #endregion
 
@@ -140,7 +141,7 @@ public class NPCBehaviour : NetworkBehaviour
     /// <summary>
     /// Function that moves the NPC to a random hex in its movement range
     /// </summary>
-    private void Move()
+    public void Wander()
     {
         if (npcInfo == null)
             Debug.LogWarning("npcInfo is null. Cannot move...");

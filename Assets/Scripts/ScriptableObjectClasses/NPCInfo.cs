@@ -33,6 +33,15 @@ public class NPCInfo : ScriptableObject
     public int movement;
     [Tooltip("Detection distance of this NPC")]
     public int detection;
+    [Tooltip("Distance this npc has to run from a threat to lose it")]
+    public int runDistance;
+    [Tooltip("Health threshold to cause NPC to panic and run")]
+    public int healthLowThreshold;
+    [Tooltip("Health threshold for NPC to be considered healthy and be able to attack")]
+    public int healthyThreshold;
+
+    [Header("Behaviour")]
+    public BehaviourSwitchConditionBase condition;
 
     [Header("Abilities")]
     [Tooltip("List of abilities this NPC can use")]

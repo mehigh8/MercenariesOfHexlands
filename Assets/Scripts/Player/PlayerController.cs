@@ -15,7 +15,7 @@ public class PlayerController : NetworkBehaviour
 
     [Header("Navigation Settings")]
     [SerializeField] private LayerMask mask; // LayerMask of the ground
-    [SerializeField] private PlayerInfo playerInfo; // Reference to the player info script
+    public PlayerInfo playerInfo; // Reference to the player info script
 
     [SerializeField] private Vector3 cameraOffset = new Vector3(0, 9, -5); // Camera offset relative to player
     private Camera playerCamera; // Reference to the Camera
