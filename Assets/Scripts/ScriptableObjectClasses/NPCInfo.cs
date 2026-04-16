@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,29 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New NPC", menuName = "NPC")]
 public class NPCInfo : ScriptableObject
 {
+    [System.Serializable]
+    public class BehaviourBranch
+    {
+        public NPCState state;
+        public List<Pair<NPCSwitchCondition, NPCState>> connections;
+    }
+
+    public enum NPCState
+    {
+        Wander = 0,
+        Run = 1,
+        Attack = 2,
+    }
+
+    public enum NPCSwitchCondition
+    { 
+        Hit = 0,
+        HitOrSeen = 1,
+        FarFromThreat = 2,
+        LowOnHealth = 3,
+        Healthy = 4,
+    }
+
     public enum NPCType
     {
         Passive = 0,
@@ -41,7 +65,7 @@ public class NPCInfo : ScriptableObject
     public int healthyThreshold;
 
     [Header("Behaviour")]
-    public BehaviourSwitchConditionBase condition;
+    public List<BehaviourBranch> npcBehaviour;
 
     [Header("Abilities")]
     [Tooltip("List of abilities this NPC can use")]

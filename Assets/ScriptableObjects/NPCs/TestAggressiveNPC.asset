@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7692f5b5b55bff94c88d6700739cfdcc, type: 3}
-  m_Name: TestNPC2
+  m_Name: TestAggressiveNPC
   m_EditorClassIdentifier: 
   npcName: Atotputernicul
   npcType: 2
@@ -22,6 +22,24 @@ MonoBehaviour:
   critChance: 1
   movement: 10
   detection: 20
+  runDistance: 0
+  healthLowThreshold: 0
+  healthyThreshold: 0
+  npcBehaviour:
+  - state: 0
+    connections:
+    - item1: 1
+      item2: 2
+  - state: 1
+    connections:
+    - item1: 2
+      item2: 0
+    - item1: 4
+      item2: 2
+  - state: 2
+    connections:
+    - item1: 3
+      item2: 1
   abilities:
   - {fileID: 11400000, guid: 725561d323b23244f818b4867893710c, type: 2}
   - {fileID: 11400000, guid: 33bf68b3f46435f4190100ba613901c3, type: 2}

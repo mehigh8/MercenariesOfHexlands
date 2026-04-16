@@ -1681,6 +1681,17 @@ PrefabInstance:
       propertyPath: _componentIndexCache
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8157613302627487806, guid: 9171564ad3b17814eb01f8a21387ce26,
+        type: 3}
+      propertyPath: allExistingNPCs.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8157613302627487806, guid: 9171564ad3b17814eb01f8a21387ce26,
+        type: 3}
+      propertyPath: allExistingNPCs.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: a56e256da1724ed4e822eebe0b710891,
+        type: 2}
     - target: {fileID: 8646519795168690017, guid: 9171564ad3b17814eb01f8a21387ce26,
         type: 3}
       propertyPath: m_Name

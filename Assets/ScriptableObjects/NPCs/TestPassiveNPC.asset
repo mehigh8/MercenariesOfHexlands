@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7692f5b5b55bff94c88d6700739cfdcc, type: 3}
+  m_Name: TestPassiveNPC
+  m_EditorClassIdentifier: 
+  npcName: Geani
+  npcType: 0
+  npcPrefab: {fileID: 8750048416726093729, guid: e81a9446b581cc047a46e6019b5796df,
+    type: 3}
+  health: 50
+  damage: 4
+  defence: 1
+  critChance: 0.1
+  movement: 3
+  detection: 2
+  runDistance: 5
+  healthLowThreshold: 20
+  healthyThreshold: 30
+  npcBehaviour:
+  - state: 0
+    connections:
+    - item1: 0
+      item2: 1
+  - state: 1
+    connections:
+    - item1: 2
+      item2: 0
+  abilities:
+  - {fileID: 11400000, guid: db371ec211dfc634292e88c569e50e1d, type: 2}

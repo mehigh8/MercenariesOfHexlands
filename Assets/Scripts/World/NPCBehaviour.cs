@@ -39,6 +39,7 @@ public class NPCBehaviour : NetworkBehaviour
 
     [HideInInspector] public NPCInfo npcInfo; // NPC Info reference
     [HideInInspector] public PlayerController threat;
+    [HideInInspector] public BehaviourStateBase currentState;
 
     #region Unity Functions
     private void Awake()
@@ -132,52 +133,32 @@ public class NPCBehaviour : NetworkBehaviour
     /// </summary>
     public void ChooseAction()
     {
-        // For now we only have the Move action so it will automatically be chosen
-        //Move();
+        // Update current state
+        currentState = currentState.UpdateState();
+
+        // Apply state actions
+        currentState.DoStateActions();
     }
     #endregion
 
-    #region Move Action Functions
+    #region Actions Related Functions
     /// <summary>
-    /// Function that moves the NPC to a random hex in its movement range
+    /// Function that moves the NPC to a specified hex
     /// </summary>
-    public void Wander()
+    public void Move(List<HexGridLayout.HexNode> path)
     {
-        if (npcInfo == null)
-            Debug.LogWarning("npcInfo is null. Cannot move...");
+        if (path == null || path.Count == 0)
+            return;
 
-        // Get all hexes in range that are not obstacles or occupied
-        List<HexGridLayout.HexNode> hexesInRange = HexGridLayout.instance.hexNodes.Where(hex => hex.Distance(currentHexNode) <= npcInfo.movement && !hex.hexRenderer.IsObstacle() && hex.hexRenderer.occupying.Value == null).ToList();
-
-        // Randomly choose a hex in the list that can be reached with the NPC's movement value. Keep searching until one such hex is found or there are no more hexes to choose from
-        List<HexGridLayout.HexNode> path = null;
-        HexGridLayout.HexNode dest = null;
-        while ((path == null || path.Count > npcInfo.movement) && hexesInRange.Count > 0)
-        {
-            dest = hexesInRange[Random.Range(0, hexesInRange.Count)];
-            hexesInRange.Remove(dest);
-
-            // Calculate path to the chosen hex
-            path = Pathfinder.FindPath(currentHexNode, dest);
-        }
-
-        // If a path was found start the movement process
-        if (path.Count <= npcInfo.movement)
-        {
-            // Free the hex that the NPC was standing on
-            HexGridLayout.instance.UpdateHex(currentHex.Value, null);
-            // Start moving towards the new hex
-            StartCoroutine(MoveAnimation(path));
-            // Occupy the new hex
-            HexGridLayout.instance.UpdateHex(dest.hexObj.name, gameObject);
-            // Update currentHex SyncVar value
-            currentHex.Value = dest.hexObj.name;
-        }
-        else
-        {
-            // If a path could not be found, the movement action will be skipped for now and a warning will be sent
-            Debug.LogWarning("Could not find hex to move to");
-        }
+        // Free the hex that the NPC was standing on
+        HexGridLayout.instance.UpdateHex(currentHex.Value, null);
+        HexGridLayout.HexNode dest = path[path.Count - 1];
+        // Start moving towards the new hex
+        StartCoroutine(MoveAnimation(path));
+        // Occupy the new hex
+        HexGridLayout.instance.UpdateHex(dest.hexObj.name, gameObject);
+        // Update currentHex SyncVar value
+        currentHex.Value = dest.hexObj.name;
     }
     /// <summary>
     /// IEnumerator used to animate the NPC moving towards its destination<br/>
@@ -198,6 +179,16 @@ public class NPCBehaviour : NetworkBehaviour
             // Use yield return null to go to the next frame
             yield return null;
         }
+    }
+
+    public void Heal()
+    {
+        Debug.LogWarning(npcName.Value + ": Heal action placeholder");
+    }
+
+    public void Attack()
+    {
+        Debug.LogWarning(npcName.Value + ": Attack action placeholder");
     }
     #endregion
 }

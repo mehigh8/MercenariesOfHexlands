@@ -54,6 +54,9 @@ public class NPCManager : NetworkBehaviour
             // Set reference to npcInfo
             npcBehaviour.npcInfo = npcInfo;
 
+            // Set current state and create behaviour tree
+            npcBehaviour.currentState = CreateBehaviourTree(npcBehaviour, npcInfo);
+
             // Set SyncVar value for NPC's name
             npcBehaviour.npcName.Value = npcInfo.npcName;
             npcBehaviour.npcName.NetworkManager = NetworkManager;
@@ -133,6 +136,71 @@ public class NPCManager : NetworkBehaviour
             npcBehaviour.currentHex.NetworkBehaviour = npcBehaviour;
         }
     }
+
+    private BehaviourStateBase CreateBehaviourTree(NPCBehaviour npc, NPCInfo npcInfo)
+    {
+        Dictionary<NPCInfo.NPCState, BehaviourStateBase> references = new Dictionary<NPCInfo.NPCState, BehaviourStateBase>();
+
+        // Create the states and store them for reference
+        foreach (var state in npcInfo.npcBehaviour)
+        {
+            BehaviourStateBase createdState = null;
+            switch (state.state)
+            {
+                case NPCInfo.NPCState.Wander:
+                    createdState = new WanderState(npc);
+                    break;
+                case NPCInfo.NPCState.Run:
+                    createdState = new RunState(npc);
+                    break;
+                case NPCInfo.NPCState.Attack:
+                    createdState = new AttackState(npc);
+                    break;
+                default:
+                    break;
+            }
+
+            references.Add(state.state, createdState);
+        }
+
+        // Create connections
+        foreach (var state in npcInfo.npcBehaviour)
+        {
+            List<Pair<BehaviourSwitchConditionBase, BehaviourStateBase>> connections = new List<Pair<BehaviourSwitchConditionBase, BehaviourStateBase>>();
+
+            foreach (var connection in state.connections)
+            {
+                BehaviourSwitchConditionBase switchCondition = null;
+                switch (connection.item1)
+                {
+                    case NPCInfo.NPCSwitchCondition.Hit:
+                        switchCondition = new HitCondition(npc);
+                        break;
+                    case NPCInfo.NPCSwitchCondition.HitOrSeen:
+                        switchCondition = new HitOrSeenCondition(npc);
+                        break;
+                    case NPCInfo.NPCSwitchCondition.FarFromThreat:
+                        switchCondition = new FarFromThreatCondition(npc);
+                        break;
+                    case NPCInfo.NPCSwitchCondition.LowOnHealth:
+                        switchCondition = new LowOnHealthCondition(npc);
+                        break;
+                    case NPCInfo.NPCSwitchCondition.Healthy:
+                        switchCondition = new HealthyCondition(npc);
+                        break;
+                    default:
+                        break;
+                }
+
+                connections.Add(new Pair<BehaviourSwitchConditionBase, BehaviourStateBase>(switchCondition, references[state.state]));
+            }
+
+            references[state.state].SetConnections(connections);
+        }
+
+        return references[npcInfo.npcBehaviour[0].state];
+    }
+
     /// <summary>
     /// Function used to process the NPC turn. For each NPC it will call the ChooseAction function of the NPCBehaviour script, then it will end the NPC turn<br/>
     /// This shouldd only be called from the Server
