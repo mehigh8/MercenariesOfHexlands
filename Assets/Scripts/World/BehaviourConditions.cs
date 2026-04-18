@@ -36,10 +36,25 @@ public class HitOrSeenCondition : BehaviourSwitchConditionBase
             return true;
 
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        Debug.Log("DEBUG: " + npc.npcName.Value + " - players.Count = " + players.Length);
 
         foreach (GameObject player in players)
         {
             PlayerController possibleThreat = player.GetComponent<PlayerController>();
+            HexGridLayout.HexNode playerHex = possibleThreat.currentPosition;
+            if (playerHex == null)
+                Debug.Log("DEBUG: " + npc.npcName.Value + " - player hex is null");
+            else
+                Debug.Log("DEBUG: " + npc.npcName.Value + " - player hex is " + playerHex.hexObj.name);
+
+            HexGridLayout.HexNode npcHex = npc.currentHexNode;
+            if (npcHex == null)
+                Debug.Log("DEBUG: " + npc.npcName.Value + " - npc hex is null");
+            else
+                Debug.Log("DEBUG: " + npc.npcName.Value + " - npc hex is " + npcHex.hexObj.name);
+
+            Debug.Log("DEBUG: " + npc.npcName.Value + " - player to npc distance is " + npcHex.Distance(playerHex) + " and detection range is " + npc.npcInfo.detection);
+
             if (npc.currentHexNode.Distance(possibleThreat.currentPosition) <= npc.npcInfo.detection)
             {
                 npc.threat = possibleThreat;

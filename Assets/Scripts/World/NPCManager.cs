@@ -192,7 +192,7 @@ public class NPCManager : NetworkBehaviour
                         break;
                 }
 
-                connections.Add(new Pair<BehaviourSwitchConditionBase, BehaviourStateBase>(switchCondition, references[state.state]));
+                connections.Add(new Pair<BehaviourSwitchConditionBase, BehaviourStateBase>(switchCondition, references[connection.item2]));
             }
 
             references[state.state].SetConnections(connections);

@@ -22,9 +22,9 @@ MonoBehaviour:
   critChance: 1
   movement: 10
   detection: 20
-  runDistance: 0
-  healthLowThreshold: 0
-  healthyThreshold: 0
+  runDistance: 12
+  healthLowThreshold: 100
+  healthyThreshold: 200
   npcBehaviour:
   - state: 0
     connections:

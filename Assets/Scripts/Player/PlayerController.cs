@@ -70,10 +70,10 @@ public class PlayerController : NetworkBehaviour
 
         // Update is split into more functions, each having its specific purpose, that are called 1 by 1
         CameraMovement();
+        InitOccupying();
 
         if (IsOwner)
         {
-            InitOccupying();
             if (GameManager.instance.IsMyTurn())
             {
                 PickMovement();
@@ -116,9 +116,12 @@ public class PlayerController : NetworkBehaviour
         if (currentlyOn.Value != "")
             return;
         currentPosition = HexGridLayout.instance.GetClosestHex(transform.position);
-        UpdateCurrentlyOn(currentPosition.hexRenderer.name);
-        if (currentPosition != null)
-            UpdateHex(currentPosition.hexObj.name, gameObject);
+        if (IsOwner)
+        {
+            UpdateCurrentlyOn(currentPosition.hexRenderer.name);
+            if (currentPosition != null)
+                UpdateHex(currentPosition.hexObj.name, gameObject);
+        }
     }
 
     /// <summary>
@@ -158,7 +161,7 @@ public class PlayerController : NetworkBehaviour
         {
             // Ray used to check if the cursor was on top of a hex
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit, mask))
+            if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, mask))
             {
                 if (hit.collider != null)
                 {
@@ -223,7 +226,7 @@ public class PlayerController : NetworkBehaviour
         {
             // Use ray to check if the cursor is on top of a hex
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit, mask))
+            if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, mask))
             {
                 if (hit.collider != null)
                 {
@@ -311,7 +314,7 @@ public class PlayerController : NetworkBehaviour
             }
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit, mask))
+            if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, mask))
             {
                 HexGridLayout.HexNode centerHex = HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hit.collider.gameObject);
                 if (previousHex != null && previousHex != centerHex)
