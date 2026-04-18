@@ -12,6 +12,7 @@ Library: C:\Unity\Mercenaries of Hexlands\Temp\BurstOutput\Data\Plugins\x86_64\l
 --linker-options=PdbAltPath="Mercenaries of Hexlands_Data/Plugins/x86_64/lib_burst_generated.pdb"
 --generate-link-xml=Temp\burst.link.xml
 --temp-folder=C:\Unity\Mercenaries of Hexlands\Temp\Burst
+--debug=LineOnly
 --key-folder=C:/Program Files/Unity/Hub/Editor/2022.3.62f2/Editor/Data/PlaybackEngines/WindowsStandaloneSupport
 --decode-folder=C:\Unity\Mercenaries of Hexlands\Library\Burst
 --output=C:\Unity\Mercenaries of Hexlands\Temp\BurstOutput\Data\Plugins\x86_64\lib_burst_generated
@@ -32,6 +33,7 @@ Library: C:\Unity\Mercenaries of Hexlands\Temp\BurstOutput\Data\Plugins\x86_64\l
 --linker-options=PdbAltPath="Mercenaries of Hexlands_Data/Plugins/x86_64/lib_burst_generated.pdb"
 --generate-link-xml=Temp\burst.link.xml
 --temp-folder=C:\Unity\Mercenaries of Hexlands\Temp\Burst
+--debug=LineOnly
 --key-folder=C:/Program Files/Unity/Hub/Editor/2022.3.62f2/Editor/Data/PlaybackEngines/WindowsStandaloneSupport
 --decode-folder=C:\Unity\Mercenaries of Hexlands\Library\Burst
 --output=C:\Unity\Mercenaries of Hexlands\Temp\BurstOutput\Data\Plugins\x86_64\lib_burst_generated
@@ -50,6 +52,7 @@ Library: C:\Unity\Mercenaries of Hexlands\Temp\BurstOutput\Data\Plugins\x86_64\l
 --linker-options=PdbAltPath="Mercenaries of Hexlands_Data/Plugins/x86_64/lib_burst_generated.pdb"
 --generate-link-xml=Temp\burst.link.xml
 --temp-folder=C:\Unity\Mercenaries of Hexlands\Temp\Burst
+--debug=LineOnly
 --key-folder=C:/Program Files/Unity/Hub/Editor/2022.3.62f2/Editor/Data/PlaybackEngines/WindowsStandaloneSupport
 --decode-folder=C:\Unity\Mercenaries of Hexlands\Library\Burst
 --output=C:\Unity\Mercenaries of Hexlands\Temp\BurstOutput\Data\Plugins\x86_64\lib_burst_generated
@@ -74,6 +77,7 @@ Library: C:\Unity\Mercenaries of Hexlands\Temp\BurstOutput\Data\Plugins\x86_64\l
 --linker-options=PdbAltPath="Mercenaries of Hexlands_Data/Plugins/x86_64/lib_burst_generated.pdb"
 --generate-link-xml=Temp\burst.link.xml
 --temp-folder=C:\Unity\Mercenaries of Hexlands\Temp\Burst
+--debug=LineOnly
 --key-folder=C:/Program Files/Unity/Hub/Editor/2022.3.62f2/Editor/Data/PlaybackEngines/WindowsStandaloneSupport
 --decode-folder=C:\Unity\Mercenaries of Hexlands\Library\Burst
 --output=C:\Unity\Mercenaries of Hexlands\Temp\BurstOutput\Data\Plugins\x86_64\lib_burst_generated
