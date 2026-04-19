@@ -16,6 +16,7 @@ public class NPCManager : NetworkBehaviour
     public List<NPCBehaviour> npcs = new List<NPCBehaviour>(); // List containing all NPCs spawned
 
     private int npcIdCount = 0; // Internal counter used to assign IDs to NPCs
+    private int npcTurn = 0; // Internal counter used to keep track of the NPCs as they do their turn
 
     #region Unity Functions
     private void Awake()
@@ -137,6 +138,13 @@ public class NPCManager : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Function used to create the behaviour tree of the NPC.<br/>
+    /// It creates the states and their connections based on the enums from the npcInfo.
+    /// </summary>
+    /// <param name="npc">Reference to the NPCBehaviour of the NPC</param>
+    /// <param name="npcInfo">npcInfo of this NPC</param>
+    /// <returns>The starting state of the NPC</returns>
     private BehaviourStateBase CreateBehaviourTree(NPCBehaviour npc, NPCInfo npcInfo)
     {
         Dictionary<NPCInfo.NPCState, BehaviourStateBase> references = new Dictionary<NPCInfo.NPCState, BehaviourStateBase>();
@@ -202,17 +210,22 @@ public class NPCManager : NetworkBehaviour
     }
 
     /// <summary>
-    /// Function used to process the NPC turn. For each NPC it will call the ChooseAction function of the NPCBehaviour script, then it will end the NPC turn<br/>
-    /// This shouldd only be called from the Server
+    /// Function used to process the NPC turn. It will call the ChooseAction function of the NPC whose turn it is.<br/>
+    /// !! This should only be called from the Server<br/>
+    /// !! Each NPC has to call this function at the end of their actions
     /// </summary>
     public void DoNPCTurn()
     {
-        foreach (NPCBehaviour npc in npcs)
+        if (npcTurn >= npcs.Count)
         {
-            npc.ChooseAction();
+            npcTurn = 0;
+            GameManager.instance.NextTurn();
         }
-
-        GameManager.instance.NextTurn();
+        else
+        {
+            npcs[npcTurn].ChooseAction();
+            npcTurn++;
+        }
     }
     #endregion
 }

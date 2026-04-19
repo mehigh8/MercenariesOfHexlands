@@ -3,12 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/// <summary>
+/// Base class of the behaviour state.<br/>
+/// Provides abstract IEnumerator function which contains the actions to be taken by the NPC.
+/// </summary>
 public abstract class BehaviourStateBase
 {
-    public List<Pair<BehaviourSwitchConditionBase, BehaviourStateBase>> connections;
+    public List<Pair<BehaviourSwitchConditionBase, BehaviourStateBase>> connections; // List containing pairs of switch conditions and states representing the links of the behaviour tree
 
-    public NPCBehaviour npc;
+    public NPCBehaviour npc; // Reference to the NPCBehaviour of this NPC
 
+    /// <summary>
+    /// Checks if the current state has to switch.
+    /// </summary>
+    /// <returns>The state that should be used</returns>
     public BehaviourStateBase UpdateState()
     {
         if (connections == null || connections.Count == 0)
@@ -22,14 +30,25 @@ public abstract class BehaviourStateBase
         return this;
     }
 
-    public abstract void DoStateActions();
+    /// <summary>
+    /// IEnumerator containing the actions of the NPC.
+    /// </summary>
+    /// <returns>-</returns>
+    public abstract IEnumerator DoStateActions();
 
+    /// <summary>
+    /// Function used to set the connections of this state
+    /// </summary>
+    /// <param name="connections">Connections to be stored and used by this state</param>
     public void SetConnections(List<Pair<BehaviourSwitchConditionBase, BehaviourStateBase>> connections)
     {
         this.connections = connections;
     }
 }
 
+/// <summary>
+/// In this state the NPC will wonder around randomly and heal if possible
+/// </summary>
 public class WanderState : BehaviourStateBase
 { 
     public WanderState(NPCBehaviour npc)
@@ -37,7 +56,7 @@ public class WanderState : BehaviourStateBase
         this.npc = npc;
     }
 
-    public override void DoStateActions()
+    public override IEnumerator DoStateActions()
     {
         Debug.Log(npc.npcName.Value + ": Wander state");
 
@@ -60,6 +79,8 @@ public class WanderState : BehaviourStateBase
         if (path.Count <= npc.npcInfo.movement)
         {
             npc.Move(path);
+            // Wait for the movement to finish
+            yield return new WaitWhile(delegate { return npc.isMoving; });
         }
         else
         {
@@ -67,10 +88,14 @@ public class WanderState : BehaviourStateBase
             Debug.LogWarning("Could not find hex to move to");
         }
 
+        // Try to heal
         npc.Heal();
     }
 }
 
+/// <summary>
+/// In this state, the NPC will run away from the threat and heal if possible
+/// </summary>
 public class RunState : BehaviourStateBase
 {
     public RunState(NPCBehaviour npc)
@@ -78,7 +103,7 @@ public class RunState : BehaviourStateBase
         this.npc = npc;
     }
 
-    public override void DoStateActions()
+    public override IEnumerator DoStateActions()
     {
         if (npc.threat != null)
         {
@@ -102,16 +127,22 @@ public class RunState : BehaviourStateBase
             }
 
             npc.Move(path);
+            // Wait for the movement to finish
+            yield return new WaitWhile(delegate { return npc.isMoving; });
         }
         else
         {
             Debug.LogWarning("There is no threat to run from");
         }
-
+        
+        // Try to heal
         npc.Heal();
     }
 }
 
+/// <summary>
+/// In this state, the NPC will go towards the threat and attack (TODO: if not able to attack, should heal)
+/// </summary>
 public class AttackState : BehaviourStateBase
 {
     public AttackState(NPCBehaviour npc)
@@ -119,7 +150,7 @@ public class AttackState : BehaviourStateBase
         this.npc = npc;
     }
 
-    public override void DoStateActions()
+    public override IEnumerator DoStateActions()
     {
         if (npc.threat != null)
         {
@@ -143,12 +174,15 @@ public class AttackState : BehaviourStateBase
             }
 
             npc.Move(path);
+            // Wait for the movement to finish
+            yield return new WaitWhile(delegate { return npc.isMoving; });
         }
         else
         {
             Debug.LogWarning("There is no threat to run from");
         }
 
+        // Try to attack
         npc.Attack();
         // TODO: Add check to see if any skill is in range. If not, heal (if able)
     }

@@ -129,7 +129,7 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     private void CameraMovement()
     {
-        if (!playerCamera || Input.GetKey(KeyCode.H))
+        if (!playerCamera)
             return;
         if (Input.GetKeyDown(KeyCode.Space))
             playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z) + cameraOffset;
@@ -145,7 +145,7 @@ public class PlayerController : NetworkBehaviour
         if (Input.GetKey(KeyCode.S))
             toMove -= Vector3.forward;
 
-        playerCamera.transform.position += toMove.normalized * cameraSpeed;
+        playerCamera.transform.position += toMove.normalized * cameraSpeed * Time.deltaTime;
     }
 
     /// <summary>
@@ -222,7 +222,7 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     private void HighlightMovement()
     {
-        if (Input.GetKey(KeyCode.H) && abilityHandler.currentAbility == null && !isMoving())
+        if (abilityHandler.currentAbility == null && !isMoving())
         {
             // Use ray to check if the cursor is on top of a hex
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

@@ -6,11 +6,14 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New NPC", menuName = "NPC")]
 public class NPCInfo : ScriptableObject
 {
+    /// <summary>
+    /// Class storing a node of the NPC's behaviour tree
+    /// </summary>
     [System.Serializable]
-    public class BehaviourBranch
+    public class BehaviourNode
     {
-        public NPCState state;
-        public List<Pair<NPCSwitchCondition, NPCState>> connections;
+        public NPCState state; // Enum state stored in this node
+        public List<Pair<NPCSwitchCondition, NPCState>> connections; // Connections to other states
     }
 
     public enum NPCState
@@ -65,7 +68,7 @@ public class NPCInfo : ScriptableObject
     public int healthyThreshold;
 
     [Header("Behaviour")]
-    public List<BehaviourBranch> npcBehaviour;
+    public List<BehaviourNode> npcBehaviour;
 
     [Header("Abilities")]
     [Tooltip("List of abilities this NPC can use")]

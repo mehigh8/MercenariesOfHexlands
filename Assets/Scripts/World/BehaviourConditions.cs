@@ -3,13 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/// <summary>
+/// Base class of state switch conditions.<br/>
+/// It provides an abstract condition function which contains the logic that decides whether the state should switch or not.
+/// </summary>
 [System.Serializable]
 public abstract class BehaviourSwitchConditionBase
 {
-    protected NPCBehaviour npc;
+    protected NPCBehaviour npc; // Reference to the NPCBehaviour of this npc
+    /// <summary>
+    /// Condition function which is used to switch the state or not
+    /// </summary>
+    /// <returns>True - State has to switch; False - State remains the same</returns>
     public abstract bool CheckCondition();
 }
 
+/// <summary>
+/// Return true if the NPC has been hit (this is tested by checking if the NPC has a threat set)
+/// </summary>
 public class HitCondition : BehaviourSwitchConditionBase
 {
     public HitCondition(NPCBehaviour npc)
@@ -23,6 +34,9 @@ public class HitCondition : BehaviourSwitchConditionBase
     }
 }
 
+/// <summary>
+/// Return true if the NPC has been hit (if it has threat) or if there is any player in its detection range (in which case it will set that player as a threat)
+/// </summary>
 public class HitOrSeenCondition : BehaviourSwitchConditionBase
 {
     public HitOrSeenCondition(NPCBehaviour npc)
@@ -36,24 +50,10 @@ public class HitOrSeenCondition : BehaviourSwitchConditionBase
             return true;
 
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        Debug.Log("DEBUG: " + npc.npcName.Value + " - players.Count = " + players.Length);
 
         foreach (GameObject player in players)
         {
             PlayerController possibleThreat = player.GetComponent<PlayerController>();
-            HexGridLayout.HexNode playerHex = possibleThreat.currentPosition;
-            if (playerHex == null)
-                Debug.Log("DEBUG: " + npc.npcName.Value + " - player hex is null");
-            else
-                Debug.Log("DEBUG: " + npc.npcName.Value + " - player hex is " + playerHex.hexObj.name);
-
-            HexGridLayout.HexNode npcHex = npc.currentHexNode;
-            if (npcHex == null)
-                Debug.Log("DEBUG: " + npc.npcName.Value + " - npc hex is null");
-            else
-                Debug.Log("DEBUG: " + npc.npcName.Value + " - npc hex is " + npcHex.hexObj.name);
-
-            Debug.Log("DEBUG: " + npc.npcName.Value + " - player to npc distance is " + npcHex.Distance(playerHex) + " and detection range is " + npc.npcInfo.detection);
 
             if (npc.currentHexNode.Distance(possibleThreat.currentPosition) <= npc.npcInfo.detection)
             {
@@ -66,6 +66,9 @@ public class HitOrSeenCondition : BehaviourSwitchConditionBase
     }
 }
 
+/// <summary>
+/// Return true if the distance between the NPC and the threat is greater than the configured range
+/// </summary>
 public class FarFromThreatCondition : BehaviourSwitchConditionBase
 {
     public FarFromThreatCondition(NPCBehaviour npc)
@@ -85,6 +88,9 @@ public class FarFromThreatCondition : BehaviourSwitchConditionBase
     }
 }
 
+/// <summary>
+/// Return true if the health of the NPC is lower than the configured threshold
+/// </summary>
 public class LowOnHealthCondition : BehaviourSwitchConditionBase
 {
     public LowOnHealthCondition(NPCBehaviour npc)
@@ -98,6 +104,9 @@ public class LowOnHealthCondition : BehaviourSwitchConditionBase
     }
 }
 
+/// <summary>
+/// Return true if the health of the NPC is greater than the configured threshold
+/// </summary>
 public class HealthyCondition : BehaviourSwitchConditionBase
 {
     public HealthyCondition(NPCBehaviour npc)

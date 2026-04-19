@@ -175,6 +175,7 @@ public class GameManager : NetworkBehaviour
         if (turnOrderIndex == clientsTurnOrder.Count)
         {
             Debug.LogWarning("Doing npc turn");
+            currentPlayerTurn.Value = -2; // Set current turn value to -2 (NPC turn value)
             NPCManager.instance.DoNPCTurn();
             return;
         }
@@ -209,6 +210,10 @@ public class GameManager : NetworkBehaviour
         if (turn == -1)
         {
             currentTurnText.text = "";
+        }
+        else if (turn == -2)
+        {
+            currentTurnText.text = "NPC turn";
         }
         else
         {

@@ -38,8 +38,9 @@ public class NPCBehaviour : NetworkBehaviour
     [HideInInspector] public HexGridLayout.HexNode currentHexNode = null; // The actual hex this NPC is standing on (is updated from the SyncVar hex name)
 
     [HideInInspector] public NPCInfo npcInfo; // NPC Info reference
-    [HideInInspector] public PlayerController threat;
-    [HideInInspector] public BehaviourStateBase currentState;
+    [HideInInspector] public PlayerController threat; // Reference to the PlayerController of the player this NPC considers as a threat
+    [HideInInspector] public BehaviourStateBase currentState; // Reference to the current behaviour state of this NPC
+    [HideInInspector] public bool isMoving = false; // Boolean specifying if this NPC is currently moving
 
     #region Unity Functions
     private void Awake()
@@ -137,19 +138,20 @@ public class NPCBehaviour : NetworkBehaviour
         currentState = currentState.UpdateState();
 
         // Apply state actions
-        currentState.DoStateActions();
+        StartCoroutine(currentState.DoStateActions());
     }
     #endregion
 
     #region Actions Related Functions
     /// <summary>
-    /// Function that moves the NPC to a specified hex
+    /// Function that moves the NPC on a specified path
     /// </summary>
     public void Move(List<HexGridLayout.HexNode> path)
     {
         if (path == null || path.Count == 0)
             return;
 
+        isMoving = true;
         // Free the hex that the NPC was standing on
         HexGridLayout.instance.UpdateHex(currentHex.Value, null);
         HexGridLayout.HexNode dest = path[path.Count - 1];
@@ -179,16 +181,26 @@ public class NPCBehaviour : NetworkBehaviour
             // Use yield return null to go to the next frame
             yield return null;
         }
+
+        isMoving = false;
     }
 
+    /// <summary>
+    /// Placeholder function used to indicate that the NPC wants to heal
+    /// </summary>
     public void Heal()
     {
         Debug.LogWarning(npcName.Value + ": Heal action placeholder");
+        NPCManager.instance.DoNPCTurn();
     }
 
+    /// <summary>
+    /// Placeholder function used to indicate that the NPC wants to attack
+    /// </summary>
     public void Attack()
     {
         Debug.LogWarning(npcName.Value + ": Attack action placeholder");
+        NPCManager.instance.DoNPCTurn();
     }
     #endregion
 }

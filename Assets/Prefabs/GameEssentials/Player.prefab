@@ -165,7 +165,7 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 4231930951776552360}
   _networkObjectCache: {fileID: 4231930951776552360}
-  cameraSpeed: 0.1
+  cameraSpeed: 25
   mask:
     serializedVersion: 2
     m_Bits: 64
