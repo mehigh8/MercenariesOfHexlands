@@ -198,6 +198,8 @@ public class AbilityHandler : MonoBehaviour
                 
                 // We try to form a path to the given hex
                 List<HexGridLayout.HexNode> path = Pathfinder.FindPath(playerController.currentPosition, HexGridLayout.instance.hexNodes.Find(h => h.hexObj == hex.hexRenderer.gameObject));
+                if (path == null)
+                    continue;
                 if (path.Count > currentAbility.range)
                     path.RemoveRange(currentAbility.range, path.Count - currentAbility.range);
 

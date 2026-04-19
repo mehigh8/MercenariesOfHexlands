@@ -311,6 +311,7 @@ public class PlayerController : NetworkBehaviour
                             hex.hexRenderer.ChangeColorToOriginal();
                 }
                 abilityHandler.CancelCasting();
+                return;
             }
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
