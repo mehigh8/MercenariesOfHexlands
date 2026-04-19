@@ -159,7 +159,7 @@ public class HexRenderer : NetworkBehaviour
     /// <param name="turn">ID of the player whose turn it is</param>
     private void ReduceLingering(int turn)
     {
-        if (lingeringEffect.Value == null)
+        if (lingeringEffect.Value == null || !GameManager.instance.IsMyTurn() || lingeringEffect.Value.source != GameManager.instance.LocalConnection.ClientId)
             return;
         lingeringEffect.Value.remainingDuration -= 1;
         if (lingeringEffect.Value.remainingDuration == 0)
