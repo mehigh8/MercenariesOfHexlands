@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1755470420146404557}
   - component: {fileID: 7870003711927084558}
   - component: {fileID: 3725229231128154320}
-  m_Layer: 2
+  m_Layer: 7
   m_Name: Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -145,7 +145,7 @@ GameObject:
   - component: {fileID: 8604910886267338937}
   - component: {fileID: 8988406334013597240}
   - component: {fileID: 778392337355256028}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -222,7 +222,7 @@ GameObject:
   - component: {fileID: 7099607176351258942}
   - component: {fileID: 6887018436782488415}
   - component: {fileID: 2876310472370287434}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Visuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -348,7 +348,7 @@ GameObject:
   - component: {fileID: 8368870854149018158}
   - component: {fileID: 4440982578785254588}
   - component: {fileID: 1395384032050555717}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -423,7 +423,7 @@ GameObject:
   - component: {fileID: 2189547388516163010}
   - component: {fileID: 2664250888254770726}
   - component: {fileID: 2465203935248543139}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: HealthText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -559,7 +559,7 @@ GameObject:
   - component: {fileID: 6598269894154620556}
   - component: {fileID: 955094513288757711}
   - component: {fileID: 1321832254188073543}
-  m_Layer: 2
+  m_Layer: 7
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -672,7 +672,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6299992773731217831}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Handle Slide Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -710,7 +710,7 @@ GameObject:
   - component: {fileID: 2711869377168013326}
   - component: {fileID: 7260899936511876130}
   - component: {fileID: 1085579745061749602}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -784,7 +784,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4963292832087735764}
   - component: {fileID: 2066258241651926003}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -877,7 +877,7 @@ GameObject:
   - component: {fileID: 4168344837601793645}
   - component: {fileID: 4426636664689014131}
   - component: {fileID: 2614293520809841679}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: NPCTest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -912,9 +912,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c163e0b2bd935e4ba6a4727eeb3bc57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 255
+  _componentIndexCache: 0
   _addedNetworkObject: {fileID: 4168344837601793645}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 4168344837601793645}
   npcName:
     NetworkManager: {fileID: 0}
     NetworkBehaviour: {fileID: 0}
@@ -963,6 +963,7 @@ MonoBehaviour:
   healthBar: {fileID: 2066258241651926003}
   healthText: {fileID: 2465203935248543139}
   npcInfo: {fileID: 0}
+  threat: {fileID: 0}
 --- !u!114 &4168344837601793645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -981,7 +982,9 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   <PredictedOwner>k__BackingField: {fileID: 0}
-  NetworkBehaviours: []
+  NetworkBehaviours:
+  - {fileID: 1287811208660176731}
+  - {fileID: 4426636664689014131}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -1006,15 +1009,15 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 65535
+  <PrefabId>k__BackingField: 21
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 17691481373048548152
   <SceneId>k__BackingField: 0
   SerializedTransformProperties:
     Position: {x: 0, y: 0, z: 0}
-    Rotation: {x: 0, y: 0, z: 0, w: 0}
-    Scale: {x: 0, y: 0, z: 0}
-    IsValid: 0
+    Rotation: {x: 0, y: 0, z: 0, w: 1}
+    Scale: {x: 1, y: 1, z: 1}
+    IsValid: 1
 --- !u!114 &4426636664689014131
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1027,9 +1030,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2836e36774ca1c4bbbee976e17b649c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 255
+  _componentIndexCache: 1
   _addedNetworkObject: {fileID: 4168344837601793645}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 4168344837601793645}
   _componentConfiguration: 0
   _synchronizeParent: 0
   _packing:
@@ -1089,7 +1092,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3985000808919020538}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}

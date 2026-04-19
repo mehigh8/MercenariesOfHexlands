@@ -328,6 +328,7 @@ public class HexRenderer : NetworkBehaviour
     /// <param name="clientId">ID of the client that is applying the effect</param>
     /// <param name="element">Effect element</param>
     /// <param name="lingeringDuration">Duration of the lingering effect</param>
+    [ServerRpc(RequireOwnership = false)]
     public void ApplyLingering(int clientId, AbilityInfo.Element element, int lingeringDuration)
     {
         lingeringEffect.Value = new LingeringEffect(clientId, element, lingeringDuration);

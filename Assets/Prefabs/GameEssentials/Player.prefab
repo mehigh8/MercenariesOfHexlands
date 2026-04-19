@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4600345165556904921}
   - component: {fileID: 2374242237454727767}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 2969058245022903750}
   - component: {fileID: 4864732434553502953}
   - component: {fileID: -3492774116805146939}
-  m_Layer: 2
+  m_Layer: 8
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -197,7 +197,7 @@ MonoBehaviour:
   - {fileID: 4377053942288531369}
   - {fileID: 2969058245022903750}
   - {fileID: 4864732434553502953}
-  - {fileID: -3492774116805146939}
+  - {fileID: 0}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -321,9 +321,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e82270c85ebbe346ba54aceb3ec029d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 3
-  _addedNetworkObject: {fileID: 4231930951776552360}
-  _networkObjectCache: {fileID: 4231930951776552360}
   cooldowns: []
   currentAbility: {fileID: 0}
   playerController: {fileID: 0}
@@ -336,7 +333,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3122211945553000846}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Handle Slide Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -374,7 +371,7 @@ GameObject:
   - component: {fileID: 36917244528377344}
   - component: {fileID: 1665794724478173720}
   - component: {fileID: 9000300741276180340}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: HealthText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -507,7 +504,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7860873423695607983}
   - component: {fileID: 7021526926530799473}
-  m_Layer: 2
+  m_Layer: 8
   m_Name: Visuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -562,7 +559,7 @@ GameObject:
   - component: {fileID: 9064482087280608081}
   - component: {fileID: 6030606927149997367}
   - component: {fileID: 6426699007974400718}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -638,7 +635,7 @@ GameObject:
   - component: {fileID: 3416275333672346806}
   - component: {fileID: 7878259594465608034}
   - component: {fileID: 2811106755181396849}
-  m_Layer: 2
+  m_Layer: 8
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -744,7 +741,7 @@ GameObject:
   - component: {fileID: 2514161031822633770}
   - component: {fileID: 7869623394063325081}
   - component: {fileID: 2709115689552423551}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -821,7 +818,7 @@ GameObject:
   - component: {fileID: 5462680403588689328}
   - component: {fileID: 5373649216644621908}
   - component: {fileID: 311185374950549730}
-  m_Layer: 2
+  m_Layer: 8
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -934,7 +931,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6444328614834922939}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -972,7 +969,7 @@ GameObject:
   - component: {fileID: 6135353783325839969}
   - component: {fileID: 170233912142685731}
   - component: {fileID: 2961750525227163761}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1048,7 +1045,7 @@ GameObject:
   - component: {fileID: 7750890413850357999}
   - component: {fileID: 2008882025071339540}
   - component: {fileID: 214979811179121351}
-  m_Layer: 2
+  m_Layer: 8
   m_Name: Visor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1152,7 +1149,7 @@ GameObject:
   - component: {fileID: 7839532562829396550}
   - component: {fileID: 2303847229277925794}
   - component: {fileID: 8498826273635487349}
-  m_Layer: 2
+  m_Layer: 8
   m_Name: Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}

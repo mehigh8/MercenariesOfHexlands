@@ -67,6 +67,7 @@ public class PlayerInfo : NetworkBehaviour
     /// Function used when the player has taken damage
     /// </summary>
     /// <param name="amount">Amount of damage taken</param>
+    [ServerRpc(RequireOwnership = false)]
     public void TakeDamage(int amount)
     {
         // Update current health and call Die if it reached 0
@@ -79,6 +80,7 @@ public class PlayerInfo : NetworkBehaviour
     /// Function used when the player receives a heal
     /// </summary>
     /// <param name="amount">Amount of health healed</param>
+    [ServerRpc(RequireOwnership = false)]
     public void Heal(int amount)
     {
         currentHealth.Value = Math.Min(maxHealth.Value, currentHealth.Value + amount);

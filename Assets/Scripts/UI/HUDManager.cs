@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class HUDManager : NetworkBehaviour
+public class HUDManager : MonoBehaviour
 {
 
     [Header("Permanent buttons")]

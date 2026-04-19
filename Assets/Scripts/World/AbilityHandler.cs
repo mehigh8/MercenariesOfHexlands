@@ -4,7 +4,7 @@ using System.Linq;
 using FishNet.Object;
 using UnityEngine;
 
-public class AbilityHandler : NetworkBehaviour
+public class AbilityHandler : MonoBehaviour
 {
     [System.Serializable]
     public class AbilityCooldown
@@ -223,7 +223,6 @@ public class AbilityHandler : NetworkBehaviour
     /// <param name="lingeringDuration">Lingering duration of ability</param>
     /// <param name="element">Element of the lingering</param>
     /// <param name="isHeal">Whether or not the ability is a heal</param>
-    [ServerRpc(RequireOwnership = false)]
     private void ApplyHexEffects(List<HexRenderer> hexes, int damageAmount, int lingeringDuration, AbilityInfo.Element element, bool isHeal)
     {
         foreach (HexRenderer hex in hexes)
