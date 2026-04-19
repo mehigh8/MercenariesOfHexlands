@@ -39,14 +39,6 @@ public class LobbyManager : MonoBehaviour
 #region Unity Functions
     void Start()
     {
-        // Here we just make sure that the listeners are all cleaned before adding new ones
-        if (lobbyCreated != null)
-            lobbyCreated.Dispose();
-        if (lobbyMatchList != null)
-            lobbyMatchList.Dispose();
-        if (lobbyJoined != null)
-            lobbyJoined.Dispose();
-
         refreshButton.onClick.RemoveAllListeners();
         hostMatchButton.onClick.RemoveAllListeners();
 
@@ -54,7 +46,7 @@ public class LobbyManager : MonoBehaviour
         lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
         lobbyMatchList = Callback<LobbyMatchList_t>.Create(OnFetchLobbyList);
         lobbyJoined = Callback<LobbyEnter_t>.Create(OnLobbyJoined);
-        
+
         refreshButton.onClick.AddListener(FetchLobbies);
         hostMatchButton.onClick.AddListener(HostMatch);
     }
@@ -62,31 +54,24 @@ public class LobbyManager : MonoBehaviour
     void Update()
     {
         ScrollLobbyWindow();
-
-        // Editor implementation for testing dummy lobbies
-#if UNITY_EDITOR
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            foundLobbies.Add(new LobbyInfo() { name = "Lobby " + (foundLobbies.Count + 1), playerCount = Random.Range(1, 5), steamID = Random.Range(1000000000, 9999999999).ToString() });
-            UpdateLobbyWindow();
-        }
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            if (foundLobbies.Count > 0)
-                foundLobbies.RemoveAt(foundLobbies.Count - 1);
-            UpdateLobbyWindow();
-        }
-#endif
     }
-#endregion
 
-#region Steam Callbacks
+    void OnDisable()
+    {
+        lobbyCreated.Dispose();
+        lobbyMatchList.Dispose();
+        lobbyJoined.Dispose();
+    }
+    #endregion
+
+    #region Steam Callbacks
     /// <summary>
     /// This function is called when we successfully join a lobby, either by hosting or by joining an existing one
     /// </summary>
     /// <param name="result"></param>
     private void OnLobbyJoined(LobbyEnter_t result)
     {
+        Debug.Log("Received lobby join callback");
         CSteamID lobbyID = new CSteamID(result.m_ulSteamIDLobby);
         // Check that the lobby is still joinable (either if it is full or it has already started). Edge case if our fetched lobby list is outdated
         if (SteamMatchmaking.GetNumLobbyMembers(lobbyID) >= 4 || SteamMatchmaking.GetLobbyData(lobbyID, "gameStarted") == "true")
@@ -97,6 +82,7 @@ public class LobbyManager : MonoBehaviour
             return;
         }
 
+        Debug.Log("Trying to load scene");
         // FIXME: currently we load the scene that is most up to date, but we should load the game scene at some point
         SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
         // If we are the host of the match we also want to start the server to allow players to join
@@ -133,7 +119,7 @@ public class LobbyManager : MonoBehaviour
                 lobbyID = lobbyId
             });
         }
-
+        Debug.LogWarning("Updating lobby list");
         // After fetching a new list we also want to update the lobby window to display the new list
         UpdateLobbyWindow();
     }
@@ -169,6 +155,7 @@ public class LobbyManager : MonoBehaviour
     /// </summary>
     public void FetchLobbies()
     {
+        Debug.LogWarning("Fetching lobbies");
         foundLobbies = new List<LobbyInfo>();
 
         // This is a temp filter for using the steam test app
@@ -252,14 +239,17 @@ public class LobbyManager : MonoBehaviour
     private void HostMatch()
     {
         // Bind the server address to the client's steamID
+        Debug.Log($"Hosting lobby with steamID {NetworkManagerObject.Instance.mySteamID}");
         string steamID = NetworkManagerObject.Instance.mySteamID.ToString();
         NetworkManagerObject.Instance.fishySteamworks.SetClientAddress(steamID);
+        Debug.Log("Bound client address to steamID " + steamID);
 
         // Send request to steamworks that we want to create this lobby
         SteamMatchmaking.CreateLobby(
             ELobbyType.k_ELobbyTypePublic,
             4 // TODO: maybe we want this to be more idk, we'll see after we have a proper server hosting window
         );
+        Debug.Log("Sent create lobby request");
     }
 
     /// <summary>
