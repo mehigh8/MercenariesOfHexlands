@@ -214,7 +214,7 @@ public class AbilityHandler : MonoBehaviour
 
         // We color the hexes to a lighter shade in order to show the range
         foreach (HexGridLayout.HexNode hex in validHexes)
-            hex.hexRenderer.ChangeColor(hex.hexRenderer.GetColor() + new Color(0.2f, 0.2f, 0.2f, 1f));
+            hex.hexRenderer.ChangeColor(hex.hexRenderer.GetColor() + Color.white);
     }
 
     /// <summary>

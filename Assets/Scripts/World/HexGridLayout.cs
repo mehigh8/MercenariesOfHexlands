@@ -175,7 +175,7 @@ public class HexGridLayout : NetworkBehaviour
                 hexRenderer.originalColor.NetworkManager = seed.NetworkManager;
                 hexRenderer.originalColor.NetworkBehaviour = hexRenderer;
 
-                hexRenderer.hexVisualPrefab.Value = Random.Range(0, GameManager.instance.allExistingTiles.Count);
+                hexRenderer.hexVisualPrefab.Value = GetTileIndexBasedOnHeight(visualColor.g);
                 hexRenderer.hexVisualPrefab.NetworkManager = seed.NetworkManager;
                 hexRenderer.hexVisualPrefab.NetworkBehaviour = hexRenderer;
 
@@ -335,6 +335,22 @@ public class HexGridLayout : NetworkBehaviour
     {
         float g = Random.value < obstacleThreshold ? Random.Range(0, obstacleThreshold) : Random.Range(0.5f, 1f);
         return new Color(0, g, 0, 1);
+    }
+
+    /// <summary>
+    /// TEMP: Used to pick the tiles based on height for now, but we will want to do this properly later<br/>
+    /// TODO: Implement a proper system
+    /// </summary>
+    /// <returns>Returns index based on height</returns>
+    private int GetTileIndexBasedOnHeight(float height)
+    {
+        if (height < obstacleThreshold / 2)
+            return 3; // Grass tile
+        if (height < obstacleThreshold)
+            return 2; // Forest tile
+        if (height < 0.75f)
+            return 1; // Small Mountain
+        return 0; // Tall Mountain tile
     }
 
     /// <summary>

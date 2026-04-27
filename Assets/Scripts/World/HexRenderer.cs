@@ -3,6 +3,7 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
@@ -101,6 +102,7 @@ public class HexRenderer : NetworkBehaviour
         meshCollider = GetComponent<MeshCollider>();
         // Set material
         meshRenderer.material = material;
+        SetMaterialTransparent(meshRenderer.material);
 
         // Set object's name to uniquely identify this hex
         gameObject.name = $"Hex {coords.Value.x},{coords.Value.y}";
@@ -113,7 +115,9 @@ public class HexRenderer : NetworkBehaviour
         transform.parent = HexGridLayout.instance.transform;
 
         // Instantiate visual prefab (TODO: Maybe move in a better place?)
-        Instantiate(GameManager.instance.allExistingTiles[hexVisualPrefab.Value], transform.position - Vector3.up * 0.51f, Quaternion.Euler(-90, 0, 0), transform);
+        MeshRenderer visuals = Instantiate(GameManager.instance.allExistingTiles[hexVisualPrefab.Value], transform.position - Vector3.up * 0.51f, Quaternion.Euler(-90, 0, 0), transform).GetComponent<MeshRenderer>();
+        visuals.material = new Material(visuals.material);
+        visuals.material.color -= Color.white * originalColor.Value.g / 2; // This is just cosmetic
 
         // Draw the mesh
         DrawMesh();
@@ -168,6 +172,34 @@ public class HexRenderer : NetworkBehaviour
     #endregion
 
     #region Mesh Generation
+
+    /// <summary>
+    /// This basically tells unity that the material should be transparent
+    /// </summary>
+    /// <param name="mat">The material we wish to make transparent</param>
+    public static void SetMaterialTransparent(Material mat)
+    {
+        // Tell URP this is a transparent surface
+        mat.SetFloat("_Surface", 1f); // 0 = Opaque, 1 = Transparent
+
+        // Set the blend mode
+        mat.SetFloat("_Blend", 0f); // 0 = Alpha, 1 = Premultiply, 2 = Additive, 3 = Multiply
+
+        // Disable depth writing (required for transparency)
+        mat.SetFloat("_ZWrite", 0f);
+
+        // Set the actual GPU blend state
+        mat.SetInt("_SrcBlend", (int)BlendMode.SrcAlpha);
+        mat.SetInt("_DstBlend", (int)BlendMode.OneMinusSrcAlpha);
+
+        // Enable the transparency keyword
+        mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+        mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+
+        // Set render queue to transparent range
+        mat.renderQueue = (int)RenderQueue.Transparent;
+    }
+
     /// <summary>
     /// Function used to create the mesh, then create and combine the necessary faces
     /// </summary>
@@ -179,7 +211,7 @@ public class HexRenderer : NetworkBehaviour
 
         // Assign the mesh and color
         meshFilter.mesh = mesh;
-        meshRenderer.material.color = originalColor.Value;
+        meshRenderer.material.color = Color.clear; // TODO: marking this in case I break stuff
 
         // Create and combine the faces
         DrawFaces();
@@ -280,7 +312,7 @@ public class HexRenderer : NetworkBehaviour
     /// </summary>
     public void ChangeColorToOriginal()
     {
-        meshRenderer.material.color = originalColor.Value;
+        meshRenderer.material.color = Color.clear; // TODO: marking this in case I break stuff
     }
 
     /// <summary>
@@ -289,6 +321,7 @@ public class HexRenderer : NetworkBehaviour
     /// <param name="color">Color to which to change the hex</param>
     public void ChangeColor(Color color)
     {
+        color.a = 0.5f;
         meshRenderer.material.color = color;
     }
 

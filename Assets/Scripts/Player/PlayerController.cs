@@ -246,7 +246,7 @@ public class PlayerController : NetworkBehaviour
                             {
                                 // Highlight the hexes on the new path
                                 for (int i = 0; i < highlightedPath.Count && i < playerInfo.canMoveThisTurn; i++)
-                                    highlightedPath[i].hexRenderer.ChangeColor(highlightedPath[i].hexRenderer.GetColor() + new Color(0.4f, 0.4f, 0.4f, 1f));
+                                    highlightedPath[i].hexRenderer.ChangeColor(highlightedPath[i].hexRenderer.GetColor() + Color.white); // TODO: marking this in case I break stuff
                             }
 
                             // Store the last hex
@@ -324,7 +324,7 @@ public class PlayerController : NetworkBehaviour
                     foreach (HexGridLayout.HexNode hex in AOENodes)
                     {
                         if (abilityHandler.IsWithinRange(hex))
-                            hex.hexRenderer.ChangeColor(hex.hexRenderer.originalColor.Value + new Color(0.4f, 0.4f, 0.4f, 1f));
+                            hex.hexRenderer.ChangeColor(Color.white); // TODO: marking this in case I break stuff
                         else
                             hex.hexRenderer.ChangeColorToOriginal();
                     }
@@ -354,7 +354,7 @@ public class PlayerController : NetworkBehaviour
                 foreach (HexGridLayout.HexNode hex in AOENodes)
                 {
                     if (abilityHandler.IsWithinRange(hex))
-                        hex.hexRenderer.ChangeColor(hex.hexRenderer.originalColor.Value + new Color(0.4f, 0.4f, 0.4f, 1f));
+                        hex.hexRenderer.ChangeColor(Color.white); // TODO: marking this in case I break stuff
                     else
                         hex.hexRenderer.ChangeColorToOriginal();
                 }

@@ -540,7 +540,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 2
+  m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -549,7 +549,7 @@ Light:
     m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 1
+    m_Strength: 0.7
     m_Bias: 0.05
     m_NormalBias: 0.4
     m_NearPlane: 0.2
@@ -869,7 +869,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _componentIndexCache: 0
-  _addedNetworkObject: {fileID: 0}
+  _addedNetworkObject: {fileID: 1038434181266582039}
   _networkObjectCache: {fileID: 0}
   npcCount: 5
   allExistingNPCs:
@@ -890,7 +890,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _componentIndexCache: 0
-  _addedNetworkObject: {fileID: 0}
+  _addedNetworkObject: {fileID: 1038434181266582039}
   _networkObjectCache: {fileID: 0}
   currentPlayerTurn:
     NetworkManager: {fileID: 0}
@@ -928,7 +928,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8ec682d6266b33b49aaf8a415deac83e, type: 2}
   - {fileID: 11400000, guid: c8fc8bbc212fe094c963246b6d6c9921, type: 2}
   allExistingTiles:
-  - {fileID: 4286001034590426998, guid: e42adffbc698444438d9f302139a5a37, type: 3}
+  - {fileID: 303318501854874913, guid: fff99ae97c20f3741880d53dc75581dc, type: 3}
+  - {fileID: 322856399212259407, guid: f24e409586a66b34d850c710eafa1bc8, type: 3}
+  - {fileID: 1424985948199359426, guid: 377f2611db3dd7840b5eb4d011b3271c, type: 3}
+  - {fileID: 4085286255959681246, guid: 9cb169ce43c0b514ead404e42bacbdc6, type: 3}
 --- !u!114 &7443408887620583545 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6767867088014908777, guid: 9ec04f2109786d241b47a631e45484c0,
