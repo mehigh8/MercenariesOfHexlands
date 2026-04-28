@@ -23,6 +23,7 @@ public class AbilityHandler : MonoBehaviour
     [HideInInspector] public List<AbilityCooldown> cooldowns = new List<AbilityCooldown>(); // Cooldowns of abilities
     [HideInInspector] public AbilityInfo currentAbility; // Ability that is going to be cast
     [HideInInspector] public PlayerController playerController; //TODO: singleton Reference to the player controller class
+    [HideInInspector] public NPCBehaviour npcBehaviour; // Reference to the NPCBehaviour class in case this is on an npc
     private List<HexGridLayout.HexNode> validHexes = new List<HexGridLayout.HexNode>(); // List of hexes that the ability currently being cast is able to be used on
 
 #region Helper Functions
@@ -106,13 +107,16 @@ public class AbilityHandler : MonoBehaviour
     {
         Debug.Log("Cast Ability");
         // Show the abilities UI and disable the tooltip
-        UIManager.instance.abilitiesUIManager.ShowAbilities(true);
-        UIManager.instance.tooltipHandler.HideTooltip();
+        if (playerController)
+        {
+            UIManager.instance.abilitiesUIManager.ShowAbilities(true);
+            UIManager.instance.tooltipHandler.HideTooltip();
 
-        // Revert the hexes back to their original color
-        foreach (HexGridLayout.HexNode hex in validHexes)
-            hex.hexRenderer.ChangeColorToOriginal();
-        validHexes = new List<HexGridLayout.HexNode>();
+            // Revert the hexes back to their original color
+            foreach (HexGridLayout.HexNode hex in validHexes)
+                hex.hexRenderer.ChangeColorToOriginal();
+            validHexes = new List<HexGridLayout.HexNode>();
+        }
 
 
         List<HexRenderer> hexRenderers = new List<HexRenderer>();
@@ -127,30 +131,46 @@ public class AbilityHandler : MonoBehaviour
                         currentAbility.isHeal);
 
         // Handle the charge to target ability case
-        if (currentAbility.chargeToTarget && centerNode != playerController.currentPosition)
+        if (playerController)
         {
-            List<HexGridLayout.HexNode> tempPath = Pathfinder.FindPath(playerController.currentPosition, centerNode);
-            if (centerNode.hexRenderer.occupying.Value)
-                tempPath.RemoveAt(tempPath.Count - 1);
-            if (tempPath.Count > 0)
+            if (currentAbility.chargeToTarget && centerNode != playerController.currentPosition)
             {
-                playerController.UpdateHex(playerController.currentPosition.hexObj.name, null);
-                playerController.UpdateCurrentlyOn(tempPath.Last().hexRenderer.name);
-                playerController.currentPosition = tempPath.Last();
-                playerController.UpdateHex(playerController.currentPosition.hexObj.name, gameObject);
+                List<HexGridLayout.HexNode> tempPath = Pathfinder.FindPath(playerController.currentPosition, centerNode);
+                if (centerNode.hexRenderer.occupying.Value)
+                    tempPath.RemoveAt(tempPath.Count - 1);
+                if (tempPath.Count > 0)
+                {
+                    playerController.UpdateHex(playerController.currentPosition.hexObj.name, null);
+                    playerController.UpdateCurrentlyOn(tempPath.Last().hexRenderer.name);
+                    playerController.currentPosition = tempPath.Last();
+                    playerController.UpdateHex(playerController.currentPosition.hexObj.name, gameObject);
 
-                playerController.path = tempPath;
+                    playerController.path = tempPath;
+                }
+            }
+        }
+        else
+        {
+            if (currentAbility.chargeToTarget && centerNode != npcBehaviour.currentHexNode)
+            {
+                List<HexGridLayout.HexNode> tempPath = Pathfinder.FindPath(npcBehaviour.currentHexNode, centerNode);
+                if (centerNode.hexRenderer.occupying.Value)
+                    tempPath.RemoveAt(tempPath.Count - 1);
+                if (tempPath.Count > 0)
+                    npcBehaviour.Move(tempPath);
             }
         }
 
         // Add the cooldown for the ability we just used
         cooldowns.Add(new AbilityCooldown(currentAbility, currentAbility.cooldown));
-        UIManager.instance.abilitiesUIManager.UpdateAbilityCooldownsUI(cooldowns);
+        if (playerController)
+            UIManager.instance.abilitiesUIManager.UpdateAbilityCooldownsUI(cooldowns);
 
         currentAbility = null;
 
         // Force the end turn (maybe we will change this idk)
-        playerController.EndTurn();
+        if (playerController)
+            playerController.EndTurn();
     }
 
     /// <summary>
@@ -159,7 +179,9 @@ public class AbilityHandler : MonoBehaviour
     /// <param name="turn"></param>
     public void ReduceCooldowns(int turn) // TODO: remove the turn parameter
     {
-        if (!GameManager.instance.IsMyTurn())
+        if (playerController && !GameManager.instance.IsMyTurn())
+            return;
+        if (playerController == null && turn != -2)
             return;
         Debug.Log($"{turn} Reducing Cooldowns");
 
@@ -174,7 +196,8 @@ public class AbilityHandler : MonoBehaviour
         cooldowns = newCooldowns;
 
         // Then we want to update the UI of each ability
-        UIManager.instance.abilitiesUIManager.UpdateAbilityCooldownsUI(cooldowns);
+        if (playerController)
+            UIManager.instance.abilitiesUIManager.UpdateAbilityCooldownsUI(cooldowns);
     }
 #endregion
 
@@ -231,15 +254,26 @@ public class AbilityHandler : MonoBehaviour
         {
             // If the ability is a lingering one we apply the lingering effect to all of them
             if (lingeringDuration > 0)
-                hex.ApplyLingering(GameManager.instance.LocalConnection.ClientId, element, lingeringDuration);
+                hex.ApplyLingering(playerController ? GameManager.instance.LocalConnection.ClientId : -1, element, lingeringDuration);
 
             // If a player is occupying a tile we apply the heal/damage to them
-            if (hex.occupying.Value && hex.occupying.Value.TryGetComponent<PlayerInfo>(out PlayerInfo playerInfo))
+            if (hex.occupying.Value)
             {
-                if (isHeal)
-                    playerInfo.Heal(damageAmount);
-                else
-                    playerInfo.TakeDamage(damageAmount);
+                if (hex.occupying.Value.TryGetComponent<PlayerInfo>(out PlayerInfo playerInfo))
+                {
+                    if (isHeal)
+                        playerInfo.Heal(damageAmount);
+                    else
+                        playerInfo.TakeDamage(damageAmount);
+                }
+
+                if (hex.occupying.Value.TryGetComponent<NPCBehaviour>(out NPCBehaviour npc))
+                {
+                    if (isHeal)
+                        npc.HealHP(damageAmount);
+                    else
+                        npc.TakeDamage(damageAmount, playerController);
+                }
             }
         }
     }

@@ -176,6 +176,7 @@ public class GameManager : NetworkBehaviour
         {
             Debug.LogWarning("Doing npc turn");
             currentPlayerTurn.Value = -2; // Set current turn value to -2 (NPC turn value)
+            BeginTurnClient(-2);
             NPCManager.instance.DoNPCTurn();
             return;
         }

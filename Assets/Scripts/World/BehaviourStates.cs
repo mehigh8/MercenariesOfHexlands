@@ -179,7 +179,7 @@ public class AttackState : BehaviourStateBase
         }
         else
         {
-            Debug.LogWarning("There is no threat to run from");
+            Debug.LogWarning("There is no threat to attack");
         }
 
         // Try to attack

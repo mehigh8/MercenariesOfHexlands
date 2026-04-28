@@ -10,6 +10,7 @@ using UnityEngine.AI;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(AbilityHandler))]
 public class NPCBehaviour : NetworkBehaviour
 {
     // These SyncVars are necessary for the NPC's health bar and information panel
@@ -35,6 +36,7 @@ public class NPCBehaviour : NetworkBehaviour
 
     // The following variables are relevant only for the Server
     private NavMeshAgent navAgent; // NavMeshAgent component of this NPC
+    private AbilityHandler abilityHandler; // AbilityHandler component of this NPC
     [HideInInspector] public HexGridLayout.HexNode currentHexNode = null; // The actual hex this NPC is standing on (is updated from the SyncVar hex name)
 
     [HideInInspector] public NPCInfo npcInfo; // NPC Info reference
@@ -55,8 +57,11 @@ public class NPCBehaviour : NetworkBehaviour
 
     private void Start()
     {
-        // Get NavMeshAgent component
+        // Get components
         navAgent = GetComponent<NavMeshAgent>();
+        abilityHandler = GetComponent<AbilityHandler>();
+        abilityHandler.npcBehaviour = this;
+        GameManager.instance.OnBeginTurn += abilityHandler.ReduceCooldowns;
     }
 
     private void OnDisable()
@@ -66,6 +71,7 @@ public class NPCBehaviour : NetworkBehaviour
         maxHealth.OnChange -= OnMaxHealthChange;
         currentHealth.OnChange -= OnCurrentHealthChange;
         npcName.OnChange -= OnNameChange;
+        GameManager.instance.OnBeginTurn -= abilityHandler.ReduceCooldowns;
     }
     #endregion
 
@@ -190,7 +196,51 @@ public class NPCBehaviour : NetworkBehaviour
     /// </summary>
     public void Heal()
     {
-        Debug.LogWarning(npcName.Value + ": Heal action placeholder");
+        Debug.LogWarning(npcName.Value + ": Heal action");
+
+        if (currentHealth.Value == maxHealth.Value)
+        {
+            Debug.LogWarning("Not healing since full HP");
+            NPCManager.instance.DoNPCTurn();
+            return;
+        }
+
+        List<AbilityInfo> healAbilities = npcInfo.abilities.Where(a => a.isHeal).ToList();
+
+        AbilityInfo chosenAbility = null;
+        foreach (AbilityInfo heal in healAbilities)
+        {
+            bool isOnCooldown = false;
+            foreach (AbilityHandler.AbilityCooldown cooldown in abilityHandler.cooldowns)
+            {
+                if (cooldown.ability == heal)
+                {
+                    isOnCooldown = true;
+                    break;
+                }
+            }
+
+            if (isOnCooldown)
+                continue;
+
+            if (chosenAbility == null)
+            {
+                chosenAbility = heal;
+                continue;
+            }
+
+            int healAmount = heal.useWeaponDamage ? heal.GetDamage(1) /* TODO: replace with actual weapon damage */ : heal.GetDamage();
+            if (healAmount > (chosenAbility.useWeaponDamage ? chosenAbility.GetDamage(1) /* TODO: replace with actual weapon damage */ : chosenAbility.GetDamage()))
+                chosenAbility = heal;
+        }
+
+        if (chosenAbility != null)
+        {
+            Debug.Log("Casting " + chosenAbility.name);
+            abilityHandler.currentAbility = chosenAbility;
+            abilityHandler.ConfirmCasting(new List<HexGridLayout.HexNode>() { currentHexNode }, currentHexNode);
+        }
+
         NPCManager.instance.DoNPCTurn();
     }
 
@@ -199,8 +249,89 @@ public class NPCBehaviour : NetworkBehaviour
     /// </summary>
     public void Attack()
     {
-        Debug.LogWarning(npcName.Value + ": Attack action placeholder");
+        Debug.LogWarning(npcName.Value + ": Attack action");
+
+        List<AbilityInfo> attackAbilities = npcInfo.abilities.Where(a => !a.isHeal).ToList();
+
+        AbilityInfo chosenAbility = null;
+        foreach (AbilityInfo attack in attackAbilities)
+        {
+            List<HexGridLayout.HexNode> hexesInRange = HexGridLayout.instance.hexNodes.Where(h => h.Distance(currentHexNode) <= attack.range).ToList();
+            if (!hexesInRange.Contains(threat.currentPosition))
+                continue;
+
+            bool isOnCooldown = false;
+            foreach (AbilityHandler.AbilityCooldown cooldown in abilityHandler.cooldowns)
+            {
+                if (cooldown.ability == attack)
+                {
+                    isOnCooldown = true;
+                    break;
+                }
+            }
+
+            if (isOnCooldown)
+                continue;
+
+            if (chosenAbility == null)
+            {
+                chosenAbility = attack;
+                continue;
+            }
+
+            int attackAmount = attack.useWeaponDamage ? attack.GetDamage(1) /* TODO: replace with actual weapon damage */ : attack.GetDamage();
+            if (attackAmount > (chosenAbility.useWeaponDamage ? chosenAbility.GetDamage(1) /* TODO: replace with actual weapon damage */ : chosenAbility.GetDamage()))
+                chosenAbility = attack;
+        }
+
+        if (chosenAbility != null)
+        {
+            Debug.Log("Casting " + chosenAbility.name);
+            abilityHandler.currentAbility = chosenAbility;
+            List<HexGridLayout.HexNode> affectedNodes = HexGridLayout.instance.hexNodes.Where(h => h.Distance(threat.currentPosition) <= chosenAbility.areOfEffect).ToList();
+            abilityHandler.ConfirmCasting(affectedNodes, threat.currentPosition);
+        }
+
         NPCManager.instance.DoNPCTurn();
     }
     #endregion
+
+    public void TakeDamage(int damage, PlayerController threat = null)
+    {
+        TakeDamageRPC(damage, threat ? threat.gameObject.name : "");
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void TakeDamageRPC(int damage, string threat)
+    {
+        if (this.threat == null)
+            this.threat = GameObject.Find(threat)?.GetComponent<PlayerController>();
+        
+        int updatedHealth = currentHealth.Value - damage;
+        currentHealth.Value = updatedHealth < 0 ? 0 : updatedHealth;
+        if (updatedHealth <= 0)
+            Die();
+    }
+
+    [Server]
+    private void Die()
+    {
+        Debug.Log(npcName.Value + " has died");
+        Despawn(gameObject);
+    }
+
+    public void HealHP(int value)
+    {
+        HealRPC(value);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void HealRPC(int value)
+    {
+        int updatedHealth = currentHealth.Value + value;
+        if (updatedHealth > maxHealth.Value)
+            updatedHealth = maxHealth.Value;
+
+        currentHealth.Value = updatedHealth;
+    }
 }
