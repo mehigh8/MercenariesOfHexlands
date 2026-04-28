@@ -82,35 +82,27 @@ public class AbilitiesUIManager : MonoBehaviour
         // If we have at least one ability we want to display the UI
         ShowAbilities(true);
 
-        // Scale the background UI of the container to account for the number of abilities we will be instantiating
-        RectTransform rootRect = abilitySlotsRoot.GetComponent<RectTransform>();
-        rootRect.sizeDelta = new Vector2((abilitySize + abilitySpacing) * abilities.Count + abilitySpacing, abilitySize + abilitySpacing * 2);
-
-        // cursor is the relative position we will be using to instantiate the new ability slots
-        Vector3 cursor = rootRect.position - Vector3.right * (rootRect.sizeDelta.x / 2 - abilitySpacing - abilitySize / 2) + Vector3.up * rootRect.sizeDelta.y / 2;
+        // This was changed since UI components handle all of the resizing
         for (int i = 0; i < abilities.Count; i++)
         {
-            Button createdButton = Instantiate(abilitySlotPrefab, cursor, Quaternion.identity, abilitySlotsRoot).GetComponent<Button>();
+            Button createdButton = Instantiate(abilitySlotPrefab, abilitySlotsRoot).GetComponent<Button>();
             
             // We do this since the reference to i will be lost after the loop is over
             int localI = i;
             createdButton.onClick.AddListener(delegate { OnAbilityClick(localI); });
-            
-            // Here we prepare the information for the tooltip display: the information and the offset
-            HoverHandler hoverLogic = createdButton.GetComponent<HoverHandler>();
-            hoverLogic.abilityInfo = abilities[i];
-            hoverLogic.position = cursor + Vector3.up * abilitySize;
 
             // Here we set the dimensions of the UI elements to match the parameters provided and the image of the ability
             createdButton.GetComponent<RectTransform>().sizeDelta = new Vector2(abilitySize, abilitySize);
             createdButton.GetComponentInChildren<TextMeshProUGUI>().GetComponent<RectTransform>().sizeDelta = new Vector2(abilitySize, abilitySize);
             createdButton.GetComponent<Image>().sprite = abilities[i].displayImage;
             
+            // Here we prepare the information for the tooltip display: the information and the offset
+            HoverHandler hoverLogic = createdButton.GetComponent<HoverHandler>();
+            hoverLogic.abilityInfo = abilities[i];
+            hoverLogic.position = abilitySlotsRoot.position + Vector3.up * abilitySize;
+            
             // Finally, we add the instantiated slot to our ability list
             abilitySlots.Add(createdButton);
-            
-            // We increment the cursor (I know we could've used i, this is what seemed more readable at the time)
-            cursor += Vector3.right * (abilitySize + abilitySpacing);
         }
         // Here we also want to update the ability cooldowns
         if (client)
