@@ -133,7 +133,7 @@ public class NPCBehaviour : NetworkBehaviour
         nameText.text = newVal;
     }
 
-    #region Behaviour Functions
+    #region Turn Functions
     /// <summary>
     /// Function that chooses the action for this NPC <br/>
     /// This should only be called from the Server as it uses variables that may not be set on clients
@@ -145,6 +145,14 @@ public class NPCBehaviour : NetworkBehaviour
 
         // Apply state actions
         StartCoroutine(currentState.DoStateActions());
+    }
+
+    /// <summary>
+    /// Function used by the NPC to end its turn
+    /// </summary>
+    private void EndTurn()
+    {
+        NPCManager.instance.DoNPCTurn();
     }
     #endregion
 
@@ -241,7 +249,7 @@ public class NPCBehaviour : NetworkBehaviour
             abilityHandler.ConfirmCasting(new List<HexGridLayout.HexNode>() { currentHexNode }, currentHexNode);
         }
 
-        NPCManager.instance.DoNPCTurn();
+        EndTurn();
     }
 
     /// <summary>
@@ -292,7 +300,7 @@ public class NPCBehaviour : NetworkBehaviour
             abilityHandler.ConfirmCasting(affectedNodes, threat.currentPosition);
         }
 
-        NPCManager.instance.DoNPCTurn();
+        EndTurn();
     }
     #endregion
 
@@ -317,7 +325,7 @@ public class NPCBehaviour : NetworkBehaviour
     private void Die()
     {
         Debug.Log(npcName.Value + " has died");
-        Despawn(gameObject);
+        NPCManager.instance.NPCDied(this);
     }
 
     public void HealHP(int value)

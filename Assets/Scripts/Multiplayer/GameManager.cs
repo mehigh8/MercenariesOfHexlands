@@ -276,5 +276,14 @@ public class GameManager : NetworkBehaviour
     {
         return currentPlayerTurn.Value == LocalConnection.ClientId;
     }
+
+    /// <summary>
+    /// Function used to check if it is the NPCs' turn
+    /// </summary>
+    /// <returns></returns>
+    public bool IsNPCTurn()
+    {
+        return currentPlayerTurn.Value == -2;
+    }
     #endregion
 }

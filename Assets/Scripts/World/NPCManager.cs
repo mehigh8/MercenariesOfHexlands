@@ -227,5 +227,33 @@ public class NPCManager : NetworkBehaviour
             npcTurn++;
         }
     }
+
+    [Server]
+    public void NPCDied(NPCBehaviour npc)
+    {
+        if (GameManager.instance.IsNPCTurn())
+        {
+            int npcIndex = npcs.IndexOf(npc);
+
+            npcs.Remove(npc);
+            Despawn(npc.gameObject);
+
+            if (npcIndex < npcTurn)
+            {
+                npcTurn--;
+            }
+            else if (npcIndex == npcTurn)
+            {
+                // TODO: This will cause aoe attacks cast by the npc to not apply effects on all hexes
+                npcTurn--;
+                DoNPCTurn();
+            }
+        }
+        else
+        {
+            npcs.Remove(npc);
+            Despawn(npc.gameObject);
+        }
+    }
     #endregion
 }

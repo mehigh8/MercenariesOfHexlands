@@ -1028,9 +1028,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4dbe798b708b864baac50bad718cf52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 255
-  _addedNetworkObject: {fileID: 8473963361929440135}
-  _networkObjectCache: {fileID: 0}
   inventoryButton: {fileID: 766887867081120341}
   endTurnButton: {fileID: 1930282395845269308}
   buttonPrefab: {fileID: 8920053447058758490, guid: 0b37e234cd0f9494e87073a8bf58922e,
