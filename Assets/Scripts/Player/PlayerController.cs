@@ -12,6 +12,8 @@ public class PlayerController : NetworkBehaviour
 {
     [Header("Camera Settings")]
     [SerializeField] private float cameraSpeed; // Speed value used for camera movement
+    [SerializeField] private float maxZoom; // Maximum zoom value for camera
+    [SerializeField] private float zoomSpeed; // Zooming speed for camera
 
     [Header("Navigation Settings")]
     [SerializeField] private LayerMask mask; // LayerMask of the ground
@@ -29,6 +31,8 @@ public class PlayerController : NetworkBehaviour
 
     private AbilityHandler abilityHandler; // Reference to AbilityHandler script
     private HexGridLayout.HexNode previousHex; // Reference to previous hex used for ability input
+
+    private float currentZoom = 0f; // Current zoom value
 
     #region Unity + FishNet Functions
     public override void OnStartClient()
@@ -146,6 +150,20 @@ public class PlayerController : NetworkBehaviour
             toMove -= Vector3.forward;
 
         playerCamera.transform.position += toMove.normalized * cameraSpeed * Time.deltaTime;
+
+        // Zoom
+        float scroll = Input.GetAxis("Mouse ScrollWheel") * Time.deltaTime;
+
+        if (scroll > 0f && currentZoom >= maxZoom)
+            scroll = 0f;
+
+        if (scroll < 0f && currentZoom <= 0f)
+            scroll = 0f;
+
+        currentZoom += scroll;
+
+        playerCamera.transform.position += playerCamera.transform.forward * scroll * zoomSpeed;
+
     }
 
     /// <summary>

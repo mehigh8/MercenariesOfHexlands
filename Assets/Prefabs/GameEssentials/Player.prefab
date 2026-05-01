@@ -166,6 +166,8 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 4231930951776552360}
   _networkObjectCache: {fileID: 4231930951776552360}
   cameraSpeed: 25
+  maxZoom: 0.02
+  zoomSpeed: 250
   mask:
     serializedVersion: 2
     m_Bits: 64
@@ -197,7 +199,6 @@ MonoBehaviour:
   - {fileID: 4377053942288531369}
   - {fileID: 2969058245022903750}
   - {fileID: 4864732434553502953}
-  - {fileID: 0}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -222,7 +223,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 7
+  <PrefabId>k__BackingField: 0
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 1959106088332916719
   <SceneId>k__BackingField: 0
@@ -324,6 +325,7 @@ MonoBehaviour:
   cooldowns: []
   currentAbility: {fileID: 0}
   playerController: {fileID: 0}
+  npcBehaviour: {fileID: 0}
 --- !u!1 &4857569472824283213
 GameObject:
   m_ObjectHideFlags: 0
