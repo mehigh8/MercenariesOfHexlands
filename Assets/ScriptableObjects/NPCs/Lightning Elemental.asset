@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   npcName: Lightning Elemental
   npcType: 1
-  npcPrefab: {fileID: 8750048416726093729, guid: 4ceb20befb1a44949abecb9a05ee0030,
+  npcPrefab: {fileID: 8750048416726093729, guid: 22cd49f0caaceff4c9d144f4aee1c397,
     type: 3}
   health: 120
   damage: 40
