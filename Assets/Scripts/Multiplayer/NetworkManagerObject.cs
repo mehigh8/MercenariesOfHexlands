@@ -15,6 +15,9 @@ public class NetworkManagerObject : MonoBehaviour
     [HideInInspector] public CSteamID mySteamID; // This is the steamID of the local player, useful for various steam related functions
     [HideInInspector] public CSteamID currentLobbyID; // This is the lobbyID of the lobby we are currently in, useful for various steam related functions
 
+    public bool randomSeed; // Whether or not maps should be generated randomly
+    public int seed; // This is the seed that will be passed on to the terrain generation
+
     private void Awake()
     {
         // We only want one instance of this object

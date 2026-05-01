@@ -88,7 +88,7 @@ public class HexGridLayout : NetworkBehaviour
     [SerializeField] private float height; // Hex's height (Most likely will not be used since we now use prefabs for visuals)
     [SerializeField] private bool isFlatTopped; // Specifies if the top of the hex is flat or pointy
     [SerializeField] private int gridLayer; // Layer of the hex (TODO: May not be necessary as we also put the layer on the prefab)
-    [AllowMutableSyncType] public SyncVar<int> seed; // Seed used for the Random system
+    public int seed; // Seed used for the Random system
     [Range(0f, 0.4f)]
     public float obstacleThreshold; // Threshold from which a hex start to be considered an obstacle
 
@@ -107,8 +107,6 @@ public class HexGridLayout : NetworkBehaviour
     #region Unity Functions
     private void Awake()
     {
-        // Set the seed for the Random system
-        Random.InitState(seed.Value);
         // Singleton logic
         if (instance == null)
             instance = this;
@@ -149,34 +147,34 @@ public class HexGridLayout : NetworkBehaviour
                 // Get HexRenderer component and set SyncVars
                 HexRenderer hexRenderer = tile.GetComponent<HexRenderer>();
                 hexRenderer.isFlatTopped.Value = isFlatTopped;
-                hexRenderer.isFlatTopped.NetworkManager = seed.NetworkManager;
+                hexRenderer.isFlatTopped.NetworkManager = NetworkManagerObject.Instance.networkManager;
                 hexRenderer.isFlatTopped.NetworkBehaviour = hexRenderer;
 
                 hexRenderer.outerSize.Value = outerSize;
-                hexRenderer.outerSize.NetworkManager = seed.NetworkManager;
+                hexRenderer.outerSize.NetworkManager = NetworkManagerObject.Instance.networkManager;
                 hexRenderer.outerSize.NetworkBehaviour = hexRenderer;
 
                 hexRenderer.innerSize.Value = innerSize;
-                hexRenderer.innerSize.NetworkManager = seed.NetworkManager;
+                hexRenderer.innerSize.NetworkManager = NetworkManagerObject.Instance.networkManager;
                 hexRenderer.innerSize.NetworkBehaviour = hexRenderer;
 
                 hexRenderer.height.Value = height;
-                hexRenderer.height.NetworkManager = seed.NetworkManager;
+                hexRenderer.height.NetworkManager = NetworkManagerObject.Instance.networkManager;
                 hexRenderer.height.NetworkBehaviour = hexRenderer;
 
                 hexRenderer.coords.Value = new Vector2Int(x, y);
-                hexRenderer.coords.NetworkManager = seed.NetworkManager;
+                hexRenderer.coords.NetworkManager = NetworkManagerObject.Instance.networkManager;
                 hexRenderer.coords.NetworkBehaviour = hexRenderer;
 
-                hexRenderer.occupying.NetworkManager = seed.NetworkManager;
+                hexRenderer.occupying.NetworkManager = NetworkManagerObject.Instance.networkManager;
                 hexRenderer.occupying.NetworkBehaviour = hexRenderer;
 
                 hexRenderer.originalColor.Value = visualColor;
-                hexRenderer.originalColor.NetworkManager = seed.NetworkManager;
+                hexRenderer.originalColor.NetworkManager = NetworkManagerObject.Instance.networkManager;
                 hexRenderer.originalColor.NetworkBehaviour = hexRenderer;
 
                 hexRenderer.hexVisualPrefab.Value = GetTileIndexBasedOnHeight(visualColor.g);
-                hexRenderer.hexVisualPrefab.NetworkManager = seed.NetworkManager;
+                hexRenderer.hexVisualPrefab.NetworkManager = NetworkManagerObject.Instance.networkManager;
                 hexRenderer.hexVisualPrefab.NetworkBehaviour = hexRenderer;
 
                 // Randomly pick if and what item to spawn on the tile (only if the tile is not an obstacle)
@@ -185,11 +183,11 @@ public class HexGridLayout : NetworkBehaviour
                     spawnItem = Random.value <= chanceToSpawnItem && !hexRenderer.IsObstacle() ? spawnableItems[Random.Range(0, spawnableItems.Count)] : null;
 
                 hexRenderer.hasItem.Value = spawnItem ? GameManager.instance.allExistingItems.IndexOf(spawnItem) : -1;
-                hexRenderer.hasItem.NetworkManager = seed.NetworkManager;
+                hexRenderer.hasItem.NetworkManager = NetworkManagerObject.Instance.networkManager;
                 hexRenderer.hasItem.NetworkBehaviour = hexRenderer;
                 
                 hexRenderer.lingeringEffect.Value = null;
-                hexRenderer.lingeringEffect.NetworkManager = seed.NetworkManager;
+                hexRenderer.lingeringEffect.NetworkManager = NetworkManagerObject.Instance.networkManager;
                 hexRenderer.lingeringEffect.NetworkBehaviour = hexRenderer;
 
                 // Set hex's layer

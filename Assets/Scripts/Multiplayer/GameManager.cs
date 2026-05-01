@@ -50,6 +50,10 @@ public class GameManager : NetworkBehaviour
     public override void OnStartServer()
     {
         base.OnStartServer();
+
+        HexGridLayout.instance.seed = NetworkManagerObject.Instance.randomSeed ? UnityEngine.Random.Range(int.MinValue, int.MaxValue) : NetworkManagerObject.Instance.seed;
+        UnityEngine.Random.InitState(HexGridLayout.instance.seed);
+
         // Add callback to handle players connecting or disconnecting
         ServerManager.OnRemoteConnectionState += OnPlayerConnectionChanged;
 
