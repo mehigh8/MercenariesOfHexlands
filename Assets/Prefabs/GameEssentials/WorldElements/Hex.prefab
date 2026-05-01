@@ -132,6 +132,8 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 52df7cfa29b5c8248a09c2ecfb533451, type: 3}
   elementObject: {fileID: 174189285277082984}
   material: {fileID: 2100000, guid: 3a8be2616ff549e499187e09ad77e7fe, type: 2}
+  fowPrefab: {fileID: 303318501854874913, guid: 339ca13ac81223a4cb7a8c8d542f33c4,
+    type: 3}
   hexVisualPrefab:
     NetworkManager: {fileID: 0}
     NetworkBehaviour: {fileID: 0}

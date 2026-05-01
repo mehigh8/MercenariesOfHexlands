@@ -19,6 +19,7 @@ public class PlayerInfo : NetworkBehaviour
     public float critChance; // Player's critical chance stat
     public int movementPerTurn; // Player's movement stat
     public int defence; // Player's defence stat
+    public int viewingRange; // Player's viewing range
     [Header("References")]
     [SerializeField] private TMP_Text nameText; // Reference to the text object used for the name above the player
     [SerializeField] private Slider healthBar; // Reference to the health bar above the player

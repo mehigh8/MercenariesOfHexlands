@@ -306,6 +306,7 @@ MonoBehaviour:
   critChance: 0.1
   movementPerTurn: 4
   defence: 1
+  viewingRange: 2
   nameText: {fileID: 8498826273635487349}
   healthBar: {fileID: 2374242237454727767}
   healthText: {fileID: 9000300741276180340}

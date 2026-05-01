@@ -33,6 +33,7 @@ public class PlayerController : NetworkBehaviour
     private HexGridLayout.HexNode previousHex; // Reference to previous hex used for ability input
 
     private float currentZoom = 0f; // Current zoom value
+    private HexGridLayout.HexNode previousClosestHex; // Last hex that was used by RevealSurroundings
 
     #region Unity + FishNet Functions
     public override void OnStartClient()
@@ -78,6 +79,7 @@ public class PlayerController : NetworkBehaviour
 
         if (IsOwner)
         {
+            RevealSurroundings();
             if (GameManager.instance.IsMyTurn())
             {
                 PickMovement();
@@ -112,6 +114,25 @@ public class PlayerController : NetworkBehaviour
     #endregion
 
     #region Update Steps
+
+    /// <summary>
+    /// Function used to reveal surrounding hexes
+    /// </summary>
+    private void RevealSurroundings()
+    {
+        HexGridLayout.HexNode closestHex = HexGridLayout.instance.GetClosestHex(transform.position);
+        if (closestHex != previousClosestHex)
+        {
+            List<HexGridLayout.HexNode> hexesInViewingRange = HexGridLayout.instance.hexNodes.Where(h => h.Distance(closestHex) <= playerInfo.viewingRange).ToList();
+
+            foreach (HexGridLayout.HexNode hex in hexesInViewingRange)
+            {
+                hex.hexRenderer.RevealHex();
+            }
+            previousClosestHex = closestHex;
+        }
+    }
+
     /// <summary>
     /// Function used to update internal reference to the hex the player is standing on
     /// </summary>

@@ -55,6 +55,7 @@ public class HexRenderer : NetworkBehaviour
     [SerializeField] private List<Texture> elementMapper; // List used to map effects to their corresponding textures
     [SerializeField] private MeshRenderer elementObject; // Mesh renderer of the effect child object
     [SerializeField] private Material material; // Material of the hex
+    [SerializeField] private GameObject fowPrefab; // Prefab of the Fog of War hex
     [AllowMutableSyncType] public SyncVar<int> hexVisualPrefab; // Hex's visual prefab index
     [AllowMutableSyncType] public SyncVar<float> innerSize; // Hex's inner size (If bigger than 0 it will create a hole in the middle of the hex; Most likely will not be used)
     [AllowMutableSyncType] public SyncVar<float> outerSize; // Hex's outer size (You can consider this as the pure size of the hex)
@@ -72,6 +73,10 @@ public class HexRenderer : NetworkBehaviour
     private MeshCollider meshCollider; // Reference to the mesh collider
 
     private List<Face> faces; // List of this hex's faces
+
+    private bool isRevealed = false; // Specifies if this hex has been revealed by the player
+    private GameObject visualHex; // Reference to the spawned visuals of the hex
+    private GameObject fowHex; // Reference to the spawned Fog of War hex
 
     #region Unity + FishNet Functions
     public override void OnStartNetwork()
@@ -118,6 +123,12 @@ public class HexRenderer : NetworkBehaviour
         MeshRenderer visuals = Instantiate(GameManager.instance.allExistingTiles[hexVisualPrefab.Value], transform.position - Vector3.up * 0.51f, Quaternion.Euler(-90, 0, 0), transform).GetComponent<MeshRenderer>();
         visuals.material = new Material(visuals.material);
         visuals.material.color -= Color.white * originalColor.Value.g / 2; // This is just cosmetic
+
+        // Instantiate fog of war hex and switch layer for actual hex
+        fowHex = Instantiate(fowPrefab, new Vector3(transform.position.x, 0f, transform.position.z), Quaternion.Euler(-90, 0, 0));
+        visualHex = visuals.gameObject;
+
+        Helpers.SetLayerRecursively(visualHex, LayerMask.NameToLayer("Hidden"));
 
         // Draw the mesh
         DrawMesh();
@@ -353,6 +364,18 @@ public class HexRenderer : NetworkBehaviour
     public bool IsObstacle()
     {
         return originalColor.Value.g <= HexGridLayout.instance.obstacleThreshold;
+    }
+
+    /// <summary>
+    /// Function used to reveal this hex
+    /// </summary>
+    public void RevealHex()
+    {
+        if (isRevealed) return;
+
+        Helpers.SetLayerRecursively(visualHex, LayerMask.NameToLayer("Default"));
+        Destroy(fowHex);
+        isRevealed = true;
     }
 
     /// <summary>

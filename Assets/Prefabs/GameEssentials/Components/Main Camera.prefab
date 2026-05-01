@@ -894,7 +894,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 503
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -1292,6 +1292,7 @@ MonoBehaviour:
   abilitiesUIManager: {fileID: 0}
   inventoryUIManager: {fileID: 0}
   tooltipHandler: {fileID: 0}
+  hudManager: {fileID: 0}
 --- !u!114 &149147585354192881
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1307,7 +1308,6 @@ MonoBehaviour:
   abilitySlotsRoot: {fileID: 4121586353917294203}
   abilitySlotPrefab: {fileID: 5129168536319137871, guid: 5edccf6243efd504f9340aa2c8ee5379,
     type: 3}
-  abilitySlots: []
   abilities:
   - {fileID: 11400000, guid: f371c0a66119073429517eecb0e50a21, type: 2}
   abilitySize: 100
