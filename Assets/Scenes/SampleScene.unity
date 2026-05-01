@@ -919,9 +919,15 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 0}
   npcCount: 5
   allExistingNPCs:
-  - {fileID: 11400000, guid: a61d207307315f34b91a3e4c3f70c7f0, type: 2}
-  - {fileID: 11400000, guid: a492020a8e13908479b37a3f58ae4bd2, type: 2}
-  - {fileID: 11400000, guid: a56e256da1724ed4e822eebe0b710891, type: 2}
+  - {fileID: 11400000, guid: c28b7d92790e4754b9aeabed20752df0, type: 2}
+  - {fileID: 11400000, guid: 8d19f6ca8ca33a84cba9cbbeeeea0764, type: 2}
+  - {fileID: 11400000, guid: 59c0aa814f6d9814e976b8cd26aa4640, type: 2}
+  - {fileID: 11400000, guid: 92c7bcd8f9daed0478fdcf625da548ac, type: 2}
+  - {fileID: 11400000, guid: 38859a7f6a12eea409bda5400a447f01, type: 2}
+  - {fileID: 11400000, guid: e8fa83692ab9c144ab8001d01fba4377, type: 2}
+  - {fileID: 11400000, guid: 46d522324b99c464b9b1b178ffb5932e, type: 2}
+  - {fileID: 11400000, guid: 748b8420acea2e042ac67ca198bc6c86, type: 2}
+  - {fileID: 11400000, guid: 942bcf6dfd8eb8442bb9ff7cf6ac7388, type: 2}
   npcs: []
 --- !u!114 &7392189606342451891
 MonoBehaviour:

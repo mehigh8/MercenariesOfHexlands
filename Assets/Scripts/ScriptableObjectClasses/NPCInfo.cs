@@ -21,6 +21,7 @@ public class NPCInfo : ScriptableObject
         Wander = 0,
         Run = 1,
         Attack = 2,
+        Suicide = 3,
     }
 
     public enum NPCSwitchCondition

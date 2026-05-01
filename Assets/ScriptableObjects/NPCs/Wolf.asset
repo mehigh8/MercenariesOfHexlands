@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7692f5b5b55bff94c88d6700739cfdcc, type: 3}
+  m_Name: Wolf
+  m_EditorClassIdentifier: 
+  npcName: Wolf
+  npcType: 2
+  npcPrefab: {fileID: 8750048416726093729, guid: e81a9446b581cc047a46e6019b5796df,
+    type: 3}
+  health: 40
+  damage: 10
+  defence: 0
+  critChance: 0.2
+  movement: 6
+  detection: 6
+  runDistance: 7
+  healthLowThreshold: 10
+  healthyThreshold: 20
+  npcBehaviour:
+  - state: 0
+    connections:
+    - item1: 1
+      item2: 2
+  - state: 1
+    connections:
+    - item1: 2
+      item2: 0
+    - item1: 4
+      item2: 2
+  - state: 2
+    connections:
+    - item1: 3
+      item2: 1
+  abilities:
+  - {fileID: 11400000, guid: f371c0a66119073429517eecb0e50a21, type: 2}
+  - {fileID: 11400000, guid: 725561d323b23244f818b4867893710c, type: 2}

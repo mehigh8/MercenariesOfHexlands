@@ -1681,13 +1681,61 @@ PrefabInstance:
     - target: {fileID: 8157613302627487806, guid: 9171564ad3b17814eb01f8a21387ce26,
         type: 3}
       propertyPath: allExistingNPCs.Array.size
-      value: 3
+      value: 9
       objectReference: {fileID: 0}
+    - target: {fileID: 8157613302627487806, guid: 9171564ad3b17814eb01f8a21387ce26,
+        type: 3}
+      propertyPath: allExistingNPCs.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: c28b7d92790e4754b9aeabed20752df0,
+        type: 2}
+    - target: {fileID: 8157613302627487806, guid: 9171564ad3b17814eb01f8a21387ce26,
+        type: 3}
+      propertyPath: allExistingNPCs.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 8d19f6ca8ca33a84cba9cbbeeeea0764,
+        type: 2}
     - target: {fileID: 8157613302627487806, guid: 9171564ad3b17814eb01f8a21387ce26,
         type: 3}
       propertyPath: allExistingNPCs.Array.data[2]
       value: 
-      objectReference: {fileID: 11400000, guid: a56e256da1724ed4e822eebe0b710891,
+      objectReference: {fileID: 11400000, guid: 59c0aa814f6d9814e976b8cd26aa4640,
+        type: 2}
+    - target: {fileID: 8157613302627487806, guid: 9171564ad3b17814eb01f8a21387ce26,
+        type: 3}
+      propertyPath: allExistingNPCs.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: 92c7bcd8f9daed0478fdcf625da548ac,
+        type: 2}
+    - target: {fileID: 8157613302627487806, guid: 9171564ad3b17814eb01f8a21387ce26,
+        type: 3}
+      propertyPath: allExistingNPCs.Array.data[4]
+      value: 
+      objectReference: {fileID: 11400000, guid: 38859a7f6a12eea409bda5400a447f01,
+        type: 2}
+    - target: {fileID: 8157613302627487806, guid: 9171564ad3b17814eb01f8a21387ce26,
+        type: 3}
+      propertyPath: allExistingNPCs.Array.data[5]
+      value: 
+      objectReference: {fileID: 11400000, guid: e8fa83692ab9c144ab8001d01fba4377,
+        type: 2}
+    - target: {fileID: 8157613302627487806, guid: 9171564ad3b17814eb01f8a21387ce26,
+        type: 3}
+      propertyPath: allExistingNPCs.Array.data[6]
+      value: 
+      objectReference: {fileID: 11400000, guid: 46d522324b99c464b9b1b178ffb5932e,
+        type: 2}
+    - target: {fileID: 8157613302627487806, guid: 9171564ad3b17814eb01f8a21387ce26,
+        type: 3}
+      propertyPath: allExistingNPCs.Array.data[7]
+      value: 
+      objectReference: {fileID: 11400000, guid: 748b8420acea2e042ac67ca198bc6c86,
+        type: 2}
+    - target: {fileID: 8157613302627487806, guid: 9171564ad3b17814eb01f8a21387ce26,
+        type: 3}
+      propertyPath: allExistingNPCs.Array.data[8]
+      value: 
+      objectReference: {fileID: 11400000, guid: 942bcf6dfd8eb8442bb9ff7cf6ac7388,
         type: 2}
     - target: {fileID: 8646519795168690017, guid: 9171564ad3b17814eb01f8a21387ce26,
         type: 3}

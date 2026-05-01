@@ -164,6 +164,9 @@ public class NPCManager : NetworkBehaviour
                 case NPCInfo.NPCState.Attack:
                     createdState = new AttackState(npc);
                     break;
+                case NPCInfo.NPCState.Suicide:
+                    createdState = new SuicideState(npc);
+                    break;
                 default:
                     break;
             }

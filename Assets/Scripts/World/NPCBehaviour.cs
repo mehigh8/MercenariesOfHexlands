@@ -150,7 +150,7 @@ public class NPCBehaviour : NetworkBehaviour
     /// <summary>
     /// Function used by the NPC to end its turn
     /// </summary>
-    private void EndTurn()
+    public void EndTurn()
     {
         NPCManager.instance.DoNPCTurn();
     }
@@ -200,17 +200,17 @@ public class NPCBehaviour : NetworkBehaviour
     }
 
     /// <summary>
-    /// Placeholder function used to indicate that the NPC wants to heal
+    /// Function used by the NPC to cast a healing spell
     /// </summary>
-    public void Heal()
+    /// <returns>True if NPC was able to heal; False otherwise</returns>
+    public bool Heal()
     {
         Debug.LogWarning(npcName.Value + ": Heal action");
 
         if (currentHealth.Value == maxHealth.Value)
         {
             Debug.LogWarning("Not healing since full HP");
-            NPCManager.instance.DoNPCTurn();
-            return;
+            return false;
         }
 
         List<AbilityInfo> healAbilities = npcInfo.abilities.Where(a => a.isHeal).ToList();
@@ -247,25 +247,38 @@ public class NPCBehaviour : NetworkBehaviour
             Debug.Log("Casting " + chosenAbility.name);
             abilityHandler.currentAbility = chosenAbility;
             abilityHandler.ConfirmCasting(new List<HexGridLayout.HexNode>() { currentHexNode }, currentHexNode);
+            return true;
         }
-
-        EndTurn();
+        return false;
     }
 
     /// <summary>
-    /// Placeholder function used to indicate that the NPC wants to attack
+    /// Function used by the NPC to cast an attack spell
     /// </summary>
-    public void Attack()
+    /// <returns>True if NPC was able to attack; False otherwise</returns>
+    public bool Attack()
     {
         Debug.LogWarning(npcName.Value + ": Attack action");
+
+        if (threat == null)
+        {
+            Debug.Log("Cannot attack since I have no threat");
+            return false;
+        }
 
         List<AbilityInfo> attackAbilities = npcInfo.abilities.Where(a => !a.isHeal).ToList();
 
         AbilityInfo chosenAbility = null;
+        HexGridLayout.HexNode target = null;
         foreach (AbilityInfo attack in attackAbilities)
         {
             List<HexGridLayout.HexNode> hexesInRange = HexGridLayout.instance.hexNodes.Where(h => h.Distance(currentHexNode) <= attack.range).ToList();
-            if (!hexesInRange.Contains(threat.currentPosition))
+            
+            if (attack.range == 0)
+                target = hexesInRange[0];
+            else if (hexesInRange.Contains(threat.currentPosition))
+                target = threat.currentPosition;
+            else
                 continue;
 
             bool isOnCooldown = false;
@@ -296,11 +309,11 @@ public class NPCBehaviour : NetworkBehaviour
         {
             Debug.Log("Casting " + chosenAbility.name);
             abilityHandler.currentAbility = chosenAbility;
-            List<HexGridLayout.HexNode> affectedNodes = HexGridLayout.instance.hexNodes.Where(h => h.Distance(threat.currentPosition) <= chosenAbility.areOfEffect).ToList();
-            abilityHandler.ConfirmCasting(affectedNodes, threat.currentPosition);
+            List<HexGridLayout.HexNode> affectedNodes = HexGridLayout.instance.hexNodes.Where(h => h.Distance(target) <= chosenAbility.areOfEffect).ToList();
+            abilityHandler.ConfirmCasting(affectedNodes, target);
+            return true;
         }
-
-        EndTurn();
+        return false;
     }
     #endregion
 

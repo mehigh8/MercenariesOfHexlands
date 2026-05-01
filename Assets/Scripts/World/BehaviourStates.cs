@@ -90,6 +90,8 @@ public class WanderState : BehaviourStateBase
 
         // Try to heal
         npc.Heal();
+
+        npc.EndTurn();
     }
 }
 
@@ -137,11 +139,13 @@ public class RunState : BehaviourStateBase
         
         // Try to heal
         npc.Heal();
+
+        npc.EndTurn();
     }
 }
 
 /// <summary>
-/// In this state, the NPC will go towards the threat and attack (TODO: if not able to attack, should heal)
+/// In this state, the NPC will go towards the threat and attack
 /// </summary>
 public class AttackState : BehaviourStateBase
 {
@@ -182,8 +186,70 @@ public class AttackState : BehaviourStateBase
             Debug.LogWarning("There is no threat to attack");
         }
 
-        // Try to attack
-        npc.Attack();
-        // TODO: Add check to see if any skill is in range. If not, heal (if able)
+        // Try to attack. If not able to, heal
+        if (!npc.Attack())
+            npc.Heal();
+
+        npc.EndTurn();
+    }
+}
+
+public class SuicideState : BehaviourStateBase
+{
+    public SuicideState(NPCBehaviour npc)
+    {
+        this.npc = npc;
+    }
+
+    public override IEnumerator DoStateActions()
+    {
+        if (npc.threat != null)
+        {
+            Debug.Log(npc.npcName.Value + ": Attack state");
+            // Get all hexes in range that are not obstacles or occupied and that are closer to the threat than the current hex
+            List<HexGridLayout.HexNode> hexesInRange = HexGridLayout.instance.hexNodes.Where(hex => hex.Distance(npc.currentHexNode) <= npc.npcInfo.movement
+                && !hex.hexRenderer.IsObstacle()
+                && hex.hexRenderer.occupying.Value == null
+                && hex.Distance(npc.threat.currentPosition) < npc.currentHexNode.Distance(npc.threat.currentPosition)).ToList();
+
+            // Sort possible hexes ascending by distance to threat
+            hexesInRange.Sort((a, b) => a.Distance(npc.threat.currentPosition) - b.Distance(npc.threat.currentPosition));
+
+            // Try each hex one by one
+            List<HexGridLayout.HexNode> path = null;
+            foreach (HexGridLayout.HexNode hex in hexesInRange)
+            {
+                path = Pathfinder.FindPath(npc.currentHexNode, hex);
+                if (path != null && path.Count <= npc.npcInfo.movement)
+                    break;
+            }
+
+            npc.Move(path);
+            // Wait for the movement to finish
+            yield return new WaitWhile(delegate { return npc.isMoving; });
+
+            AbilityInfo selfDestruct = null;
+            foreach (AbilityInfo ability in npc.npcInfo.abilities)
+                if (ability.name == "Self Destruct")
+                    selfDestruct = ability;
+
+            if (selfDestruct == null)
+            {
+                Debug.LogError("This state requires the <Self Destruct> ability");
+            }
+            else
+            {
+                if (npc.currentHexNode.Distance(npc.threat.currentPosition) <= selfDestruct.areOfEffect)
+                {
+                    npc.Attack();
+                }
+            }
+        }
+        else
+        {
+            Debug.LogWarning("There is no threat to attack");
+        }
+
+        npc.EndTurn();
     }
 }
