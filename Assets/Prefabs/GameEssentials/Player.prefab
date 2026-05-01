@@ -166,7 +166,7 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 4231930951776552360}
   _networkObjectCache: {fileID: 4231930951776552360}
   cameraSpeed: 25
-  maxZoom: 0.02
+  maxZoom: 0.025
   zoomSpeed: 250
   mask:
     serializedVersion: 2

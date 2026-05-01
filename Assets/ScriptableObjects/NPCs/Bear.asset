@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   npcName: Bear
   npcType: 2
-  npcPrefab: {fileID: 8750048416726093729, guid: e81a9446b581cc047a46e6019b5796df,
+  npcPrefab: {fileID: 8750048416726093729, guid: ece7828e74a23fc4092f83e03675f182,
     type: 3}
   health: 80
   damage: 15
