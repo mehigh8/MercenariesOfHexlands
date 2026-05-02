@@ -48,7 +48,7 @@ public class PlayerController : NetworkBehaviour
             UIManager.instance.abilitiesUIManager.ShowAbilities(true);
             GameManager.instance.OnBeginTurn += GetComponent<AbilityHandler>().ReduceCooldowns;
             GameManager.instance.OnBeginTurn += ResetMovementThisTurn;
-            GameManager.instance.OnBeginTurn += HandleHudOnNewTurn;
+            GameManager.instance.currentPlayerTurn.OnChange += HandleHudOnNewTurn;
             GameManager.instance.OnEntityMoved += ChangeVisibilityEntity;
 
             // Configure HUD buttons
@@ -143,8 +143,10 @@ public class PlayerController : NetworkBehaviour
     /// <summary>
     /// Callback used to open HUD when turn changes
     /// </summary>
-    /// <param name="turn">ID of the player whose turn it is</param>
-    public void HandleHudOnNewTurn(int turn)
+    /// <param name="oldVal">Old turn value</param>
+    /// <param name="newVal">New turn value</param>
+    /// <param name="asServer">Specifies if called as server</param>
+    public void HandleHudOnNewTurn(int oldVal, int newVal, bool asServer)
     {
         if (IsOwner)
         {
