@@ -55,7 +55,7 @@ public class HexRenderer : NetworkBehaviour
     [SerializeField] private List<Texture> elementMapper; // List used to map effects to their corresponding textures
     [SerializeField] private MeshRenderer elementObject; // Mesh renderer of the effect child object
     [SerializeField] private Material material; // Material of the hex
-    [SerializeField] private GameObject fowPrefab; // Prefab of the Fog of War hex
+    [SerializeField] private List<GameObject> fowPrefabs; // Prefabs of the Fog of War hexes
     [AllowMutableSyncType] public SyncVar<int> hexVisualPrefab; // Hex's visual prefab index
     [AllowMutableSyncType] public SyncVar<float> innerSize; // Hex's inner size (If bigger than 0 it will create a hole in the middle of the hex; Most likely will not be used)
     [AllowMutableSyncType] public SyncVar<float> outerSize; // Hex's outer size (You can consider this as the pure size of the hex)
@@ -125,7 +125,7 @@ public class HexRenderer : NetworkBehaviour
         visuals.material.color -= Color.white * originalColor.Value.g / 2; // This is just cosmetic
 
         // Instantiate fog of war hex and switch layer for actual hex
-        fowHex = Instantiate(fowPrefab, new Vector3(transform.position.x, 0f, transform.position.z), Quaternion.Euler(-90, 0, 0));
+        fowHex = Instantiate(fowPrefabs[Random.Range(0, fowPrefabs.Count)], new Vector3(transform.position.x, 0f, transform.position.z), Quaternion.Euler(-90, 0, Random.Range(0, 6) * 60f));
         visualHex = visuals.gameObject;
 
         Helpers.SetLayerRecursively(visualHex, LayerMask.NameToLayer("Hidden"));
@@ -374,8 +374,9 @@ public class HexRenderer : NetworkBehaviour
         if (isRevealed) return;
 
         Helpers.SetLayerRecursively(visualHex, LayerMask.NameToLayer("Default"));
-        Destroy(fowHex);
         isRevealed = true;
+
+        StartCoroutine(RevealHexAnimation());
     }
 
     /// <summary>
@@ -388,6 +389,25 @@ public class HexRenderer : NetworkBehaviour
     public void ApplyLingering(int clientId, AbilityInfo.Element element, int lingeringDuration)
     {
         lingeringEffect.Value = new LingeringEffect(clientId, element, lingeringDuration);
+    }
+    #endregion
+
+    #region Others
+    /// <summary>
+    /// IEnumerator used to animate the reveal of the hex
+    /// </summary>
+    /// <returns>-</returns>
+    private System.Collections.IEnumerator RevealHexAnimation()
+    {
+        Vector3 velocity = Vector3.zero;
+        Vector3 destination = fowHex.transform.position + new Vector3(0, 2, 0);
+        while (Mathf.Abs(fowHex.transform.position.y - destination.y) > 0.01f)
+        {
+            fowHex.transform.position = Vector3.SmoothDamp(fowHex.transform.position, destination, ref velocity, 0.1f);
+            yield return null;
+        }
+
+        Destroy(fowHex);
     }
     #endregion
 }
