@@ -62,6 +62,7 @@ public class PlayerController : NetworkBehaviour
 
     private IEnumerator Start()
     {
+        gameObject.name = "Player " + Owner.ClientId;
         // Set more references (TODO: Why are some here and some in OnStartClient??)
         abilityHandler = GetComponent<AbilityHandler>();
         abilityHandler.playerController = this;
