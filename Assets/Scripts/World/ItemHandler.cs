@@ -11,5 +11,7 @@ public class ItemHandler : NetworkBehaviour
     void Start()
     {
         gameObject.name = itemName.Value;
+        if (IsServerInitialized)
+            GameManager.instance.EntityMovedClient(gameObject.name, "Hex " + gameObject.name.Split(' ')[1], LayerMask.NameToLayer("Default"));
     }
 }

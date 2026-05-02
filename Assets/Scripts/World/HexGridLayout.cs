@@ -268,13 +268,13 @@ public class HexGridLayout : NetworkBehaviour
         // Get corresponding item, instantiate it and spawn it across the network
         ItemInfo spawnItem = GameManager.instance.allExistingItems[item];
         GameObject spawnedItem = Instantiate(spawnItem.prefab, hexNode.hexObj.transform.position, Quaternion.identity);
-        spawnedItem.name = "Item " + hex.Split(' ')[1];
+        //spawnedItem.name = "Item " + hex.Split(' ')[1];
         spawnedItem.GetComponent<ItemHandler>().itemName.Value = "Item " + hex.Split(' ')[1];
         spawnedItem.transform.SetParent(transform);
         spawnedItems.Add(spawnedItem);
         ServerManager.Spawn(spawnedItem, null);
 
-        GameManager.instance.EntityMovedClient(spawnedItem.name, hex, LayerMask.NameToLayer("Default"));
+        //GameManager.instance.EntityMovedClient(spawnedItem.name, hex, LayerMask.NameToLayer("Default"));
     }
     #endregion
 

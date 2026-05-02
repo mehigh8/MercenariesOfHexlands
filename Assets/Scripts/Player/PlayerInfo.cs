@@ -42,7 +42,10 @@ public class PlayerInfo : NetworkBehaviour
     {
         base.OnStartClient();
         if (IsOwner && GameManager.instance.IsMyTurn())
+        {
+            Debug.Log("Opening HUD for client " + LocalConnection.ClientId);
             UIManager.instance.hudManager.OpenHUD();
+        }
         // Set player's name from Steam
         StartCoroutine(SetPlayerName());
     }
