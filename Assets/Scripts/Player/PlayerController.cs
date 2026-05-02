@@ -48,6 +48,7 @@ public class PlayerController : NetworkBehaviour
             UIManager.instance.abilitiesUIManager.ShowAbilities(true);
             GameManager.instance.OnBeginTurn += GetComponent<AbilityHandler>().ReduceCooldowns;
             GameManager.instance.OnBeginTurn += ResetMovementThisTurn;
+            GameManager.instance.OnBeginTurn += OpenHudOnNewTurn;
             GameManager.instance.OnEntityMoved += ChangeVisibilityEntity;
 
             // Configure HUD buttons
@@ -136,6 +137,19 @@ public class PlayerController : NetworkBehaviour
         else
         {
             Helpers.SetLayerRecursively(entityObject, LayerMask.NameToLayer("Hidden"));
+        }
+    }
+
+    /// <summary>
+    /// Callback used to open HUD when turn changes
+    /// </summary>
+    /// <param name="turn">ID of the player whose turn it is</param>
+    public void OpenHudOnNewTurn(int turn)
+    {
+        if (IsOwner && GameManager.instance.IsMyTurn())
+        {
+            Debug.Log("Opening hud for client " + LocalConnection.ClientId);
+            UIManager.instance.hudManager.OpenHUD();
         }
     }
     #endregion

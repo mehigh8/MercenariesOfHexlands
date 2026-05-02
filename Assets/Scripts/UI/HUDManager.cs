@@ -21,20 +21,11 @@ public class HUDManager : MonoBehaviour
     private bool isOpened = false; // Specifies if the HUD is opened
 
     #region Unity Functions
-    private void Start()
-    {
-        GameManager.instance.OnBeginTurn += OpenOnNewTurn;
-    }
 
     private void Update()
     {
         //if (!isOpened && GameManager.instance.IsMyTurn() && GameLobbyManager.Instance.gameStarted)
         //    OpenHUD();
-    }
-
-    private void OnDisable()
-    {
-        GameManager.instance.OnBeginTurn -= OpenOnNewTurn;
     }
     #endregion
 
@@ -97,10 +88,4 @@ public class HUDManager : MonoBehaviour
         additionalButtonsCount = 0;
     }
     #endregion
-
-    private void OpenOnNewTurn(int turn)
-    {
-        if (GameManager.instance.IsMyTurn())
-            OpenHUD();
-    }
 }
