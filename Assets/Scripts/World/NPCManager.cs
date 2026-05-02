@@ -46,7 +46,6 @@ public class NPCManager : NetworkBehaviour
 
             // Instantiate the chosen NPC template on the chosen hex
             GameObject spawnedNPC = Instantiate(npcInfo.npcPrefab, parentHexTransform.position, Quaternion.identity);
-            spawnedNPC.name = $"NPC{npcIdCount}";
 
             NPCBehaviour npcBehaviour = spawnedNPC.GetComponent<NPCBehaviour>();
             if (npcBehaviour == null)

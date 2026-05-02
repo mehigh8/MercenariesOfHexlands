@@ -62,6 +62,8 @@ public class NPCBehaviour : NetworkBehaviour
         abilityHandler = GetComponent<AbilityHandler>();
         abilityHandler.npcBehaviour = this;
         GameManager.instance.OnBeginTurn += abilityHandler.ReduceCooldowns;
+
+        gameObject.name = "NPC" + npcId.Value;
     }
 
     private void OnDisable()
