@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6177464930861262907}
   - component: {fileID: 8488054215968765997}
   - component: {fileID: 8842628117286913777}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Sword_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 3263642884777852377}
   - component: {fileID: -7476874991243292629}
   - component: {fileID: 1351145776162494199}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Sword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -161,7 +161,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 4
+  <PrefabId>k__BackingField: 22
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 12356662398803296666
   <SceneId>k__BackingField: 0

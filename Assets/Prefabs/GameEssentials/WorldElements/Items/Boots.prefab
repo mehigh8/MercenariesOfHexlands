@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5346859826610640008}
   - component: {fileID: 8978729157169541673}
   - component: {fileID: 1119728736825838967}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: belt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 6932807628580234235}
   - component: {fileID: 1090677430818896683}
   - component: {fileID: 7936683248452046361}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: heel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -177,7 +177,7 @@ GameObject:
   - component: {fileID: 7955514209614832648}
   - component: {fileID: 7362374426660933192}
   - component: {fileID: 5147387071860692932}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: boot uper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -260,7 +260,7 @@ GameObject:
   - component: {fileID: 3210174929743225177}
   - component: {fileID: 4275642720023315662}
   - component: {fileID: 4834575284569608905}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PINS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -343,7 +343,7 @@ GameObject:
   - component: {fileID: 2548281450616896451}
   - component: {fileID: 8584377184964621954}
   - component: {fileID: -5635947358869272523}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Boots
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -413,7 +413,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 8
+  <PrefabId>k__BackingField: 18
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 11223887606321481870
   <SceneId>k__BackingField: 0

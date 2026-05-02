@@ -28,7 +28,7 @@ MonoBehaviour:
   npcBehaviour:
   - state: 0
     connections:
-    - item1: 0
+    - item1: 1
       item2: 2
   - state: 1
     connections:

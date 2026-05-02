@@ -189,6 +189,8 @@ public class NPCBehaviour : NetworkBehaviour
             if (!navAgent.hasPath || (navAgent.hasPath && navAgent.remainingDistance < 0.1f))
             {
                 Vector3 dest = new Vector3(path[0].hexObj.transform.position.x, transform.position.y, path[0].hexObj.transform.position.z);
+                // Update the server on the new position (In this case this already is on the server, so no Server RPC is required)
+                GameManager.instance.EntityMovedClient(gameObject.name, path[0].hexObj.name, LayerMask.NameToLayer("NPC"));
                 path.RemoveAt(0);
                 navAgent.SetDestination(dest);
             }

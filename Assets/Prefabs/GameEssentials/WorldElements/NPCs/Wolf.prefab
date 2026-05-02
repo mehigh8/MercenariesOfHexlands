@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4350550874723714175}
   - component: {fileID: 8088755738806063170}
   - component: {fileID: 4051522185347404146}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Eye (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -117,7 +117,7 @@ GameObject:
   - component: {fileID: 1755470420146404557}
   - component: {fileID: 7870003711927084558}
   - component: {fileID: 3725229231128154320}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -252,7 +252,7 @@ GameObject:
   - component: {fileID: 6029018326695815103}
   - component: {fileID: 3890864539986763711}
   - component: {fileID: 4589480060756490330}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Leg (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -357,7 +357,7 @@ GameObject:
   - component: {fileID: 5374111302734350353}
   - component: {fileID: 5639152468604679451}
   - component: {fileID: 173309221239591820}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Tail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -461,7 +461,7 @@ GameObject:
   - component: {fileID: 8604910886267338937}
   - component: {fileID: 8988406334013597240}
   - component: {fileID: 778392337355256028}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -535,7 +535,7 @@ GameObject:
   m_Component:
   - component: {fileID: 175521689005185768}
   - component: {fileID: 2876310472370287434}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Visuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -598,7 +598,7 @@ GameObject:
   - component: {fileID: 8368870854149018158}
   - component: {fileID: 4440982578785254588}
   - component: {fileID: 1395384032050555717}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -674,7 +674,7 @@ GameObject:
   - component: {fileID: 6060365273584001040}
   - component: {fileID: 5242582531072413564}
   - component: {fileID: 2258204220909823452}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Leg (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -779,7 +779,7 @@ GameObject:
   - component: {fileID: 3256716639652909157}
   - component: {fileID: 7491842943632237813}
   - component: {fileID: 309942853186327862}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Pupil
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -884,7 +884,7 @@ GameObject:
   - component: {fileID: 9022879690141060731}
   - component: {fileID: 5954327391105541140}
   - component: {fileID: 4567911348498196650}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Leg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -988,7 +988,7 @@ GameObject:
   - component: {fileID: 2189547388516163010}
   - component: {fileID: 2664250888254770726}
   - component: {fileID: 2465203935248543139}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: HealthText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1124,7 +1124,7 @@ GameObject:
   - component: {fileID: 6598269894154620556}
   - component: {fileID: 955094513288757711}
   - component: {fileID: 1321832254188073543}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1240,7 +1240,7 @@ GameObject:
   - component: {fileID: 5412203850335436210}
   - component: {fileID: 6975530342509587174}
   - component: {fileID: 5952912809962838629}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Nose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1345,7 +1345,7 @@ GameObject:
   - component: {fileID: 1666373947708632606}
   - component: {fileID: 7705218685080299988}
   - component: {fileID: 7380823205704184532}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Pupil
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1450,7 +1450,7 @@ GameObject:
   - component: {fileID: 4089917431010168578}
   - component: {fileID: 5746081567629684845}
   - component: {fileID: 5360842524182445454}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Leg (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1555,7 +1555,7 @@ GameObject:
   - component: {fileID: 4049917134674305446}
   - component: {fileID: 7316366274525379706}
   - component: {fileID: 9081332705073224461}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1657,7 +1657,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6299992773731217831}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Handle Slide Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1695,7 +1695,7 @@ GameObject:
   - component: {fileID: 2711869377168013326}
   - component: {fileID: 7260899936511876130}
   - component: {fileID: 1085579745061749602}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1769,7 +1769,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4963292832087735764}
   - component: {fileID: 2066258241651926003}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1863,7 +1863,7 @@ GameObject:
   - component: {fileID: 4426636664689014131}
   - component: {fileID: 2614293520809841679}
   - component: {fileID: 6252080132612654541}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Wolf
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1996,7 +1996,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 21
+  <PrefabId>k__BackingField: 4
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 3476232411731444008
   <SceneId>k__BackingField: 0
@@ -2098,7 +2098,7 @@ GameObject:
   - component: {fileID: 63769045618897946}
   - component: {fileID: 6183705553560530857}
   - component: {fileID: 2814523362028172682}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Eye
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2201,7 +2201,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3985000808919020538}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2240,7 +2240,7 @@ GameObject:
   - component: {fileID: 4790669141899467393}
   - component: {fileID: 16106085920485730}
   - component: {fileID: 5144298698767753686}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}

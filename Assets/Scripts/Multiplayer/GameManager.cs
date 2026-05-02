@@ -20,6 +20,7 @@ public class GameManager : NetworkBehaviour
     public List<GameObject> allExistingTiles = new List<GameObject>(); // List of all existing tile prefabs
 
     [HideInInspector] public event Action<int> OnBeginTurn; // Event triggered when a new player turn begins
+    [HideInInspector] public event Action<string, string, int> OnEntityMoved; // Event triggered when an entity (player or npc) moves to a new hex
 
     private List<int> clientsTurnOrder = new List<int>(); // List of all clients that are connected in order of their turns
     private List<int> clientsDead = new List<int>(); // List of clients that died
@@ -158,6 +159,59 @@ public class GameManager : NetworkBehaviour
     {
         BeginTurn(turn);
     }
+
+    /// <summary>
+    /// Observers RPC used by the server to tell the players what entity moved and where in order to reveal them
+    /// </summary>
+    /// <param name="entity">Name of the entity</param>
+    /// <param name="hex">Name of the hex where the entity moved</param>
+    /// <param name="layer">Original layer of the entity</param>
+    [ObserversRpc]
+    public void EntityMovedClient(string entity, string hex, int layer)
+    {
+        EntityMoved(entity, hex, layer);
+    }
+
+    /// <summary>
+    /// Server RPC used by the clients to tell the Server that an entity moved
+    /// </summary>
+    /// <param name="entity">Name of the entity</param>
+    /// <param name="hex">Name of the hex where the entity moved</param>
+    /// <param name="layer">Original layer of the entity</param>
+    [ServerRpc(RequireOwnership = false)]
+    public void EntityMovedServerRPC(string entity, string hex, int layer)
+    {
+        EntityMovedClient(entity, hex, layer);
+    }
+
+    /// <summary>
+    /// Server RPC used by a hex when it is revealed in order to update the player if an entity is on it
+    /// </summary>
+    /// <param name="hex">Name of the revealed hex</param>
+    [ServerRpc(RequireOwnership = false)]
+    public void IsEntityOnHexServerRPC(string hex)
+    {
+        HexRenderer hexRenderer = GameObject.Find(hex)?.GetComponent<HexRenderer>();
+        if (hexRenderer != null )
+        {
+            GameObject occupier = hexRenderer.occupying.Value;
+            if (occupier != null )
+            {
+                int layer = LayerMask.NameToLayer("Default");
+                if (occupier.TryGetComponent<PlayerController>(out PlayerController pc))
+                {
+                    layer = LayerMask.NameToLayer("Player");
+                }
+
+                if (occupier.TryGetComponent<NPCBehaviour>(out NPCBehaviour npc))
+                {
+                    layer = LayerMask.NameToLayer("NPC");
+                }
+
+                EntityMovedClient(occupier.name, hex, layer);
+            }
+        }
+    }
     #endregion
 
     #region Turn Handling Functions
@@ -288,6 +342,17 @@ public class GameManager : NetworkBehaviour
     public bool IsNPCTurn()
     {
         return currentPlayerTurn.Value == -2;
+    }
+
+    /// <summary>
+    /// Function used to invoke OnEntityMoved event
+    /// </summary>
+    /// <param name="entity">Name of the entity</param>
+    /// <param name="hex">Name of the hex where the entity moved</param>
+    /// <param name="layer">Correct layer of the entity</param>
+    private void EntityMoved(string entity, string hex, int layer)
+    {
+        OnEntityMoved?.Invoke(entity, hex, layer);
     }
     #endregion
 }

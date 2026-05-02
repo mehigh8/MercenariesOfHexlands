@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7843815540666661686}
   - component: {fileID: -2848140032375119037}
   - component: {fileID: 8303746928838889712}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Helmet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -129,7 +129,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 11
+  <PrefabId>k__BackingField: 13
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 6844159078382557048
   <SceneId>k__BackingField: 0

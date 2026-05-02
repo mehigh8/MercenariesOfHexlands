@@ -74,7 +74,7 @@ public class HexRenderer : NetworkBehaviour
 
     private List<Face> faces; // List of this hex's faces
 
-    private bool isRevealed = false; // Specifies if this hex has been revealed by the player
+    [HideInInspector] public bool isRevealed = false; // Specifies if this hex has been revealed by the player
     private GameObject visualHex; // Reference to the spawned visuals of the hex
     private GameObject fowHex; // Reference to the spawned Fog of War hex
 
@@ -373,9 +373,24 @@ public class HexRenderer : NetworkBehaviour
     {
         if (isRevealed) return;
 
+        // Reveal hex visuals
         Helpers.SetLayerRecursively(visualHex, LayerMask.NameToLayer("Default"));
         isRevealed = true;
 
+        // Reveal entity on hex
+        GameManager.instance.IsEntityOnHexServerRPC(gameObject.name);
+
+        // Reveal item on hex
+        if (hasItem.Value != -1)
+        {
+            GameObject itemObj = GameObject.Find("Item " + gameObject.name.Split(' ')[1]);
+            if (itemObj != null)
+            {
+                GameManager.instance.EntityMovedServerRPC(itemObj.name, gameObject.name, LayerMask.NameToLayer("Default"));
+            }
+        }
+
+        // Start reveal animation
         StartCoroutine(RevealHexAnimation());
     }
 

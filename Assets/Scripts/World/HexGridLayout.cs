@@ -253,10 +253,12 @@ public class HexGridLayout : NetworkBehaviour
     }
 
     /// <summary>
-    /// Function used to place an item on a hex
+    /// Function used to place an item on a hex<br/>
+    /// Should always be called on Server
     /// </summary>
     /// <param name="item">Index of the item to be placed</param>
     /// <param name="hex">Name of the hex</param>
+    [Server]
     public void PlaceItem(int item, string hex)
     {
         // Search for the hex and update its hasItem SyncVar
@@ -270,6 +272,8 @@ public class HexGridLayout : NetworkBehaviour
         spawnedItem.transform.SetParent(transform);
         spawnedItems.Add(spawnedItem);
         ServerManager.Spawn(spawnedItem, null);
+
+        GameManager.instance.EntityMovedClient(spawnedItem.name, hex, LayerMask.NameToLayer("Default"));
     }
     #endregion
 

@@ -48,12 +48,15 @@ public class PlayerController : NetworkBehaviour
             UIManager.instance.abilitiesUIManager.ShowAbilities(true);
             GameManager.instance.OnBeginTurn += GetComponent<AbilityHandler>().ReduceCooldowns;
             GameManager.instance.OnBeginTurn += ResetMovementThisTurn;
+            GameManager.instance.OnEntityMoved += ChangeVisibilityEntity;
 
             // Configure HUD buttons
             UIManager.instance.hudManager.inventoryButton.onClick.RemoveAllListeners();
             UIManager.instance.hudManager.endTurnButton.onClick.RemoveAllListeners();
             UIManager.instance.hudManager.inventoryButton.onClick.AddListener(InventoryInteract);
             UIManager.instance.hudManager.endTurnButton.onClick.AddListener(EndTurn);
+
+            Helpers.SetLayerRecursively(gameObject, LayerMask.NameToLayer("Player"));
         }
     }
 
@@ -110,6 +113,29 @@ public class PlayerController : NetworkBehaviour
             return;
 
         playerInfo.canMoveThisTurn = playerInfo.movementPerTurn;
+    }
+
+    /// <summary>
+    /// Callback used to reveal or hide entities after they moved
+    /// </summary>
+    /// <param name="entity">Name of the entity</param>
+    /// <param name="hex">Name of the hex where the entity moved</param>
+    /// <param name="layer">Correct layer of the entity</param>
+    public void ChangeVisibilityEntity(string entity, string hex, int layer)
+    {
+        if (!IsOwner) return;
+
+        GameObject entityObject = GameObject.Find(entity);
+        HexRenderer hexObject = GameObject.Find(hex).GetComponent<HexRenderer>();
+
+        if (hexObject.isRevealed)
+        {
+            Helpers.SetLayerRecursively(entityObject, layer);
+        }
+        else
+        {
+            Helpers.SetLayerRecursively(entityObject, LayerMask.NameToLayer("Hidden"));
+        }
     }
     #endregion
 
@@ -250,8 +276,11 @@ public class PlayerController : NetworkBehaviour
             if (!navAgent.hasPath || (navAgent.hasPath && navAgent.remainingDistance < 0.1f))
             {
                 Vector3 dest = new Vector3(path[0].hexObj.transform.position.x, transform.position.y, path[0].hexObj.transform.position.z);
+                // Update server on the new position
+                GameManager.instance.EntityMovedServerRPC(gameObject.name, path[0].hexObj.name, LayerMask.NameToLayer("Player"));
                 path.RemoveAt(0);
                 navAgent.SetDestination(dest);
+                
             }
         }
     }
