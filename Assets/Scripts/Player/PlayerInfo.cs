@@ -41,7 +41,7 @@ public class PlayerInfo : NetworkBehaviour
     public override void OnStartClient()
     {
         base.OnStartClient();
-        if (GameManager.instance.IsMyTurn())
+        if (IsOwner && GameManager.instance.IsMyTurn())
             UIManager.instance.hudManager.OpenHUD();
         // Set player's name from Steam
         StartCoroutine(SetPlayerName());

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7843815540666661686}
   - component: {fileID: -2848140032375119037}
   - component: {fileID: 8303746928838889712}
+  - component: {fileID: -5229455147140184818}
   m_Layer: 9
   m_Name: Helmet
   m_TagString: Untagged
@@ -153,3 +154,22 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: -2848140032375119037}
   _networkObjectCache: {fileID: -2848140032375119037}
+--- !u!114 &-5229455147140184818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1023707555754996238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4f1abeed3a200144bd3f8304d63586f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: -2848140032375119037}
+  _networkObjectCache: {fileID: 0}
+  itemName:
+    NetworkManager: {fileID: 0}
+    NetworkBehaviour: {fileID: 0}
+    _value: 

@@ -94,6 +94,7 @@ GameObject:
   - component: {fileID: 7614546400936117212}
   - component: {fileID: -4591534713288007620}
   - component: {fileID: -5680290475507652232}
+  - component: {fileID: 943793316721557797}
   m_Layer: 9
   m_Name: Chestplate
   m_TagString: Untagged
@@ -188,6 +189,25 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: -4591534713288007620}
   _networkObjectCache: {fileID: -4591534713288007620}
+--- !u!114 &943793316721557797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3519744301963755855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4f1abeed3a200144bd3f8304d63586f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: -4591534713288007620}
+  _networkObjectCache: {fileID: 0}
+  itemName:
+    NetworkManager: {fileID: 0}
+    NetworkBehaviour: {fileID: 0}
+    _value: 
 --- !u!1 &3586344940236787051
 GameObject:
   m_ObjectHideFlags: 0

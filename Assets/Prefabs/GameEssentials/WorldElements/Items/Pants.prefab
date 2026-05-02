@@ -177,6 +177,7 @@ GameObject:
   - component: {fileID: 6794362355937795340}
   - component: {fileID: -1768584657530007999}
   - component: {fileID: -4954738234596316791}
+  - component: {fileID: -8111201732576918735}
   m_Layer: 9
   m_Name: Pants
   m_TagString: Untagged
@@ -276,6 +277,25 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: -1768584657530007999}
   _networkObjectCache: {fileID: -1768584657530007999}
+--- !u!114 &-8111201732576918735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3280981117783605713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4f1abeed3a200144bd3f8304d63586f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: -1768584657530007999}
+  _networkObjectCache: {fileID: 0}
+  itemName:
+    NetworkManager: {fileID: 0}
+    NetworkBehaviour: {fileID: 0}
+    _value: 
 --- !u!1 &3911429423049984309
 GameObject:
   m_ObjectHideFlags: 0

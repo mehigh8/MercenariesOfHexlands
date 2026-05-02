@@ -202,7 +202,7 @@ public class HexGridLayout : NetworkBehaviour
                 if (spawnItem)
                 {
                     GameObject spawnedItem = Instantiate(spawnItem.prefab, tile.transform.position, Quaternion.identity);
-                    spawnedItem.name = $"Item {x},{y}";
+                    spawnedItem.GetComponent<ItemHandler>().itemName.Value = $"Item {x},{y}";
                     spawnedItem.transform.SetParent(transform);
                     spawnedItems.Add(spawnedItem);
                     ServerManager.Spawn(spawnedItem, null);
@@ -269,6 +269,7 @@ public class HexGridLayout : NetworkBehaviour
         ItemInfo spawnItem = GameManager.instance.allExistingItems[item];
         GameObject spawnedItem = Instantiate(spawnItem.prefab, hexNode.hexObj.transform.position, Quaternion.identity);
         spawnedItem.name = "Item " + hex.Split(' ')[1];
+        spawnedItem.GetComponent<ItemHandler>().itemName.Value = "Item " + hex.Split(' ')[1];
         spawnedItem.transform.SetParent(transform);
         spawnedItems.Add(spawnedItem);
         ServerManager.Spawn(spawnedItem, null);
