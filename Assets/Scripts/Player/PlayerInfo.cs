@@ -46,7 +46,7 @@ public class PlayerInfo : NetworkBehaviour
             Debug.Log("Opening HUD for client " + LocalConnection.ClientId);
             UIManager.instance.hudManager.OpenHUD();
         }
-        Set player's name from Steam
+        // Set player's name from Steam
         StartCoroutine(SetPlayerName());
     }
     #endregion
